@@ -1,0 +1,201 @@
+/*
+ * 디자인 토큰 — 무신사 스토어
+ *
+ * 구조(KRDS 디자인 토큰 3계층):
+ *   1) 프리미티브  :root 의 --ms-* 변수. 원재료. 컴포넌트에서 직접 쓰지 않는다.
+ *   2) 시멘틱      @theme 의 --color-* / --spacing-* 등. 역할 이름. 이것만 사용한다.
+ *                  Tailwind v4 가 유틸리티(bg-surface, text-ink, rounded-md …)로 노출한다.
+ *   3) 컴포넌트    각 컴포넌트가 시멘틱을 참조해 정의(예: --button--primary-bg). 이 파일에 두지 않는다.
+ *
+ * 값 출처: 무신사 MDS 2.0 CSS(색·타이포·라운드·모션), KRDS 스타일 가이드(계층·스케일·접근성).
+ * 전체 명세와 사용 규칙: docs/design/design-tokens.md
+ */
+
+/* ───────────────────────────── 1. 프리미티브 ───────────────────────────── */
+:root {
+  /* 무채색 — KRDS 0~100 명도 단계에 무신사 그레이를 배치 */
+  --ms-gray-0: #ffffff;
+  --ms-gray-5: #f5f5f5;
+  --ms-gray-10: #f0f0f0;
+  --ms-gray-20: #ebebeb;
+  --ms-gray-30: #e0e0e0;
+  --ms-gray-40: #cccccc;
+  --ms-gray-50: #8a8a8a;
+  --ms-gray-60: #666666;
+  --ms-gray-70: #4a4a4a;
+  --ms-gray-80: #2a2a2a;
+  --ms-gray-90: #171717;
+  --ms-gray-100: #000000;
+
+  /* 유채색 — 무신사 강조/상태색 */
+  --ms-blue-40: #37b0f4;
+  --ms-blue-50: #3a6eff;
+  --ms-blue-60: #245eff;
+  --ms-red-40: #f73c3b;
+  --ms-red-50: #f31110;
+  --ms-red-60: #b90000;
+  --ms-orange-50: #ff5f00;
+  --ms-yellow-50: #f7e74b;
+  --ms-green-50: #00a651;
+
+  /* 투명 오버레이 */
+  --ms-alpha-black-10: rgb(0 0 0 / 0.1);
+  --ms-alpha-black-40: rgb(0 0 0 / 0.4);
+  --ms-alpha-black-60: rgb(0 0 0 / 0.6);
+  --ms-alpha-white-80: rgb(255 255 255 / 0.8);
+
+  /* 타이포 */
+  --ms-font-sans: Pretendard, "Pretendard Variable", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  --ms-font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* 모션 */
+  --ms-duration-fast: 150ms;
+  --ms-duration-base: 250ms;
+  --ms-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ms-ease-out: cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* ───────────────────────────── 2. 시멘틱 ───────────────────────────── */
+@theme {
+  /* Tailwind 기본값을 비워 아래 토큰만 컴파일되게 강제한다(bg-zinc-50, text-sm, rounded-3xl 같은 우회 차단) */
+  --color-*: initial;
+  --text-*: initial;
+  --font-weight-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+
+  /* 배경(surface) — KRDS elevation 규칙: 아래층 gray5 → 기본 gray0 → 위층 gray0 */
+  --color-surface: var(--ms-gray-0);
+  --color-surface-subtle: var(--ms-gray-5);
+  --color-surface-muted: var(--ms-gray-10);
+  --color-surface-inverse: var(--ms-gray-100);
+  --color-surface-overlay: var(--ms-alpha-black-60);
+
+  /* 글자(ink) — 대비 4.5:1 이상: primary/secondary, 3:1 이상: tertiary */
+  --color-ink: var(--ms-gray-100);
+  --color-ink-secondary: var(--ms-gray-70);
+  --color-ink-tertiary: var(--ms-gray-50);
+  --color-ink-disabled: var(--ms-gray-40);
+  --color-ink-inverse: var(--ms-gray-0);
+  --color-ink-link: var(--ms-blue-60);
+
+  /* 선(line) */
+  --color-line: var(--ms-gray-30);
+  --color-line-subtle: var(--ms-gray-20);
+  --color-line-strong: var(--ms-gray-100);
+
+  /* 아이콘 */
+  --color-icon: var(--ms-gray-100);
+  --color-icon-muted: var(--ms-gray-50);
+  --color-icon-inverse: var(--ms-gray-0);
+
+  /* 브랜드·액션 — 무신사는 블랙이 주색, 블루는 링크·강조 */
+  --color-brand: var(--ms-gray-100);
+  --color-brand-hover: var(--ms-gray-80);
+  --color-accent: var(--ms-blue-60);
+  --color-accent-hover: var(--ms-blue-50);
+
+  /* 상태 */
+  --color-danger: var(--ms-red-50);
+  --color-warning: var(--ms-orange-50);
+  --color-success: var(--ms-green-50);
+  --color-info: var(--ms-blue-40);
+
+  /* 커머스 전용 — 세일가·할인율·품절 */
+  --color-price: var(--ms-gray-100);
+  --color-price-sale: var(--ms-red-50);
+  --color-price-original: var(--ms-gray-50);
+  --color-soldout: var(--ms-gray-40);
+
+  /* 타이포 */
+  --font-sans: var(--ms-font-sans);
+  --font-mono: var(--ms-font-mono);
+
+  --text-caption: 11px;
+  --text-caption--line-height: 14px;
+  --text-detail: 12px;
+  --text-detail--line-height: 16px;
+  --text-label: 13px;
+  --text-label--line-height: 18px;
+  --text-body: 14px;
+  --text-body--line-height: 20px;
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 24px;
+  --text-title-sm: 18px;
+  --text-title-sm--line-height: 26px;
+  --text-title: 20px;
+  --text-title--line-height: 28px;
+  --text-title-lg: 24px;
+  --text-title-lg--line-height: 32px;
+  --text-heading: 32px;
+  --text-heading--line-height: 42px;
+  --text-display: 42px;
+  --text-display--line-height: 52px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* 간격 — 4px 베이스. spacing-1 = 4px, gap-4 = 16px 처럼 Tailwind 숫자 유틸과 1:1 */
+  --spacing: 4px;
+
+  /* 라운드 — KRDS 5단계(2/4/6/10/12) + 무신사 8px */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --radius-full: 9999px;
+
+  /* 그림자(elevation) — 무신사는 거의 플랫. 최소 2단계만 */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 12px 10px 0 rgb(0 0 0 / 0.08);
+
+  /* 레이아웃 — KRDS 브레이크포인트, 컨테이너 1200px */
+  --breakpoint-sm: 360px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
+  --container-page: 1200px;
+
+  /* 모션 */
+  --ease-standard: var(--ms-ease-standard);
+  --ease-out: var(--ms-ease-out);
+  --default-transition-duration: var(--ms-duration-fast);
+  --default-transition-timing-function: var(--ms-ease-standard);
+
+  /* z-index 층 */
+  --z-index-sticky: 20;
+  --z-index-dropdown: 30;
+  --z-index-overlay: 50;
+  --z-index-modal: 60;
+  --z-index-toast: 70;
+}
+
+/* 선명한 화면 모드(다크) — 시멘틱만 뒤집는다. KRDS: 레이어가 쌓일수록 밝아진다 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-surface: var(--ms-gray-100);
+    --color-surface-subtle: var(--ms-gray-90);
+    --color-surface-muted: var(--ms-gray-80);
+    --color-surface-inverse: var(--ms-gray-0);
+    --color-ink: var(--ms-gray-0);
+    --color-ink-secondary: var(--ms-gray-40);
+    --color-ink-tertiary: var(--ms-gray-50);
+    --color-ink-disabled: var(--ms-gray-70);
+    --color-ink-inverse: var(--ms-gray-100);
+    --color-line: var(--ms-gray-80);
+    --color-line-subtle: var(--ms-gray-90);
+    --color-line-strong: var(--ms-gray-0);
+    --color-icon: var(--ms-gray-0);
+    --color-icon-inverse: var(--ms-gray-100);
+    --color-brand: var(--ms-gray-0);
+    --color-brand-hover: var(--ms-gray-20);
+    --color-price: var(--ms-gray-0);
+    --color-soldout: var(--ms-gray-70);
+  }
+}

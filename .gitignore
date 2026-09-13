@@ -43,8 +43,10 @@ next-env.d.ts
 # glm-hammer
 .glm-hammer/
 
-# claude code
-.claude/
+# claude code (agents·skills 는 팀 공유, 나머지는 개인 설정)
+.claude/*
+!.claude/agents/
+!.claude/skills/
 
 # oh-my-claudecode
 .omc/

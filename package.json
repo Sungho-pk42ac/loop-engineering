@@ -14,7 +14,8 @@
     "prepare": "git config core.hooksPath .githooks",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "design:lint": "node scripts/design-lint.mjs"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.10.0",
