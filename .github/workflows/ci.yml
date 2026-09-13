@@ -4,31 +4,20 @@ on:
   push:
     branches: [main, dev, "feature/**"]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
-    # .env는 저장소에 커밋되지 않으므로 CI에서 직접 지정한다.
-    # 개발 DB(dev.db)용 설정이며, 테스트는 test.db를 별도로 사용한다.
-    env:
-      DATABASE_URL: "file:./dev.db"
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v4          # 1. 코드 받아오기
+      - uses: pnpm/action-setup@v4        # 2. pnpm 설치
         with:
           version: 11
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4       # 3. Node.js 설치
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
-      - run: pnpm install
-      - name: Prisma 클라이언트 생성
-        run: pnpm exec prisma generate
-      - name: DB 스키마 적용 (migrate deploy)
-        run: pnpm exec prisma migrate deploy
-      - name: 상품 시드 데이터 주입
-        run: pnpm exec prisma db seed
-      - name: 린트 검사
-        run: pnpm lint
-      - name: 테스트 실행
-        run: pnpm exec vitest run
+      - run: pnpm install                 # 4. 의존성 설치
+      - run: pnpm lint                    # 5. 린트 검사
+      - run: pnpm exec vitest run         # 6. 테스트 실행
