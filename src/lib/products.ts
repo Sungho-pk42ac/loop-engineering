@@ -7,3 +7,8 @@ export type { Product };
 export function getProducts(): Promise<Product[]> {
   return prisma.product.findMany({ orderBy: { id: "asc" } });
 }
+
+// 상품 단건 — 없으면 null(페이지에서 notFound 처리).
+export function getProduct(id: string): Promise<Product | null> {
+  return prisma.product.findUnique({ where: { id } });
+}
