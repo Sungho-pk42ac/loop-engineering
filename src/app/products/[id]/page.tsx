@@ -18,7 +18,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <article className="mx-auto max-w-page px-4 py-6 md:px-6 md:py-10">
-      <Link href="/products" className="mb-6 inline-block text-label text-ink-secondary hover:text-ink">
+      <Link href="/products" className="mb-6 inline-block text-label text-ink-link hover:text-accent-hover">
         ← 목록으로 돌아가기
       </Link>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-10">
@@ -33,7 +33,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           />
         </div>
         <div className="flex flex-col gap-4">
-          <h1 className="text-title-lg font-bold text-ink md:text-heading">{product.name}</h1>
+          <h1 className="text-title font-semibold text-ink">{product.name}</h1>
           <p className="text-title font-bold text-price">{formatPrice(product.price)}</p>
           <p className="text-body-lg text-ink-secondary">{product.description}</p>
         </div>
