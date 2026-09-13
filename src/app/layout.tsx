@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Header } from "@/components/Header";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,7 +14,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className="h-full antialiased">
-      <body className="flex min-h-full flex-col bg-zinc-50 text-zinc-900">
+      <head>
+        {/* Pretendard — 디자인 토큰 --font-sans 의 1순위 서체 */}
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+        />
+      </head>
+      <body className="flex min-h-full flex-col bg-surface text-ink">
+        <Header />
         <main className="flex-1">{children}</main>
       </body>
     </html>
