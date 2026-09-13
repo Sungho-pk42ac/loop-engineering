@@ -48,3 +48,8 @@ next-env.d.ts
 
 # oh-my-claudecode
 .omc/
+
+# prisma
+/generated/
+*.db
+*.db-journal
