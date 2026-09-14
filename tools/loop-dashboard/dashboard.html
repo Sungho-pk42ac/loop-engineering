@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>루프 비용 대시보드</title>
+<style>
+  :root { --ink:#171717; --ink2:#666; --line:#e0e0e0; --bg:#fff; --bg2:#f5f5f5; --accent:#245eff; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:24px 16px 80px; font:14px/1.5 Pretendard,"Apple SD Gothic Neo",system-ui,sans-serif; color:var(--ink); background:var(--bg); }
+  h1 { font-size:20px; margin:0 0 16px; }
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:24px; }
+  .tile { border:1px solid var(--line); border-radius:10px; padding:12px 16px; }
+  .tile .k { color:var(--ink2); font-size:12px; } .tile .v { font-size:24px; font-weight:700; }
+  .toolbar { display:flex; gap:16px; align-items:center; margin-bottom:8px; color:var(--ink2); }
+  .wrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-size:13px; white-space:nowrap; }
+  th, td { border-bottom:1px solid var(--line); padding:8px 10px; text-align:right; }
+  th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align:left; }
+  th { background:var(--bg2); position:sticky; top:0; }
+  tbody tr { cursor:pointer; } tbody tr:hover { background:var(--bg2); } tbody tr.sel { outline:2px solid var(--accent); outline-offset:-2px; }
+  .muted { color:var(--ink2); }
+  #detail { margin-top:24px; border:1px solid var(--line); border-radius:10px; padding:16px; }
+  #detail h2 { font-size:16px; margin:0 0 12px; }
+  .grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+  svg { width:100%; height:160px; display:block; }
+  footer { position:fixed; left:0; right:0; bottom:0; padding:8px 16px; background:var(--bg2); border-top:1px solid var(--line); font-size:12px; color:var(--ink2); }
+</style>
+</head>
+<body>
+<h1>루프 비용 대시보드 <span class="muted" id="generatedAt"></span></h1>
+
+<section class="tiles" id="tiles">
+  <div class="tile"><div class="k">총 루프 수</div><div class="v" id="t-loops">-</div></div>
+  <div class="tile"><div class="k">활성 프로젝트 수</div><div class="v" id="t-projects">-</div></div>
+  <div class="tile"><div class="k">합계 비용 (USD)</div><div class="v" id="t-cost">-</div></div>
+  <div class="tile"><div class="k">합계 토큰</div><div class="v" id="t-tokens">-</div></div>
+</section>
+
+<div class="toolbar">
+  <label><input type="checkbox" id="loopOnly" checked /> 루프 세션만 보기</label>
+  <span id="count"></span>
+</div>
+
+<div class="wrap">
+<table id="sessions">
+  <thead><tr>
+    <th>제목</th><th>프로젝트</th><th>루프</th><th>발효</th><th>응답</th>
+    <th>입력</th><th>출력</th><th>캐시쓰기</th><th>캐시읽기</th><th>비용(USD)</th><th>기간</th>
+  </tr></thead>
+  <tbody></tbody>
+</table>
+</div>
+
+<section id="detail" hidden>
+  <h2 id="d-title"></h2>
+  <div class="grid2">
+    <div><div class="k muted">컨텍스트 크기 추이 (응답별 input+캐시)</div><svg id="d-ctx" viewBox="0 0 400 160" preserveAspectRatio="none"></svg></div>
+    <div>
+      <div class="k muted">지표</div>
+      <table id="d-metrics"><tbody></tbody></table>
+    </div>
+    <div>
+      <div class="k muted">모델별 비용</div>
+      <table id="d-models"><thead><tr><th>모델</th><th>응답 토큰 합</th><th>비용(USD)</th></tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+</section>
+
+<footer>비용은 단가표 기반 추정치입니다. 단가 미설정 모델은 토큰만 집계됩니다.</footer>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const n = (v) => v.toLocaleString("ko-KR");
+const usd = (v) => v == null ? "단가 미설정" : "$" + v.toFixed(2);
+const day = (t) => t ? t.slice(0, 10) : "-";
+const tokSum = (t) => t.input + t.output + t.cacheWrite5m + t.cacheWrite1h + t.cacheRead;
+
+let rows = [];
+let selected = null;
+
+async function load() {
+  const data = await (await fetch("/api/sessions")).json();
+  $("#generatedAt").textContent = "· " + new Date(data.generatedAt).toLocaleString("ko-KR");
+  rows = data.projects.flatMap((p) => p.sessions.map((s) => ({ ...s, project: p.slug })));
+  render();
+}
+
+function render() {
+  const loopOnly = $("#loopOnly").checked;
+  const view = rows.filter((r) => !loopOnly || r.isLoop).sort((a, b) => (b.costUsd ?? -1) - (a.costUsd ?? -1));
+
+  $("#t-loops").textContent = n(rows.filter((r) => r.isLoop).length);
+  $("#t-projects").textContent = n(new Set(view.map((r) => r.project)).size);
+  $("#t-cost").textContent = "$" + view.reduce((a, r) => a + (r.costUsd ?? 0), 0).toFixed(2);
+  $("#t-tokens").textContent = n(view.reduce((a, r) => a + tokSum(r.tokens), 0));
+  $("#count").textContent = `${view.length}개 세션`;
+
+  const tb = $("#sessions tbody");
+  tb.innerHTML = "";
+  for (const r of view) {
+    const tr = document.createElement("tr");
+    tr.dataset.id = r.sessionId;
+    if (r.sessionId === selected) tr.classList.add("sel");
+    tr.innerHTML = `<td>${esc(r.title)}</td><td class="muted">${esc(r.project)}</td><td>${r.isLoop ? "✓" : ""}</td>
+      <td>${n(r.firings)}</td><td>${n(r.messages)}</td><td>${n(r.tokens.input)}</td><td>${n(r.tokens.output)}</td>
+      <td>${n(r.tokens.cacheWrite5m + r.tokens.cacheWrite1h)}</td><td>${n(r.tokens.cacheRead)}</td>
+      <td>${usd(r.costUsd)}</td><td class="muted">${day(r.firstSeen)} ~ ${day(r.lastSeen)}</td>`;
+    tr.onclick = () => { selected = r.sessionId; render(); showDetail(r); };
+    tb.appendChild(tr);
+  }
+}
+
+function showDetail(r) {
+  $("#detail").hidden = false;
+  $("#d-title").textContent = `${r.title} (${r.sessionId.slice(0, 8)})`;
+
+  // M4 컨텍스트 크기 추이 — 외부 라이브러리 없이 SVG polyline
+  const pts = r.perMessage.map((m) => m.ctxTokens);
+  const max = Math.max(1, ...pts);
+  const svg = $("#d-ctx");
+  const poly = pts.map((v, i) => `${(i / Math.max(1, pts.length - 1)) * 400},${160 - (v / max) * 150}`).join(" ");
+  svg.innerHTML = `<polyline fill="none" stroke="#245eff" stroke-width="2" points="${poly}" />
+    <text x="4" y="14" font-size="11" fill="#666">최대 ${n(max)} 토큰 · ${pts.length}개 응답</text>`;
+
+  // M2 반복당 비용, M5 캐시 비중, M7 서브에이전트 비중, M8 기간
+  const t = r.tokens;
+  const ctx = t.input + t.cacheWrite5m + t.cacheWrite1h + t.cacheRead;
+  const metrics = [
+    ["발효 횟수", n(r.firings)],
+    ["반복당 비용", r.costUsd == null || !r.firings ? "-" : usd(r.costUsd / r.firings)],
+    ["캐시 읽기 비중", ctx ? (t.cacheRead / ctx * 100).toFixed(1) + "%" : "-"],
+    ["서브에이전트 비용 비중", r.costUsd ? (r.subagentCostUsd / r.costUsd * 100).toFixed(1) + "%" : "-"],
+    ["활동 기간", `${r.firstSeen ?? "-"} ~ ${r.lastSeen ?? "-"}`],
+    ["단가 미설정 모델", r.unpricedModels.length ? r.unpricedModels.join(", ") : "없음"],
+  ];
+  $("#d-metrics tbody").innerHTML = metrics.map(([k, v]) => `<tr><td style="text-align:left" class="muted">${k}</td><td>${esc(String(v))}</td></tr>`).join("");
+
+  // M6 모델별 분해
+  $("#d-models tbody").innerHTML = r.byModel.map((b) => `<tr><td style="text-align:left">${esc(b.model)}</td><td>${n(tokSum(b.tokens))}</td><td>${usd(b.costUsd)}</td></tr>`).join("");
+}
+
+function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+$("#loopOnly").onchange = render;
+load();
+</script>
+</body>
+</html>

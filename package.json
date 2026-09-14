@@ -15,7 +15,9 @@
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
-    "design:lint": "node scripts/design-lint.mjs"
+    "design:lint": "node scripts/design-lint.mjs",
+    "loop:dashboard": "node tools/loop-dashboard/server.mjs",
+    "loop:collect": "node tools/loop-dashboard/collect.mjs"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.10.0",
