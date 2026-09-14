@@ -38,6 +38,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Planner 루프**는 `status: needs-triage`를 `agent: ready`로 교체한다. **구현 루프**는 `agent: ready` → `status: in-progress` → PR 후 `status: in-review`로 교체한다(연결된 PR이 이미 있는 `agent: ready`는 반려 수정 — PR의 반려 댓글부터 읽는다). **코드 리뷰어**는 `status: in-review`, **보안 검수원**은 `status: in-security`, **QA**는 `status: in-qa`를 보고, 통과 시 다음 검문소로 넘긴다.
 - 라벨 교체는 한 명령으로: `gh issue edit <번호> --add-label "<새 라벨>" --remove-label "<옛 라벨>"`
 
+### 라벨 정의 (이름 · 색 · 설명)
+
+저장소에 없으면 아래 값 그대로 만든다: `gh label create "<이름>" --color <HEX> --description "<설명>" --force`. 이름·색·설명을 임의로 바꾸지 말 것.
+
+| 라벨 | 색 | 설명 |
+|---|---|---|
+| `status: needs-triage` | `E4A11B` | 새 이슈 접수됨 — Planner가 다듬을 차례 |
+| `agent: ready` | `1D76DB` | 다듬기 완료·반려 복귀 — 구현 루프 출발 신호 |
+| `status: in-progress` | `0E8A16` | 구현 루프가 작업 중 |
+| `status: in-review` | `5319E7` | PR 올라감 — 코드 리뷰 대기 |
+| `status: in-security` | `B60205` | 코드 리뷰 통과 — 보안 검수 대기 |
+| `status: in-qa` | `D93F0B` | 보안 검수 통과 — QA 검문 대기 |
+| `status: awaiting-approval` | `00B8D9` | 검증 루프 전원 통과 — 내 승인 대기 |
+| `status: done` | `6B7280` | 머지 완료 — 끝 |
+| `type: bug` | `D73A4A` | 버그 — 예상과 다르게 동작함 |
+| `type: feature` | `A2EEEF` | 새 기능 |
+| `type: polish` | `F9D0C4` | 다듬기·개선 |
+
+### 라벨 이름 규칙
+
+- **소문자 + 접두어**: 진행 상황은 `status:`, 종류는 `type:`. `agent: ready`만 출발 전용 신호라 `agent:` 접두어를 쓴다. 대소문자·하이픈 변형(`Status-Ready`)을 만들지 않는다.
+- **설명 필수**: "이 라벨이 붙으면 무슨 일이 일어나는가" 한 줄.
+- **색은 신호의 언어**: 노랑=접수 · 파랑=출발 · 초록=작업 중 · 보라=코드 리뷰 · 적갈색=보안 · 주황=QA · 하늘색=승인 대기 · 회색=끝.
+- **새 라벨은 문서가 먼저**: `docs/github-labels.md`에 추가한 뒤에 GitHub에 만든다. 문서에 없는 라벨은 존재하지 않는 신호다.
+- GitHub 기본 라벨(`documentation` · `enhancement` · `good first issue` · `help wanted` · `question`)은 그대로 둔다. 기본 `bug`는 `type: bug`로 대체하며, `duplicate` · `invalid` · `wontfix`는 쓰지 않는다.
+
 ## 명령어
 
 패키지 매니저는 **pnpm**을 사용한다 (`pnpm-lock.yaml`, `pnpm-workspace.yaml` 존재).
