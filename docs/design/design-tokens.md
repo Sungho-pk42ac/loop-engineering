@@ -75,6 +75,7 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `price-sale` | red-50 | 할인율·세일가 |
 | | `price-original` | gray-50 | 취소선 정가 |
 | | `soldout` | gray-40 | 품절 라벨 |
+| rank | `rank-up` / `rank-down` | red-50 / blue-60 | 검색어·랭킹 순위 상승 ▲ / 하락 ▼ (유지는 `ink-tertiary`) |
 
 Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`, `bg-brand hover:bg-brand-hover`, `text-price-sale`.
 
