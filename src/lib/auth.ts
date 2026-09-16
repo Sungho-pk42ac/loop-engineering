@@ -33,6 +33,15 @@ export function login(email: string, password: string): boolean {
   return found;
 }
 
+// 같은 이메일이 있으면 저장하지 않는다. 세션은 건드리지 않는다(자동 로그인 없음).
+export function signUp(email: string, password: string): "ok" | "duplicate" {
+  const stored = read<StoredUser[]>(USERS_KEY);
+  const users = Array.isArray(stored) ? stored : [];
+  if (users.some((u) => u.email === email)) return "duplicate";
+  window.localStorage.setItem(USERS_KEY, JSON.stringify([...users, { email, password }]));
+  return "ok";
+}
+
 export function logout(): void {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(SESSION_KEY);
