@@ -78,6 +78,7 @@
   --color-ink-disabled: var(--ms-gray-40);
   --color-ink-inverse: var(--ms-gray-0);
   --color-ink-link: var(--ms-blue-60);
+  --color-ink-promo-inverse: var(--ms-red-50);
 
   /* 선(line) */
   --color-line: var(--ms-gray-30);
@@ -192,6 +193,7 @@
     --color-ink-tertiary: var(--ms-gray-50);
     --color-ink-disabled: var(--ms-gray-70);
     --color-ink-inverse: var(--ms-gray-100);
+    --color-ink-promo-inverse: var(--ms-red-60);
     --color-line: var(--ms-gray-80);
     --color-line-subtle: var(--ms-gray-90);
     --color-line-strong: var(--ms-gray-0);
