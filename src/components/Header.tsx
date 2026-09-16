@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { AuthNav } from "./AuthNav";
+import { Icon, ICON_PATHS } from "./Icon";
+import { SearchLayer } from "./SearchLayer";
 
 // 원본 순서. 첫 탭은 원본 브랜드명 대신 우리 스토어명(클론 규칙 — 사칭 금지).
 export const STORE_TABS = ["FC STORE", "BEAUTY", "SPORTS", "OUTLET", "BOUTIQUE", "KICKS", "KIDS", "USED", "SNAP"] as const;
@@ -7,21 +9,20 @@ export const STORE_TABS = ["FC STORE", "BEAUTY", "SPORTS", "OUTLET", "BOUTIQUE",
 // 24x24 stroke 아이콘 path. 앱에 해당 페이지가 없어 모두 /products 로 간다.
 const ICON_LINKS = [
   { label: "오프라인 스토어", d: "M4 10h16M5 10V20h14V10M3 10l2-6h14l2 6M10 20v-5h4v5" },
-  { label: "검색", d: "M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5" },
+  { label: "검색", d: ICON_PATHS.search },
   { label: "좋아요", d: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" },
   { label: "마이", d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0" },
   { label: "장바구니", d: "M6 8h12l-1 12H7L6 8zM9 8V6a3 3 0 0 1 6 0v2" },
 ] as const;
 
-function Icon({ d }: { d: string }) {
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <path d={d} strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+// 로고 줄 오른쪽 아이콘 링크
+const LOGO_ROW_LINKS = [
+  { label: "앱테크", d: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v10M9 9.5c0-1.4 1.3-2 3-2s3 .8 3 2-1.3 1.8-3 2.5-3 1.1-3 2.5 1.3 2 3 2 3-.6 3-2" },
+  { label: "알림", d: "M6 16V11a6 6 0 0 1 12 0v5l2 2H4l2-2zM10 21h4" },
+] as const;
 
-const iconLinkClass = "flex size-8 shrink-0 items-center justify-center rounded-sm text-icon-inverse hover:opacity-80";
+const iconBase = "flex size-8 shrink-0 items-center justify-center rounded-sm hover:opacity-80";
+const iconLinkClass = `${iconBase} text-icon-inverse`;
 
 export function Header() {
   return (
@@ -55,10 +56,20 @@ export function Header() {
           </div>
         </div>
       </div>
-      <div className="mx-auto flex h-14 max-w-page items-center px-4 md:px-6">
+      <div className="mx-auto flex h-14 max-w-page items-center gap-4 px-4 md:px-6">
         <Link href="/products" className="shrink-0 text-title-sm font-bold text-ink">
           패캠 스토어
         </Link>
+        <div className="min-w-0 flex-1">
+          <SearchLayer />
+        </div>
+        <div className="flex shrink-0 items-center gap-1">
+          {LOGO_ROW_LINKS.map(({ label, d }) => (
+            <Link key={label} href="/products" aria-label={label} className={`${iconBase} text-icon`}>
+              <Icon d={d} />
+            </Link>
+          ))}
+        </div>
       </div>
     </header>
   );

@@ -1,7 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { login, SESSION_KEY, USERS_KEY } from "@/lib/auth";
 import { Header, STORE_TABS } from "./Header";
+
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
 
 describe("Header / AuthNav", () => {
   beforeEach(() => localStorage.clear());

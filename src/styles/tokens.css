@@ -107,6 +107,10 @@
   --color-price-original: var(--ms-gray-50);
   --color-soldout: var(--ms-gray-40);
 
+  /* 순위 변동 — 검색어·랭킹 */
+  --color-rank-up: var(--ms-red-50);
+  --color-rank-down: var(--ms-blue-60);
+
   /* 타이포 */
   --font-sans: var(--ms-font-sans);
   --font-mono: var(--ms-font-mono);
