@@ -10,3 +10,9 @@ export function pageStep(visibleWidth: number, slideWidth: number): number {
   if (slideWidth <= 0) return visibleWidth;
   return Math.max(1, Math.floor(visibleWidth / slideWidth)) * slideWidth;
 }
+
+// 이전 스크롤 위치: 한 번에 step 만큼 뒤로, 처음에 닿아 있으면 마지막(max)으로.
+export function prevScrollLeft(scrollLeft: number, step: number, maxScrollLeft: number): number {
+  if (scrollLeft <= 1) return maxScrollLeft;
+  return Math.max(scrollLeft - step, 0);
+}
