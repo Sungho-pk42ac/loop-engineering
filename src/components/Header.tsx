@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AuthNav } from "./AuthNav";
+import { GnbTabs } from "./GnbTabs";
 import { Icon, ICON_PATHS } from "./Icon";
 import { SearchLayer } from "./SearchLayer";
 
@@ -71,6 +72,7 @@ export function Header() {
           ))}
         </div>
       </div>
+      <GnbTabs />
     </header>
   );
 }
