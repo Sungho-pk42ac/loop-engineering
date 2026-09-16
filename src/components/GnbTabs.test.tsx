@@ -22,7 +22,7 @@ describe("GnbTabs", () => {
     const current = screen.getAllByRole("link").filter((a) => a.getAttribute("aria-current") === "page");
     expect(current).toHaveLength(1);
     expect(current[0]).toHaveTextContent("추천");
-    expect(current[0]).toHaveClass("font-bold", "border-line-strong");
+    expect(current[0]).toHaveClass("font-bold", "border-ink-inverse");
   });
 
   it("다른 경로에서는 현재 탭이 없다", () => {

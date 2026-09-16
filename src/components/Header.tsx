@@ -27,38 +27,36 @@ const iconLinkClass = `${iconBase} text-icon-inverse`;
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-sticky border-b border-line bg-surface">
-      <div className="bg-surface-inverse text-ink-inverse">
-        <div className="mx-auto flex max-w-page flex-wrap items-center justify-between gap-x-2 px-4 md:flex-nowrap md:px-6">
-          <Link href="/products" aria-label="메뉴" className={`${iconLinkClass} my-2`}>
-            <Icon d="M4 7h16M4 12h16M4 17h16" />
-          </Link>
-          {/* 모바일에서는 둘째 줄로 내려가 이 줄만 가로 스크롤된다. */}
-          <nav aria-label="스토어" className="order-last basis-full overflow-x-auto md:order-none md:min-w-0 md:flex-1 md:basis-auto">
-            <ul className="flex h-10 items-center gap-4 whitespace-nowrap">
-              {STORE_TABS.map((tab) => (
-                <li key={tab}>
-                  <Link href="/products" className="text-label font-bold hover:opacity-80">
-                    {tab}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <div className="flex min-w-0 flex-1 items-center justify-end gap-1 md:flex-none">
-            {ICON_LINKS.map(({ label, d }) => (
-              <Link key={label} href="/products" aria-label={label} className={iconLinkClass}>
-                <Icon d={d} />
-              </Link>
+    <header className="sticky top-0 z-sticky bg-surface-inverse text-ink-inverse">
+      <div className="mx-auto flex max-w-page flex-wrap items-center justify-between gap-x-2 px-4 md:flex-nowrap md:px-6">
+        <Link href="/products" aria-label="메뉴" className={`${iconLinkClass} my-2`}>
+          <Icon d="M4 7h16M4 12h16M4 17h16" />
+        </Link>
+        {/* 모바일에서는 둘째 줄로 내려가 이 줄만 가로 스크롤된다. */}
+        <nav aria-label="스토어" className="order-last basis-full overflow-x-auto md:order-none md:min-w-0 md:flex-1 md:basis-auto">
+          <ul className="flex h-10 items-center gap-4 whitespace-nowrap">
+            {STORE_TABS.map((tab) => (
+              <li key={tab}>
+                <Link href="/products" className="text-label font-bold hover:opacity-80">
+                  {tab}
+                </Link>
+              </li>
             ))}
-            <div className="ml-2 min-w-0">
-              <AuthNav />
-            </div>
+          </ul>
+        </nav>
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-1 md:flex-none">
+          {ICON_LINKS.map(({ label, d }) => (
+            <Link key={label} href="/products" aria-label={label} className={iconLinkClass}>
+              <Icon d={d} />
+            </Link>
+          ))}
+          <div className="ml-2 min-w-0">
+            <AuthNav />
           </div>
         </div>
       </div>
       <div className="mx-auto flex h-14 max-w-page items-center gap-4 px-4 md:px-6">
-        <Link href="/products" className="shrink-0 text-title-sm font-bold text-ink">
+        <Link href="/products" className="shrink-0 text-title-sm font-bold text-ink-inverse">
           패캠 스토어
         </Link>
         <div className="min-w-0 flex-1">
@@ -66,7 +64,7 @@ export function Header() {
         </div>
         <div className="flex shrink-0 items-center gap-1">
           {LOGO_ROW_LINKS.map(({ label, d }) => (
-            <Link key={label} href="/products" aria-label={label} className={`${iconBase} text-icon`}>
+            <Link key={label} href="/products" aria-label={label} className={iconLinkClass}>
               <Icon d={d} />
             </Link>
           ))}
