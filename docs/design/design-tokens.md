@@ -58,11 +58,13 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | surface | `surface` | gray-0 | 페이지·카드 기본 배경 |
 | | `surface-subtle` | gray-5 | 섹션 구분, 입력 배경 |
 | | `surface-muted` | gray-10 | 스켈레톤, 비활성 영역 |
+| | `surface-sunken` | gray-20 (다크: gray-70) | 한 단계 더 내려간 띠(검색 결과 서브탭 줄) |
 | | `surface-inverse` | gray-100 | 검정 버튼·헤더 |
 | | `surface-overlay` | black 60% | 모달 뒤 딤 |
 | ink | `ink` | gray-100 | 본문, 상품명 |
 | | `ink-secondary` | gray-70 | 설명, 부제 |
 | | `ink-tertiary` | gray-50 | 메타 정보, 정가 |
+| | `ink-muted` | gray-60 (다크: gray-40) | 비선택 탭·결과 개수 — 회색 배경 위에서도 4.5:1 |
 | | `ink-disabled` | gray-40 | 비활성 |
 | | `ink-inverse` | gray-0 | 검정 배경 위 글자 |
 | | `ink-link` | blue-60 | 텍스트 링크 |
@@ -161,6 +163,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 ### 5.2 선 두께
 
 1px 만 쓴다. 선택·포커스 강조는 두께가 아니라 색(`line-strong`)으로 표현한다(무신사 방식).
+
+예외: 검색 결과 탭 줄처럼 **원본이 선택 탭 밑줄을 2px 로 쓰는 곳**은 `border-b-2 border-line-strong` 을 허용한다(원본 실측, 포커스 링 2px 선례). 그 밖의 선은 1px.
 
 ### 5.3 그림자
 

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 import { popularKeywords, risingKeywords, searchPlaceholders, type RankChange } from "@/data/search";
+import { searchResultHref } from "@/lib/search";
 import { Icon, ICON_PATHS } from "./Icon";
 
 // 레이어는 sticky 헤더의 쌓임 맥락(z-sticky)을 벗어나도록 body 에 portal 로 렌더한다.
@@ -20,7 +21,8 @@ const CHANGE: Record<RankChange, { mark: string; label: string; className: strin
 
 const itemClass = "flex items-center gap-3 py-2 text-body text-ink hover:underline";
 
-export function SearchLayer() {
+// keyword 가 있으면 검색 결과 화면용 흰 검색창 버튼(검색어 표시)으로 그린다.
+export function SearchLayer({ keyword }: { keyword?: string }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -45,22 +47,36 @@ export function SearchLayer() {
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const value = inputRef.current?.value.trim() ?? "";
     setOpen(false);
-    router.push("/products");
+    router.push(value ? searchResultHref(value) : "/products");
   }
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="flex h-10 w-full min-w-0 items-center gap-2 rounded-md bg-surface-subtle px-3 text-left text-body text-ink-tertiary"
-      >
-        <span className="text-icon-muted">
-          <Icon d={ICON_PATHS.search} />
-        </span>
-        <span className="truncate">{placeholder}</span>
-      </button>
+      {keyword !== undefined ? (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="flex h-9 w-full min-w-0 items-center gap-2 rounded-sm bg-surface px-2 text-left text-body text-ink"
+        >
+          <span className="min-w-0 flex-1 truncate">{keyword}</span>
+          <span className="text-icon">
+            <Icon d={ICON_PATHS.search} />
+          </span>
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="flex h-10 w-full min-w-0 items-center gap-2 rounded-md bg-surface-subtle px-3 text-left text-body text-ink-tertiary"
+        >
+          <span className="text-icon-muted">
+            <Icon d={ICON_PATHS.search} />
+          </span>
+          <span className="truncate">{placeholder}</span>
+        </button>
+      )}
 
       {open &&
         createPortal(
@@ -75,6 +91,7 @@ export function SearchLayer() {
                 <input
                   ref={inputRef}
                   type="search"
+                  defaultValue={keyword}
                   aria-label="검색어"
                   placeholder="검색어를 입력하세요"
                   className="h-10 min-w-0 flex-1 rounded-md bg-surface-subtle px-3 text-body text-ink"

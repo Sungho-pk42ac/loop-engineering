@@ -59,13 +59,20 @@ describe("헤더 로고·검색창 줄 / SearchLayer", () => {
     rising.forEach((link, i) => expect(link).toHaveTextContent(`${i + 1}${risingKeywords[i]}`));
   });
 
-  it("검색어 입력 후 Enter 면 /products 로 이동하고 레이어가 닫힌다", () => {
+  it("검색어 입력 후 Enter 면 검색 결과로 이동하고 레이어가 닫힌다", () => {
     const dialog = openLayer();
 
-    fireEvent.change(within(dialog).getByPlaceholderText("검색어를 입력하세요"), { target: { value: "머그" } });
+    fireEvent.change(within(dialog).getByPlaceholderText("검색어를 입력하세요"), { target: { value: "니트" } });
     fireEvent.submit(within(dialog).getByPlaceholderText("검색어를 입력하세요"));
 
-    expect(push).toHaveBeenCalledWith("/products");
+    expect(push).toHaveBeenCalledWith("/search/goods?keyword=%EB%8B%88%ED%8A%B8&keywordType=keyword&gf=A");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("빈 검색어로 Enter 면 기존처럼 /products", () => {
+    const dialog = openLayer();
+
+    fireEvent.submit(within(dialog).getByPlaceholderText("검색어를 입력하세요"));
+    expect(push).toHaveBeenCalledWith("/products");
   });
 });

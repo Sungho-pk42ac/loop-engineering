@@ -38,7 +38,7 @@ export function signUp(email: string, password: string): "ok" | "duplicate" {
   const stored = read<StoredUser[]>(USERS_KEY);
   const users = Array.isArray(stored) ? stored : [];
   if (users.some((u) => u.email === email)) return "duplicate";
-  window.localStorage.setItem(USERS_KEY, JSON.stringify([...users, { email, password }]));
+  window.localStorage.setItem(USERS_KEY, JSON.stringify(users.concat({ email, password })));
   return "ok";
 }
 

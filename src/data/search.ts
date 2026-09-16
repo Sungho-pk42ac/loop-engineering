@@ -39,3 +39,23 @@ export const risingKeywords: string[] = [
   "파우치",
   "벽시계",
 ];
+
+// 검색 결과 화면 자리표시자 — 실제 검색 로직은 없다.
+export const relatedKeywords: string[] = ["머그컵 세트", "대용량 머그", "캠핑 머그", "세라믹 컵", "유리컵", "텀블러"];
+
+export interface ResultTab {
+  label: string;
+  /** 앱에 있는 탭만 true — 나머지는 /products */
+  available: boolean;
+}
+
+export const resultTabs: ResultTab[] = [
+  { label: "상품", available: true },
+  { label: "브랜드", available: false },
+  { label: "스냅/코디", available: false },
+  { label: "혜택", available: false },
+  { label: "콘텐츠", available: false },
+  { label: "발매", available: false },
+];
+
+export const resultCounts = { newGoods: 1284, used: 57 };
