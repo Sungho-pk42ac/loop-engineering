@@ -4,28 +4,31 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui";
-import { login } from "@/lib/auth";
+import { signUp } from "@/lib/auth";
 
 const inputClass = "h-10 rounded-md border border-line bg-surface-subtle px-3 text-body text-ink";
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const router = useRouter();
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    if (login(String(form.get("email")), String(form.get("password")))) {
-      router.push("/products");
+    const password = String(form.get("password"));
+    if (password !== String(form.get("passwordConfirm"))) {
+      setError("비밀번호가 일치하지 않습니다.");
+    } else if (signUp(String(form.get("email")), password) === "duplicate") {
+      setError("이미 가입된 이메일입니다.");
     } else {
-      setError(true);
+      router.push("/login");
     }
   }
 
   return (
     <section className="mx-auto max-w-page px-4 py-10 md:px-6">
       <div className="mx-auto flex max-w-96 flex-col gap-6">
-        <h1 className="text-title-lg font-bold text-ink">로그인</h1>
+        <h1 className="text-title-lg font-bold text-ink">회원가입</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <label htmlFor="email" className="flex flex-col gap-2 text-label text-ink">
             이메일
@@ -38,21 +41,32 @@ export default function LoginPage() {
               name="password"
               type="password"
               required
-              autoComplete="current-password"
+              autoComplete="new-password"
+              className={inputClass}
+            />
+          </label>
+          <label htmlFor="passwordConfirm" className="flex flex-col gap-2 text-label text-ink">
+            비밀번호 확인
+            <input
+              id="passwordConfirm"
+              name="passwordConfirm"
+              type="password"
+              required
+              autoComplete="new-password"
               className={inputClass}
             />
           </label>
           <Button type="submit" size="lg">
-            로그인
+            가입하기
           </Button>
           {error && (
             <p role="alert" className="text-label text-danger">
-              이메일 또는 비밀번호가 올바르지 않습니다.
+              {error}
             </p>
           )}
         </form>
-        <Link href="/signup" className="text-label text-ink-link hover:underline">
-          회원가입
+        <Link href="/login" className="text-label text-ink-link hover:underline">
+          로그인
         </Link>
       </div>
     </section>
