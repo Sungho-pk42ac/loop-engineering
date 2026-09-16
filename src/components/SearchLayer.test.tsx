@@ -4,7 +4,7 @@ import { popularKeywords, risingKeywords } from "@/data/search";
 import { Header } from "./Header";
 
 const push = vi.fn();
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push }), usePathname: () => "/products" }));
 
 function openLayer() {
   render(<Header />);
