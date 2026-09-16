@@ -3,29 +3,32 @@
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import { getCurrentUser, logout, subscribeAuth } from "@/lib/auth";
-import { Button } from "@/components/ui";
 
 const getEmail = () => getCurrentUser()?.email ?? null;
 // SSR 에서는 비로그인으로 렌더한다.
 const getServerEmail = () => null;
+
+// 검은 스토어 바 위에 놓인다. ui/Button 에 반전 변형이 없어 테두리 버튼을 여기서 그린다.
+const outlineClass =
+  "inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-sm border border-ink-inverse px-3 text-label font-medium text-ink-inverse hover:opacity-80";
 
 export function AuthNav() {
   const email = useSyncExternalStore(subscribeAuth, getEmail, getServerEmail);
 
   if (!email) {
     return (
-      <Link href="/login" className="text-label text-ink-link hover:underline">
-        로그인
+      <Link href="/login" className={outlineClass}>
+        로그인 / 회원가입
       </Link>
     );
   }
 
   return (
-    <div className="flex min-w-0 items-center gap-3">
-      <span className="min-w-0 truncate text-label text-ink-secondary">{email}</span>
-      <Button variant="ghost" size="sm" className="shrink-0" onClick={logout}>
+    <div className="flex min-w-0 items-center gap-2">
+      <span className="min-w-0 max-w-24 truncate text-label text-ink-inverse md:max-w-40">{email}</span>
+      <button type="button" className={outlineClass} onClick={logout}>
         로그아웃
-      </Button>
+      </button>
     </div>
   );
 }
