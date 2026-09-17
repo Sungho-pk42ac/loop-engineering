@@ -2,18 +2,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatPrice } from "@/lib/format";
-import { getProduct } from "@/lib/products";
-
-// 데이터는 DB 에서 요청 시점에 읽는다(목록 페이지와 동일).
-export const dynamic = "force-dynamic";
+import { products } from "@/data/products";
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
 }
 
+// 6개 상세 경로를 빌드 시 정적 생성한다.
+export function generateStaticParams() {
+  return products.map(({ id }) => ({ id }));
+}
+
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
-  const product = await getProduct(id);
+  const product = products.find((p) => p.id === id);
   if (!product) notFound();
 
   return (
