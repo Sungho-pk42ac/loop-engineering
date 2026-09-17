@@ -1,7 +1,10 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { exhibition } from "@/data/exhibition";
 import { ExhibitionProducts } from "./ExhibitionProducts";
+
+// jsdom 에는 요소 scrollTo 가 없다(칩 자동 스크롤 #184).
+Element.prototype.scrollTo ??= () => {};
 
 const renderProducts = () => render(<ExhibitionProducts brands={exhibition.brands} products={exhibition.products} />);
 const items = () => within(screen.getByRole("list")).getAllByRole("article");
@@ -48,6 +51,33 @@ describe("ExhibitionProducts", () => {
     fireEvent.click(chip);
     fireEvent.click(chip);
     expect(chip).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("칩을 누르면 칩 상자만 선택 칩 중심이 가운데로 오게 부드럽게 스크롤(#184)", () => {
+    renderProducts();
+    const group = screen.getByRole("group", { name: "브랜드 필터" });
+    const chip = screen.getByRole("button", { name: new RegExp(exhibition.brands[10]) });
+    const scrollTo = vi.fn();
+    group.scrollTo = scrollTo;
+    Object.defineProperty(group, "clientWidth", { value: 375 });
+    group.scrollLeft = 40;
+    group.getBoundingClientRect = () => DOMRect.fromRect({ x: 0, width: 375 });
+    chip.getBoundingClientRect = () => DOMRect.fromRect({ x: 600, width: 80 });
+
+    fireEvent.click(chip);
+    expect(scrollTo).toHaveBeenCalledWith({ left: 40 + 600 + 40 - 187.5, behavior: "smooth" });
+  });
+
+  it("줄임 모션 설정이면 칩 상자 스크롤은 즉시 이동", () => {
+    vi.stubGlobal("matchMedia", () => ({ matches: true }));
+    renderProducts();
+    const group = screen.getByRole("group", { name: "브랜드 필터" });
+    const scrollTo = vi.fn();
+    group.scrollTo = scrollTo;
+
+    fireEvent.click(screen.getByRole("button", { name: new RegExp(exhibition.brands[3]) }));
+    expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ behavior: "auto" }));
+    vi.unstubAllGlobals();
   });
 
   it("상품이 많으면 열마다 위아래 2칸(열 우선), 적으면 1칸 — 가로 스크롤 캐러셀", () => {
