@@ -44,6 +44,8 @@
   --ms-alpha-black-15: rgb(0 0 0 / 0.15);
   --ms-alpha-black-40: rgb(0 0 0 / 0.4);
   --ms-alpha-black-60: rgb(0 0 0 / 0.6);
+  --ms-alpha-white-20: rgb(255 255 255 / 0.2);
+  --ms-alpha-white-60: rgb(255 255 255 / 0.6);
   --ms-alpha-white-80: rgb(255 255 255 / 0.8);
 
   /* 타이포 */
@@ -72,6 +74,9 @@
   --color-surface-muted: var(--ms-gray-10);
   --color-surface-campaign: var(--ms-teal-40);
   --color-surface-campaign-action: var(--ms-alpha-black-15);
+  --color-surface-campaign-chip: var(--ms-alpha-white-20);
+  --color-surface-campaign-chip-icon: var(--ms-alpha-white-60);
+  --color-surface-campaign-chip-active: var(--ms-gray-0);
   --color-surface-sunken: var(--ms-gray-20);
   --color-surface-inverse: var(--ms-gray-100);
   --color-surface-overlay: var(--ms-alpha-black-60);
