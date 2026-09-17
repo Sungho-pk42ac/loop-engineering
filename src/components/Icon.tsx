@@ -1,7 +1,7 @@
 // 24x24 stroke 아이콘. d 는 path 데이터, 색은 currentColor 를 따른다.
-export function Icon({ d }: { d: string }) {
+export function Icon({ d, size = 20 }: { d: string; size?: number }) {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" className="shrink-0">
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" className="shrink-0">
       <path d={d} strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
