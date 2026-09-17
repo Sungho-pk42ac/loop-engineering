@@ -14,13 +14,15 @@ const num = (v) => /^\d+(\.\d+)?$/.test(v);
 
 // 네임스페이스별 허용 규칙. 값은 variant(md:, hover:)와 opacity(/50)를 뗀 뒤 검사한다.
 const RULES = {
-  bg: (v) => color(v),
+  bg: (v) => color(v) || /^linear-to-(t|tr|r|br|b|bl|l|tl)$/.test(v), // 그라데이션 방향(색은 from/via/to 가 토큰으로)
   text: (v) => color(v) || has("text", v) || /^(left|center|right|justify|start|end|ellipsis|clip|nowrap|wrap|balance|pretty)$/.test(v),
   border: (v) => color(v) || num(v) || /^(solid|dashed|dotted|double|none|hidden|collapse|separate)$/.test(v) || /^[trlbxyse]{1,2}(-\d+)?$/.test(v),
   divide: (v) => color(v) || num(v) || /^[xy](-\d+)?$/.test(v),
   ring: (v) => color(v) || num(v) || v === "inset",
   outline: (v) => color(v) || num(v) || /^(none|hidden|solid|dashed|dotted|double|offset-\d+)$/.test(v),
-  fill: color, stroke: (v) => color(v) || num(v), from: color, to: color, via: color, decoration: (v) => color(v) || num(v),
+  fill: color, stroke: (v) => color(v) || num(v),
+  // 그라데이션 색은 토큰, 위치는 정수 %(from-30%)
+  from: (v) => color(v) || /^\d+%$/.test(v), to: (v) => color(v) || /^\d+%$/.test(v), via: (v) => color(v) || /^\d+%$/.test(v), decoration: (v) => color(v) || num(v),
   rounded: (v) => has("radius", v) || v === "none" || (/^([trlb]|[tb][lr]|[se]{1,2})-/.test(v) && (has("radius", v.replace(/^[a-z]{1,2}-/, "")) || v.endsWith("-none"))),
   shadow: (v) => has("shadow", v) || color(v) || v === "none",
   font: (v) => has("font-weight", v) || has("font", v),

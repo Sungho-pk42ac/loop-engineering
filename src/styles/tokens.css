@@ -82,6 +82,7 @@
   --color-surface-sunken: var(--ms-gray-20);
   --color-surface-inverse: var(--ms-gray-100);
   --color-surface-overlay: var(--ms-alpha-black-60);
+  --color-scrim: var(--ms-gray-100);
 
   /* 글자(ink) — 대비 4.5:1 이상: primary/secondary, 3:1 이상: tertiary */
   --color-ink: var(--ms-gray-100);
@@ -180,6 +181,7 @@
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1440px;
   --container-page: 1200px;
+  --container-wide: 1440px;
 
   /* 모션 */
   --ease-standard: var(--ms-ease-standard);

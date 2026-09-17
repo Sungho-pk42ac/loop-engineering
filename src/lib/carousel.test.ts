@@ -22,6 +22,11 @@ describe("pageStep", () => {
     expect(pageStep(1000, 480)).toBe(960);
   });
 
+  it("1/3 폭 슬라이드가 반올림돼 조금 넓어도 3장씩(#151: 1280 → 427)", () => {
+    expect(pageStep(1280, 427)).toBe(1281);
+    expect(pageStep(375, 343)).toBe(343);
+  });
+
   it("슬라이드가 화면보다 넓거나 1장만 들어가면 1장씩", () => {
     expect(pageStep(375, 248)).toBe(248);
     expect(pageStep(200, 248)).toBe(248);
