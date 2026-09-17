@@ -45,7 +45,9 @@
   --ms-alpha-black-15: rgb(0 0 0 / 0.15);
   --ms-alpha-black-40: rgb(0 0 0 / 0.4);
   --ms-alpha-black-60: rgb(0 0 0 / 0.6);
+  --ms-alpha-black-80: rgb(0 0 0 / 0.8);
   --ms-alpha-white-20: rgb(255 255 255 / 0.2);
+  --ms-alpha-white-40: rgb(255 255 255 / 0.4);
   --ms-alpha-white-60: rgb(255 255 255 / 0.6);
   --ms-alpha-white-80: rgb(255 255 255 / 0.8);
 
@@ -92,11 +94,13 @@
   --color-ink-inverse: var(--ms-gray-0);
   --color-ink-link: var(--ms-blue-60);
   --color-ink-promo-inverse: var(--ms-red-50);
+  --color-ink-inverse-soft: var(--ms-alpha-white-80);
 
   /* 선(line) */
   --color-line: var(--ms-gray-30);
   --color-line-subtle: var(--ms-gray-20);
   --color-line-strong: var(--ms-gray-100);
+  --color-line-inverse: var(--ms-alpha-white-40);
 
   /* 아이콘 */
   --color-icon: var(--ms-gray-100);
@@ -210,6 +214,8 @@
     --color-ink-disabled: var(--ms-gray-70);
     --color-ink-inverse: var(--ms-gray-100);
     --color-ink-promo-inverse: var(--ms-red-60);
+    --color-ink-inverse-soft: var(--ms-alpha-black-80);
+    --color-line-inverse: var(--ms-alpha-black-40);
     --color-line: var(--ms-gray-80);
     --color-line-subtle: var(--ms-gray-90);
     --color-line-strong: var(--ms-gray-0);

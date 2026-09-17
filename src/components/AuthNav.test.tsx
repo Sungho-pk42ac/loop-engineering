@@ -23,7 +23,10 @@ describe("Header / AuthNav", () => {
   it("세션이 없으면 로그인 / 회원가입 링크를 보여준다", () => {
     render(<Header />);
 
-    expect(screen.getByRole("link", { name: "로그인 / 회원가입" })).toHaveAttribute("href", "/login");
+    // 데스크톱 스토어 바(md 이상)·모바일 로고 줄(md 미만)에 하나씩(#134)
+    const logins = screen.getAllByRole("link", { name: "로그인 / 회원가입" });
+    expect(logins).toHaveLength(2);
+    logins.forEach((a) => expect(a).toHaveAttribute("href", "/login"));
     expect(screen.getByRole("link", { name: "패캠 스토어" })).toHaveAttribute("href", "/products");
   });
 
@@ -31,11 +34,11 @@ describe("Header / AuthNav", () => {
     localStorage.setItem(SESSION_KEY, JSON.stringify({ email: "a@b.com" }));
     render(<Header />);
 
-    expect(await screen.findByText("a@b.com")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "로그아웃" }));
+    expect(await screen.findAllByText("a@b.com")).toHaveLength(2);
+    fireEvent.click(screen.getAllByRole("button", { name: "로그아웃" })[0]);
 
     expect(localStorage.getItem(SESSION_KEY)).toBeNull();
-    expect(screen.getByRole("link", { name: "로그인 / 회원가입" })).toHaveAttribute("href", "/login");
+    screen.getAllByRole("link", { name: "로그인 / 회원가입" }).forEach((a) => expect(a).toHaveAttribute("href", "/login"));
     expect(screen.queryByText("a@b.com")).not.toBeInTheDocument();
   });
 
@@ -47,6 +50,25 @@ describe("Header / AuthNav", () => {
       login("a@b.com", "pw1234");
     });
 
-    expect(screen.getByText("a@b.com")).toBeInTheDocument();
+    expect(screen.getAllByText("a@b.com")).toHaveLength(2);
+  });
+
+  it("스토어 바(#134): md 이상만 보이는 56px 전체 폭 줄, 탭 9개 text-body-lg(xl)·아이콘 링크 보이는 글자 라벨·햄버거 뒤 구분선", () => {
+    render(<Header />);
+
+    const nav = screen.getByRole("navigation", { name: "스토어" });
+    const bar = nav.parentElement!;
+    expect(bar).toHaveClass("hidden", "h-14", "md:flex");
+    expect(bar).not.toHaveClass("max-w-page");
+    expect(nav.querySelector(".bg-line-inverse")).not.toBeNull();
+    const tabs = screen.getAllByRole("link").filter((a) => (STORE_TABS as readonly string[]).includes(a.textContent ?? ""));
+    tabs.forEach((a) => expect(a).toHaveClass("xl:text-body-lg", "font-medium", "h-14"));
+    for (const name of ["검색", "좋아요", "마이", "장바구니"]) {
+      const link = screen.getByRole("link", { name });
+      expect(link).toHaveTextContent(name);
+      expect(link.querySelector("svg")).not.toBeNull();
+    }
+    expect(screen.getByRole("link", { name: "오프라인 스토어" }).querySelector("svg")).toBeNull();
+    screen.getAllByRole("link", { name: "로그인 / 회원가입" }).forEach((a) => expect(a).toHaveClass("h-6"));
   });
 });

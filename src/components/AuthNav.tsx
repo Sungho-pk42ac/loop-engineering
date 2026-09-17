@@ -9,8 +9,9 @@ const getEmail = () => getCurrentUser()?.email ?? null;
 const getServerEmail = () => null;
 
 // 검은 스토어 바 위에 놓인다. ui/Button 에 반전 변형이 없어 테두리 버튼을 여기서 그린다.
+// 원본 실측(#134): 높이 24·좌우 여백·테두리/글자 흰색 80%, 1279 이하 11px. 호버는 기존 opacity-80 유지(원본 미확인).
 const outlineClass =
-  "inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-sm border border-ink-inverse px-3 text-label font-medium text-ink-inverse hover:opacity-80";
+  "inline-flex h-6 shrink-0 items-center whitespace-nowrap rounded-sm border border-ink-inverse-soft px-2 text-caption font-medium text-ink-inverse-soft hover:opacity-80 xl:text-label";
 
 export function AuthNav() {
   const email = useSyncExternalStore(subscribeAuth, getEmail, getServerEmail);

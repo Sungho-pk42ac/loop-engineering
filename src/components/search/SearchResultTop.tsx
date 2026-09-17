@@ -13,12 +13,12 @@ const active = "border-line-strong font-semibold text-ink";
 const inactive = "border-transparent text-ink-muted";
 
 // 검색 결과 상단(#108). 배경은 전체 폭, 내용은 헤더와 같은 max-w-page 컨테이너.
-// sticky top = 우리 헤더(데스크톱 152 · 모바일 192) + 위 줄들: 검색 52 → 연관어 36 + 탭 44.
+// sticky top = 우리 헤더(데스크톱 160 · 모바일 104, #134) + 위 줄들: 검색 52 → 연관어 36 + 탭 44.
 // ponytail: 헤더 높이가 바뀌면(#59 스크롤 숨김 등) top 값들도 같이 고쳐야 한다.
 export function SearchResultTop({ keyword, query }: { keyword: string; query: string }) {
   return (
     <>
-      <div className="sticky top-48 z-sticky bg-surface-subtle md:top-38">
+      <div className="sticky top-26 z-sticky bg-surface-subtle md:top-40">
         <div className={`${container} flex h-13 items-center gap-2 py-2`}>
           <BackButton className={mobileIconClass}>
             <Icon d="M15 5l-7 7 7 7" />
@@ -32,7 +32,7 @@ export function SearchResultTop({ keyword, query }: { keyword: string; query: st
         </div>
       </div>
 
-      <div className="sticky top-61 z-sticky bg-surface md:top-51">
+      <div className="sticky top-39 z-sticky bg-surface md:top-53">
         <nav aria-label="연관 검색어" className={`${container} flex h-9 items-start overflow-x-auto pt-1 pb-3`}>
           {relatedKeywords.map((word) => (
             <Link key={word} href={searchResultHref(word)} className="shrink-0 px-2 text-body whitespace-nowrap text-ink first:pl-0">
@@ -56,7 +56,7 @@ export function SearchResultTop({ keyword, query }: { keyword: string; query: st
         </div>
       </div>
 
-      <div className="sticky top-81 z-sticky h-10 border-b border-line bg-surface-sunken md:top-71">
+      <div className="sticky top-59 z-sticky h-10 border-b border-line bg-surface-sunken md:top-73">
         <nav aria-label="상품 구분" className={`${container} flex h-full gap-4`}>
           <Link href={`/search/goods?${query}`} aria-current="page" className={`gap-1 text-label ${tabClass} ${active}`}>
             새 상품<span className="font-regular">{resultCounts.newGoods.toLocaleString("ko-KR")}</span>
