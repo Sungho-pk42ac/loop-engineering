@@ -9,12 +9,13 @@ describe("Header / AuthNav", () => {
   beforeEach(() => localStorage.clear());
   afterEach(cleanup);
 
-  it("스토어 바에 탭 9개(원본 순서)와 메뉴·아이콘 링크가 모두 /products 로 간다", () => {
+  it("스토어 바에 탭 9개(원본 순서)와 아이콘 링크는 /products, 메뉴는 /menu/category(#116)", () => {
     render(<Header />);
 
     const tabs = screen.getAllByRole("link").filter((a) => (STORE_TABS as readonly string[]).includes(a.textContent ?? ""));
     expect(tabs.map((a) => a.textContent)).toEqual([...STORE_TABS]);
-    for (const name of ["메뉴", "오프라인 스토어", "검색", "좋아요", "마이", "장바구니"]) {
+    expect(screen.getByRole("link", { name: "메뉴" })).toHaveAttribute("href", "/menu/category");
+    for (const name of ["오프라인 스토어", "검색", "좋아요", "마이", "장바구니"]) {
       expect(screen.getByRole("link", { name })).toHaveAttribute("href", "/products");
     }
     tabs.forEach((a) => expect(a).toHaveAttribute("href", "/products"));
