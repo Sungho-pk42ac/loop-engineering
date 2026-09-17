@@ -1,18 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import ProductPage from "./page";
+import { products } from "@/data/products";
+import ProductPage, { generateStaticParams } from "./page";
 
-const product = {
-  id: "1",
-  name: "미니멀 화이트 머그컵",
-  price: 12000,
-  imageUrl: "/images/product-01.png",
-  description: "군더더기 없는 300ml 세라믹 머그컵입니다.",
-};
-
-vi.mock("@/lib/products", () => ({
-  getProduct: (id: string) => Promise.resolve(id === "1" ? product : null),
-}));
+const product = products[0];
 vi.mock("next/navigation", () => ({
   notFound: () => {
     throw new Error("NEXT_NOT_FOUND");
@@ -28,6 +19,10 @@ describe("/products/[id]", () => {
     expect(screen.getByText("12,000원")).toBeInTheDocument();
     expect(screen.getByText(product.description)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /목록으로 돌아가기/ })).toHaveAttribute("href", "/products");
+  });
+
+  it("generateStaticParams 는 상품 6개 경로를 만든다", () => {
+    expect(generateStaticParams()).toEqual(["1", "2", "3", "4", "5", "6"].map((id) => ({ id })));
   });
 
   it("없는 id 는 notFound() 를 호출한다", async () => {

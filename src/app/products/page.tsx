@@ -1,14 +1,9 @@
 import { BannerCarousel } from "@/components/BannerCarousel";
 import { QuickMenuSpecial } from "@/components/QuickMenuSpecial";
 import { ProductCard } from "@/components/ProductCard";
-import { getProducts } from "@/lib/products";
+import { products } from "@/data/products";
 
-// 데이터는 DB 에서 요청 시점에 읽는다.
-export const dynamic = "force-dynamic";
-
-export default async function ProductsPage() {
-  const products = await getProducts();
-
+export default function ProductsPage() {
   return (
     <>
       <BannerCarousel />
