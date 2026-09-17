@@ -129,7 +129,7 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 굵기: `font-regular`(400) `font-medium`(500) `font-semibold`(600) `font-bold`(700). 무신사는 상품명 400/500, 가격 600/700.
 
-예외: **주목할 만한 브랜드** 제목(#26)은 원본 실측(18/500)대로 `title-sm` + `font-medium` 을 쓴다.
+예외: **홈 가로 캐러셀 섹션 제목**(라이브 편성표 #17 · 주목할 만한 브랜드 #26 · 스포츠 종목 추천 #31)은 원본 실측(18/500)대로 `title-sm` + `font-medium` 을 쓴다.
 
 예외: **성별 토글**(#29)은 원본 실측(12/500·600)대로 `detail` + `font-medium`(선택 `font-semibold`)을 쓴다.
 
