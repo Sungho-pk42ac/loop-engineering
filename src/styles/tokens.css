@@ -183,6 +183,7 @@
   --container-wide: 1440px;
 
   /* 모션 */
+  --transition-duration-base: var(--ms-duration-base);
   --ease-standard: var(--ms-ease-standard);
   --ease-out: var(--ms-ease-out);
   --default-transition-duration: var(--ms-duration-fast);

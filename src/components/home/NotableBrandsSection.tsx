@@ -1,8 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { brandCategories, filterBrandsByCategory, notableBrands, type BrandCategory } from "@/data/brands";
+import {
+  brandCategories,
+  filterBrandsByCategory,
+  filterBrandsByGender,
+  notableBrands,
+  parseGf,
+  type BrandCategory,
+  type Gf,
+} from "@/data/brands";
 import { Badge } from "../ui/Badge";
 import { ScrollRow } from "../ScrollRow";
 
@@ -18,9 +27,16 @@ const CHIPS: { label: string; value: BrandCategory | null }[] = [
 const ICON_CHIP_INDEXES = new Set([2, 3, 4, 5, 10]);
 const BRAND_STEP = 204;
 
+// 성별 토글(#29)로 gf 가 바뀌면 브랜드 목록을 그 성별로 바꾸고, 카테고리 선택은 '전체'로 되돌린다(key).
 export function NotableBrandsSection() {
+  const gf = parseGf(useSearchParams().get("gf"));
+  return <NotableBrands key={gf} gf={gf} />;
+}
+
+/** gf 를 받아 그리는 본문. 페이지 Suspense 폴백(서버 HTML)에서는 gf="A" 로 쓴다 */
+export function NotableBrands({ gf }: { gf: Gf }) {
   const [selected, setSelected] = useState<BrandCategory | null>(null);
-  const brands = filterBrandsByCategory(notableBrands, selected);
+  const brands = filterBrandsByCategory(filterBrandsByGender(notableBrands, gf), selected);
 
   return (
     <section aria-labelledby="notable-brands" className="pb-2">

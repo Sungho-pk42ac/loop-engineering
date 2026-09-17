@@ -17,11 +17,21 @@ export const brandCategories = [
 ] as const;
 export type BrandCategory = (typeof brandCategories)[number];
 
+// 성별 파라미터 gf(#29): A 전체 · M 남성 · F 여성. 브랜드는 남성·여성·공용(U) 중 하나.
+export type Gf = "A" | "M" | "F";
+export type BrandGender = "M" | "F" | "U";
+
+/** gf 쿼리 값 해석: 없음·알 수 없는 값은 A(전체) */
+export function parseGf(value: string | null | undefined): Gf {
+  return value === "M" || value === "F" ? value : "A";
+}
+
 export interface Brand {
   id: string;
   name: string;
   badge?: BrandBadge;
   category: BrandCategory;
+  gender: BrandGender;
 }
 
 // 주목할 만한 브랜드(#26) — 패캠 스토어 자리표시자 브랜드명(원본 브랜드명·로고 복제 금지). 원본 120칸 중 대부분에 혜택 배지.
@@ -36,7 +46,13 @@ export const notableBrands: Brand[] = names.map((name, i) => ({
   name,
   badge: badges[i % badges.length],
   category: brandCategories[i % brandCategories.length],
+  gender: (["U", "M", "F"] as const)[i % 3],
 }));
+
+/** 성별로 거르기: A 는 전체, M·F 는 그 성별 + 공용 */
+export function filterBrandsByGender(brands: Brand[], gf: Gf): Brand[] {
+  return gf === "A" ? brands : brands.filter((b) => b.gender === gf || b.gender === "U");
+}
 
 // null = 전체
 export function filterBrandsByCategory(brands: Brand[], category: BrandCategory | null): Brand[] {
