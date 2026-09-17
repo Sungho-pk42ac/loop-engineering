@@ -28,6 +28,16 @@ describe("UI 프리미티브", () => {
     expect(screen.getByText("품절")).toHaveClass("bg-soldout");
   });
 
+  it("Badge overlay 톤·regular 굵기(이미지 위 라벨)", () => {
+    render(
+      <Badge tone="overlay" weight="regular">
+        라이브 종료
+      </Badge>,
+    );
+    expect(screen.getByText("라이브 종료")).toHaveClass("bg-surface-overlay", "font-regular");
+    expect(screen.getByText("라이브 종료")).not.toHaveClass("font-medium");
+  });
+
   it("Card 는 surface·line 토큰으로 플랫한 컨테이너를 만든다", () => {
     render(<Card data-testid="card">내용</Card>);
     expect(screen.getByTestId("card")).toHaveClass("bg-surface", "border-line", "rounded-xl");
