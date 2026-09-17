@@ -1,9 +1,27 @@
 export type BrandBadge = "단독" | "발매" | "쿠폰";
 
+// 카테고리 칩(#27) — '전체' 다음 12개. 아이콘 자리는 원본처럼 3·4·5·6·11번째 칩(전체 포함 순서).
+export const brandCategories = [
+  "의류",
+  "신발",
+  "가방",
+  "액세서리",
+  "뷰티",
+  "스포츠",
+  "키즈",
+  "라이프",
+  "디지털",
+  "아울렛",
+  "부티크",
+  "유즈드",
+] as const;
+export type BrandCategory = (typeof brandCategories)[number];
+
 export interface Brand {
   id: string;
   name: string;
   badge?: BrandBadge;
+  category: BrandCategory;
 }
 
 // 주목할 만한 브랜드(#26) — 패캠 스토어 자리표시자 브랜드명(원본 브랜드명·로고 복제 금지). 원본 120칸 중 대부분에 혜택 배지.
@@ -17,4 +35,10 @@ export const notableBrands: Brand[] = names.map((name, i) => ({
   id: `brand-${i + 1}`,
   name,
   badge: badges[i % badges.length],
+  category: brandCategories[i % brandCategories.length],
 }));
+
+// null = 전체
+export function filterBrandsByCategory(brands: Brand[], category: BrandCategory | null): Brand[] {
+  return category === null ? brands : brands.filter((b) => b.category === category);
+}
