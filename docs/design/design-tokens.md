@@ -196,6 +196,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 무신사는 거의 플랫이다. `shadow-sm`(호버 카드), `shadow-md`(드롭다운), `shadow-lg`(바텀시트·모달) 3단계만. 카드 기본 상태에는 그림자를 쓰지 않는다.
 
+예외: **검색 결과 정렬 드롭다운**(#111)은 원본 실측대로 radius 4(`rounded-sm`)·그림자 없이 1px 테두리만 쓴다.
+
 ---
 
 ## 6. 레이아웃

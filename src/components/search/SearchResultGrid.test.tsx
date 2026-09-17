@@ -2,6 +2,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { GRID_BATCH, GRID_TOTAL, SearchResultGrid } from "./SearchResultGrid";
 
+let query = "";
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ replace: vi.fn() }),
+  usePathname: () => "/search/goods",
+  useSearchParams: () => new URLSearchParams(query),
+}));
+
 let intersect: () => void = () => {};
 
 class MockObserver {
@@ -17,6 +24,7 @@ describe("SearchResultGrid", () => {
   afterEach(() => {
     cleanup();
     vi.unstubAllGlobals();
+    query = "";
   });
 
   const cards = () => within(screen.getByRole("list")).getAllByRole("listitem");
