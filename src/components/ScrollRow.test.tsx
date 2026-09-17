@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { ScrollRow } from "./ScrollRow";
 
@@ -25,10 +25,19 @@ const scrollTo = (list: HTMLElement, left: number) =>
     fireEvent.scroll(list);
   });
 
+const mockPointer = (fine: boolean) =>
+  vi.stubGlobal("matchMedia", (query: string) => ({
+    matches: query === "(hover: hover) and (pointer: fine)" ? fine : false,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  }));
+
 describe("ScrollRow", () => {
+  beforeEach(() => mockPointer(true));
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   it("처음 위치에서는 '다음'만 있고 '이전'은 DOM 에 없다. 두 버튼은 한글 aria-label·평소 숨김(호버 시 표시)", () => {
@@ -71,5 +80,21 @@ describe("ScrollRow", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "다음" }));
     expect(scrollBy).toHaveBeenCalledWith(expect.objectContaining({ left: 520 }));
+  });
+
+  it("터치 기기(hover·fine pointer 아님)에서는 이전·다음 버튼을 렌더하지 않는다(#176)", () => {
+    mockPointer(false);
+    const list = renderRow();
+    scrollTo(list, 1000);
+
+    expect(screen.queryAllByRole("button", { name: /라이브 보기/ })).toHaveLength(0);
+  });
+
+  it("matchMedia 가 없는 환경에서도 오류 없이 렌더되고 버튼은 없다", () => {
+    vi.stubGlobal("matchMedia", undefined);
+    const list = renderRow();
+    scrollTo(list, 0);
+
+    expect(screen.queryAllByRole("button", { name: /라이브 보기/ })).toHaveLength(0);
   });
 });
