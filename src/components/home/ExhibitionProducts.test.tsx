@@ -4,7 +4,7 @@ import { exhibition } from "@/data/exhibition";
 import { ExhibitionProducts } from "./ExhibitionProducts";
 
 const renderProducts = () => render(<ExhibitionProducts brands={exhibition.brands} products={exhibition.products} />);
-const items = () => within(screen.getByRole("list")).getAllByRole("listitem");
+const items = () => within(screen.getByRole("list")).getAllByRole("link");
 
 describe("ExhibitionProducts", () => {
   afterEach(cleanup);
@@ -46,5 +46,21 @@ describe("ExhibitionProducts", () => {
     fireEvent.click(chip);
     fireEvent.click(chip);
     expect(chip).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("상품이 많으면 열마다 위아래 2칸(열 우선), 적으면 1칸 — 가로 스크롤 캐러셀", () => {
+    renderProducts();
+    const list = screen.getByRole("list");
+    expect(list).toHaveClass("overflow-x-auto");
+    const columns = within(list).getAllByRole("listitem");
+    expect(columns).toHaveLength(Math.ceil(exhibition.products.length / 2));
+    expect(within(columns[0]).getAllByRole("link").map((a) => a.textContent)).toEqual(
+      exhibition.products.slice(0, 2).map((p) => expect.stringContaining(p.name)),
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: new RegExp(exhibition.brands[0]) }));
+    within(screen.getByRole("list"))
+      .getAllByRole("listitem")
+      .forEach((column) => expect(within(column).getAllByRole("link")).toHaveLength(1));
   });
 });

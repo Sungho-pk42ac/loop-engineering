@@ -17,6 +17,8 @@ export interface ScrollRowProps {
   listClassName: string;
   prevLabel: string;
   nextLabel: string;
+  /** 한 번에 이동할 거리(px). 기본은 한 화면(clientWidth) */
+  step?: (el: HTMLElement) => number;
   children: ReactNode;
 }
 
@@ -24,7 +26,7 @@ export interface ScrollRowProps {
 // 처음에는 '이전', 끝에서는 '다음'을 DOM 에서 뺀다(루프 없음). 누르면 한 화면(clientWidth)씩 부드럽게 이동.
 // 버튼은 줄 호버(hover 기기만)·키보드 포커스(has-focus-visible) 때만 보이고, 평소 invisible 이라 터치 기기에서 탭을 가로채지 않는다.
 // 키보드로 카드를 다 지나지 않아도 되게 버튼을 목록 앞에 둔다(위치는 absolute).
-export function ScrollRow({ listClassName, prevLabel, nextLabel, children }: ScrollRowProps) {
+export function ScrollRow({ listClassName, prevLabel, nextLabel, step, children }: ScrollRowProps) {
   const ref = useRef<HTMLUListElement>(null);
 
   const subscribe = useCallback((onChange: () => void) => {
@@ -43,7 +45,7 @@ export function ScrollRow({ listClassName, prevLabel, nextLabel, children }: Scr
     const el = ref.current;
     if (!el) return;
     const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    el.scrollBy({ left: direction * el.clientWidth, behavior: reduce ? "auto" : "smooth" });
+    el.scrollBy({ left: direction * (step ? step(el) : el.clientWidth), behavior: reduce ? "auto" : "smooth" });
   }
 
   const buttonClass =
