@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui";
 import { formatPrice } from "@/lib/format";
-import type { Product } from "@/lib/products";
+import type { Product } from "@/data/products";
 
 export interface ProductCardProps {
   product: Pick<Product, "id" | "name" | "price" | "imageUrl">;
