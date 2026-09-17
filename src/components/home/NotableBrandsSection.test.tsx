@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { cleanup, render, screen, within } from "@testing-library/react";
-import { notableBrands } from "@/data/brands";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { brandCategories, notableBrands } from "@/data/brands";
 import { NotableBrandsSection } from "./NotableBrandsSection";
 
 describe("NotableBrandsSection", () => {
@@ -44,5 +44,35 @@ describe("NotableBrandsSection", () => {
         expect(a).toHaveAttribute("target", "_blank");
         expect(a).toHaveAttribute("rel", "noopener noreferrer");
       });
+  });
+
+  it("칩(#27): 전체 + 카테고리 12개, 첫 진입 '전체' 선택, 선택 칩만 border-line-strong·semibold·aria-pressed", () => {
+    render(<NotableBrandsSection />);
+
+    const chips = within(screen.getByRole("group", { name: "브랜드 카테고리" })).getAllByRole("button");
+    expect(chips.map((c) => c.textContent)).toEqual(["전체", ...brandCategories]);
+    chips.forEach((c, i) => {
+      expect(c).toHaveAttribute("type", "button");
+      expect(c).toHaveAttribute("aria-pressed", String(i === 0));
+      expect(c).toHaveClass(i === 0 ? "border-line-strong" : "border-line");
+    });
+    expect(chips[0]).toHaveClass("font-semibold");
+  });
+
+  it("칩을 누르면 URL 그대로 그 카테고리 브랜드만, 가로 스크롤은 처음으로, '전체'로 복귀", () => {
+    render(<NotableBrandsSection />);
+    const href = location.href;
+    screen.getByRole("list").scrollLeft = 300;
+
+    fireEvent.click(screen.getByRole("button", { name: "뷰티" }));
+    const list = screen.getByRole("list");
+    const names = within(list).getAllByRole("listitem").map((li) => li.querySelector(".line-clamp-2")!.textContent);
+    expect(names).toEqual(notableBrands.filter((b) => b.category === "뷰티").map((b) => b.name));
+    expect(list.scrollLeft).toBe(0);
+    expect(location.href).toBe(href);
+    expect(screen.getByRole("button", { name: "뷰티" })).toHaveAttribute("aria-pressed", "true");
+
+    fireEvent.click(screen.getByRole("button", { name: "전체" }));
+    expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(notableBrands.length);
   });
 });
