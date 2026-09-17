@@ -71,4 +71,14 @@ describe("Header / AuthNav", () => {
     expect(screen.getByRole("link", { name: "오프라인 스토어" }).querySelector("svg")).toBeNull();
     screen.getAllByRole("link", { name: "로그인 / 회원가입" }).forEach((a) => expect(a).toHaveClass("h-6"));
   });
+
+  it("팬스토어 말풍선(#55)은 스토어 바(md 이상)와 모바일 로고 줄(md 미만)에 하나씩", () => {
+    sessionStorage.clear();
+    render(<Header />);
+
+    const bubbles = screen.getAllByRole("button", { name: /패캠 팬스토어 굿즈를 만나보세요/ });
+    expect(bubbles).toHaveLength(2);
+    expect(screen.getByRole("navigation", { name: "스토어" }).parentElement!.contains(bubbles[0])).toBe(true);
+    expect(bubbles[1].parentElement).toHaveClass("md:hidden");
+  });
 });

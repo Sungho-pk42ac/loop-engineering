@@ -82,9 +82,15 @@ export function Header() {
         </div>
       </div>
       <div className="mx-auto flex h-14 max-w-page items-center gap-4 px-4 md:px-6">
-        <Link href="/products" className="shrink-0 text-title-sm font-bold text-ink-inverse">
-          패캠 스토어
-        </Link>
+        {/* 767 이하는 스토어 바가 없어 팬스토어 말풍선(#55)을 로고 아래에 띄운다 */}
+        <div className="relative shrink-0">
+          <Link href="/products" className="text-title-sm font-bold text-ink-inverse">
+            패캠 스토어
+          </Link>
+          <div className="md:hidden">
+            <StoreBubble />
+          </div>
+        </div>
         <div className="min-w-10 flex-1">
           <SearchLayer />
         </div>
