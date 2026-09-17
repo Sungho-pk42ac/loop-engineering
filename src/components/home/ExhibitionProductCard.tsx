@@ -20,14 +20,15 @@ const SWATCH: Record<SwatchColor, { className: string; label: string }> = {
 // 텍스트 8/4/12/8 — 브랜드 11/600 1줄 · 상품명 12 2줄 · 할인율(빨강 600)+가격(600) 모바일 12·데스크톱 13 · 배송(파란 아이콘+글자, 배경 없음).
 // 사진 위 하트 선은 다크 모드에서도 흰색(dark:stroke-icon), 배송 글자는 다크에서 대비용 accent-hover. 이미지 5:6·브랜드 caption 은 design-tokens 예외.
 // 이미지·브랜드·상품명이 각각 새 탭 링크이고 가격 줄·하트는 링크 밖(중첩 인터랙티브 없음). 좋아요는 localStorage 목업.
-export function ExhibitionProductCard({ product }: { product: ExhibitionProduct }) {
+// productHref: 이미지·상품명 링크 대상. 기본은 기획전처럼 /products, 상세가 있는 섹션(#31)은 /products/<id> 를 넘긴다.
+export function ExhibitionProductCard({ product, productHref = "/products" }: { product: ExhibitionProduct; productHref?: string }) {
   const liked = parseLikes(useSyncExternalStore(subscribeLikes, readLikesRaw, () => "[]")).includes(product.id);
   const priceText = "text-detail font-semibold md:text-label";
 
   return (
     <article className="flex h-full flex-col bg-surface text-ink">
       <div className="relative aspect-5/6">
-        <Link href="/products" {...newTab} className="absolute inset-0">
+        <Link href={productHref} {...newTab} className="absolute inset-0">
           <Image src={product.imageUrl} alt={product.name} fill sizes="(min-width: 1440px) 260px, (min-width: 768px) 18vw, 29vw" className="object-cover" />
           <span aria-hidden="true" className="absolute inset-0 bg-surface-image-tint" />
         </Link>
@@ -57,7 +58,7 @@ export function ExhibitionProductCard({ product }: { product: ExhibitionProduct 
         <Link href="/products" {...newTab} className="line-clamp-1 text-caption font-semibold">
           {product.brand}
         </Link>
-        <Link href="/products" {...newTab} className="line-clamp-2 text-detail">
+        <Link href={productHref} {...newTab} className="line-clamp-2 text-detail">
           {product.name}
         </Link>
         <p className="flex items-center gap-1">

@@ -65,6 +65,7 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `surface-sunken` | gray-20 (다크: gray-70) | 한 단계 더 내려간 띠(검색 결과 서브탭 줄) |
 | | `surface-inverse` | gray-100 | 검정 버튼·헤더 |
 | | `surface-overlay` | black 60% | 모달 뒤 딤, 이미지 위 딤·라벨(배너 딤, 라이브 방송 시각 배지) |
+| | `scrim` | gray-100 (다크 동일) | 이미지 위 그라데이션 덮개 끝색(배너 캐러셀, 투명도 유틸과 함께). 다크에서 뒤집지 않는다 |
 | ink | `ink` | gray-100 | 본문, 상품명 |
 | | `ink-secondary` | gray-70 | 설명, 부제 |
 | | `ink-tertiary` | gray-50 | 메타 정보, 정가 |
@@ -86,6 +87,8 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | rank | `rank-up` / `rank-down` | red-50 / blue-60 | 검색어·랭킹 순위 상승 ▲ / 하락 ▼ (유지는 `ink-tertiary`) |
 
 Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`, `bg-brand hover:bg-brand-hover`, `text-price-sale`.
+
+`scrim` 은 투명도 유틸 없이 **전체화면 이미지 뷰어 배경**(상품 상세 갤러리, #62)에도 쓴다 — 다크 모드에서도 검정이어야 해서 `surface-inverse` 를 쓰지 않는다.
 
 ### 2.3 명도 대비 규칙 (KRDS 매직넘버)
 
@@ -126,6 +129,10 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 굵기: `font-regular`(400) `font-medium`(500) `font-semibold`(600) `font-bold`(700). 무신사는 상품명 400/500, 가격 600/700.
 
+예외: **홈 가로 캐러셀 섹션 제목**(라이브 편성표 #17 · 주목할 만한 브랜드 #26 · 스포츠 종목 추천 #31)은 원본 실측(18/500)대로 `title-sm` + `font-medium` 을 쓴다.
+
+예외: **성별 토글**(#29)은 원본 실측(12/500·600)대로 `detail` + `font-medium`(선택 `font-semibold`)을 쓴다.
+
 반응형: KRDS 처럼 모바일에서 `heading` → `title-lg`, `display` → `heading` 으로 한 단계 낮춘다. 예: `text-title-lg md:text-heading`.
 
 ---
@@ -147,7 +154,11 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 이 8개 이외의 값(5, 7, 9 …)은 쓰지 않는다. 홀수 픽셀 여백이 필요해 보이면 디자인이 그리드에서 벗어난 것이다.
 
+예외(§5.1·§6): **검색 결과 상품 그리드**(#109)는 원본 실측대로 `max-w-wide`(1440) 가운데 정렬·화면 여백과 거터 0, md 이상 6열·모바일 3↔2열이고, 카드(`ProductCard` `flat`)는 라운드·테두리 없는 평면에 이미지 5:6(`aspect-5/6`)을 쓴다.
+
 이 규칙은 **여백·간격**(`p-*` `m-*` `gap-*` `space-*`)에만 적용된다. 컴포넌트 **크기**(`h-*` `w-*`)는 §5.1 라운드 표의 컨테이너 크기(버튼 32/40/48px, 헤더 56px 등)를 따르며, 4px 배수이면 된다.
+
+예외(§6 레이아웃): **상품 상세 2단**(#61)은 원본 실측대로 `max-w-wide`(`--container-wide` 1440px) 컨테이너에 화면 여백 0, 2단 간격은 모든 폭 `gap-4`, 우측 패널 폭 `w-106`(426 → 424), 바깥 배경은 원본 #fafafa 대신 가장 가까운 `surface-subtle` 을 쓴다.
 
 ---
 
@@ -178,6 +189,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 1px 만 쓴다. 선택·포커스 강조는 두께가 아니라 색(`line-strong`)으로 표현한다(무신사 방식).
 
 예외: 검색 결과 탭 줄처럼 **원본이 선택 탭 밑줄을 2px 로 쓰는 곳**은 `border-b-2 border-line-strong` 을 허용한다(원본 실측, 포커스 링 2px 선례). 그 밖의 선은 1px.
+
+예외: **상품 상세 갤러리 썸네일**(#62) 선택 테두리는 원본 실측대로 `border-2 border-line-strong`(미선택 `border-2 border-transparent`)을 쓴다.
 
 ### 5.3 그림자
 
@@ -262,7 +275,7 @@ z-index 층: `z-sticky`(20, 헤더) < `z-dropdown`(30) < `z-overlay`(50, 딤) < 
 | 토큰 활성화 | `src/app/globals.css` 가 `tokens.css` 를 import, `@layer base` 에서 body 배경·글자·서체를 토큰으로 지정 | 적용됨 |
 | Pretendard 로딩 | `src/app/layout.tsx` `<head>` 의 jsDelivr 동적 서브셋 CSS | 적용됨 |
 | 루트 레이아웃 | body `bg-surface text-ink` (기존 `bg-zinc-50 text-zinc-900` 대체) | 적용됨 |
-| 기초 프리미티브 | `src/components/ui/` — `Button`(primary/secondary/accent/ghost × sm/md/lg), `Badge`(neutral/sale/soldout/info), `Card` | 적용됨 |
+| 기초 프리미티브 | `src/components/ui/` — `Button`(primary/secondary/accent/ghost × sm/md/lg), `Badge`(neutral/sale/soldout/info/overlay/outline), `Card` | 적용됨 |
 | 포커스 링 | `:focus-visible` 에 `accent` 2px 아웃라인 | 적용됨 |
 
 프리미티브는 시멘틱 토큰 클래스만 쓴다. `src/components/ui/ui.test.tsx` 가 HEX·px 리터럴·기본 팔레트 사용을 잡아낸다.
