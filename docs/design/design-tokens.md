@@ -212,6 +212,7 @@ KRDS 브레이크포인트 + 1200px 컨테이너.
 |------|----|------|
 | `duration-fast` (기본) | 150ms | 호버·색 변화 (무신사 기본) |
 | `duration-base` | 250ms | 드로어·바텀시트 |
+| `duration-slow` | 1000ms | 같은 자리 교차 페이드(긴 전환, 기획전 배너 하단 줄 원본 실측) |
 | `ease-standard` (기본) | cubic-bezier(0.4, 0, 0.2, 1) | 대부분 |
 | `ease-out` | cubic-bezier(0, 0, 0.2, 1) | 진입 애니메이션 |
 
