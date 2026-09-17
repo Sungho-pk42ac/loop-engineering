@@ -4,7 +4,7 @@ import { exhibition } from "@/data/exhibition";
 import { ExhibitionProducts } from "./ExhibitionProducts";
 
 const renderProducts = () => render(<ExhibitionProducts brands={exhibition.brands} products={exhibition.products} />);
-const items = () => within(screen.getByRole("list")).getAllByRole("link");
+const items = () => within(screen.getByRole("list")).getAllByRole("article");
 
 describe("ExhibitionProducts", () => {
   afterEach(cleanup);
@@ -27,7 +27,9 @@ describe("ExhibitionProducts", () => {
     const brand = exhibition.brands[2];
 
     fireEvent.click(screen.getByRole("button", { name: new RegExp(brand) }));
-    const pressed = screen.getAllByRole("button").filter((b) => b.getAttribute("aria-pressed") === "true");
+    const pressed = within(screen.getByRole("group", { name: "브랜드 필터" }))
+      .getAllByRole("button")
+      .filter((b) => b.getAttribute("aria-pressed") === "true");
     expect(pressed).toHaveLength(1);
     expect(pressed[0]).toHaveTextContent(brand);
     expect(pressed[0]).toHaveClass("bg-surface-campaign-chip-active");
@@ -54,13 +56,13 @@ describe("ExhibitionProducts", () => {
     expect(list).toHaveClass("overflow-x-auto");
     const columns = within(list).getAllByRole("listitem");
     expect(columns).toHaveLength(Math.ceil(exhibition.products.length / 2));
-    expect(within(columns[0]).getAllByRole("link").map((a) => a.textContent)).toEqual(
+    expect(within(columns[0]).getAllByRole("article").map((a) => a.textContent)).toEqual(
       exhibition.products.slice(0, 2).map((p) => expect.stringContaining(p.name)),
     );
 
     fireEvent.click(screen.getByRole("button", { name: new RegExp(exhibition.brands[0]) }));
     within(screen.getByRole("list"))
       .getAllByRole("listitem")
-      .forEach((column) => expect(within(column).getAllByRole("link")).toHaveLength(1));
+      .forEach((column) => expect(within(column).getAllByRole("article")).toHaveLength(1));
   });
 });

@@ -40,6 +40,7 @@
   --ms-teal-40: #64b4cc;
 
   /* 투명 오버레이 */
+  --ms-alpha-black-2: rgb(0 0 0 / 0.02);
   --ms-alpha-black-10: rgb(0 0 0 / 0.1);
   --ms-alpha-black-15: rgb(0 0 0 / 0.15);
   --ms-alpha-black-40: rgb(0 0 0 / 0.4);
@@ -77,6 +78,7 @@
   --color-surface-campaign-chip: var(--ms-alpha-white-20);
   --color-surface-campaign-chip-icon: var(--ms-alpha-white-60);
   --color-surface-campaign-chip-active: var(--ms-gray-0);
+  --color-surface-image-tint: var(--ms-alpha-black-2);
   --color-surface-sunken: var(--ms-gray-20);
   --color-surface-inverse: var(--ms-gray-100);
   --color-surface-overlay: var(--ms-alpha-black-60);
@@ -100,6 +102,7 @@
   --color-icon: var(--ms-gray-100);
   --color-icon-muted: var(--ms-gray-50);
   --color-icon-inverse: var(--ms-gray-0);
+  --color-icon-like: var(--ms-red-50);
 
   /* 브랜드·액션 — 무신사는 블랙이 주색, 블루는 링크·강조 */
   --color-brand: var(--ms-gray-100);

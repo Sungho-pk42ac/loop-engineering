@@ -61,6 +61,7 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `surface-campaign` | teal-40 (다크 동일) | 기획전 섹션 전체 폭 캠페인 배경. 위 글자는 `ink`(다크 모드에서도 검정 — `dark:text-ink-inverse`), 흰 글자는 대비 미달이라 금지 |
 | | `surface-campaign-action` | black 15% (다크 동일) | 캠페인 배경 위 반투명 버튼(기획전 '관련 세일 상품 더보기') |
 | | `surface-campaign-chip` / `-chip-icon` / `-chip-active` | white 20% / white 60% / gray-0 (다크 동일) | 캠페인 배경 위 브랜드 칩 기본 배경 / 칩 로고 원 / 선택 칩 배경. 글자는 캠페인 배경 규칙대로 검정 |
+| | `surface-image-tint` | black 2% (다크 동일) | 상품 이미지 위 옅은 틴트(흰 배경 사진 경계, 기획전 카드 원본) |
 | | `surface-sunken` | gray-20 (다크: gray-70) | 한 단계 더 내려간 띠(검색 결과 서브탭 줄) |
 | | `surface-inverse` | gray-100 | 검정 버튼·헤더 |
 | | `surface-overlay` | black 60% | 모달 뒤 딤, 이미지 위 딤·라벨(배너 딤, 라이브 방송 시각 배지) |
@@ -74,6 +75,7 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `ink-promo-inverse` | red-50 (다크: red-60) | 반전 배경(검정 헤더) 위 기획전 강조 글자 — 두 모드 모두 4.5:1 |
 | line | `line` / `line-subtle` / `line-strong` | gray-30 / 20 / 100 | 카드 테두리 / 리스트 구분선 / 선택 강조 |
 | icon | `icon` / `icon-muted` / `icon-inverse` | gray-100 / 50 / 0 | |
+| | `icon-like` | red-50 (다크 동일) | 좋아요(하트) 눌린 상태 채움 |
 | action | `brand` / `brand-hover` | gray-100 / 80 | 주 버튼(무신사 블랙 버튼) |
 | | `accent` / `accent-hover` | blue-60 / 50 | 보조 CTA, 선택 상태 |
 | status | `danger` `warning` `success` `info` | red-50, orange-50, green-50, blue-40 | 폼 오류, 안내 |
@@ -119,6 +121,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 | `label` | 13 / 18 | 500 | 버튼, 탭, 가격(카드) |
 | `detail` | 12 / 16 | 400 | 메타, 브랜드명 |
 | `caption` | 11 / 14 | 400 | 뱃지, 안내 문구 |
+
+예외: **기획전 상품 카드** 브랜드명은 원본 실측(11/600/14)대로 `caption` + `font-semibold` 를 쓴다.
 
 굵기: `font-regular`(400) `font-medium`(500) `font-semibold`(600) `font-bold`(700). 무신사는 상품명 400/500, 가격 600/700.
 
@@ -167,6 +171,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 예외: 캠페인 배경 위 **브랜드 칩**(기획전 필터, 원본 알약 radius 32)은 `rounded-sm` 대신 `rounded-full` 을 쓴다(원본 실측).
 
+예외: **기획전 상품 카드**(간격 0 가로 캐러셀, 원본 radius 0·무테·그림자 없음)는 라운드·테두리 없이 평면으로 둔다(원본 실측).
+
 ### 5.2 선 두께
 
 1px 만 쓴다. 선택·포커스 강조는 두께가 아니라 색(`line-strong`)으로 표현한다(무신사 방식).
@@ -195,6 +201,8 @@ KRDS 브레이크포인트 + 1200px 컨테이너.
 예외: 컨테이너(`max-w-page`) 밖에서 전체 폭으로 도는 **가로 캐러셀 섹션**(라이브 편성표 등)은 원본 실측대로 모든 폭에서 `px-4`(16px)를 쓰고, 스냅 여백도 `scroll-px-4` 로 맞춘다. 컨테이너 안 섹션은 위 표를 따른다.
 
 컨테이너: `max-w-page mx-auto` (1200px). 상품 카드 이미지 비율은 **1:1**(`aspect-square`) — PRD 공통 사양 §8 이 이미지를 1:1 로 확정했고 `public/images/*.png` 도 400×400 이다(무신사는 3:4 세로형이지만 에셋을 따른다). 그리드 열 수는 PRD feature-01 수용 기준(모바일 1열/데스크톱 3열)이 우선하므로 `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` 을 쓴다. `sm`(360px) 에서 2열로 늘리면 모바일 1열 기준을 어긴다.
+
+예외: **기획전 상품 카드**는 원본 실측대로 이미지 5:6(`aspect-5/6`, `object-cover`)을 쓴다. 400×400 에셋은 좌우가 잘린다.
 
 ---
 
