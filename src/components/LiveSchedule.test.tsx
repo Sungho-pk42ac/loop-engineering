@@ -36,4 +36,18 @@ describe("LiveSchedule", () => {
     });
     screen.getAllByRole("img").forEach((img) => expect(img.getAttribute("alt")).toMatch(/[가-힣]/));
   });
+
+  it("원본 실측 여백(#173): 머리 줄·카드 줄 px-4, 스냅 여백 md:scroll-px-4, 더보기 -mr-1, 혜택 mt-1·line-clamp-4", () => {
+    render(<LiveSchedule />);
+
+    const section = screen.getByRole("region", { name: "라이브 편성표" });
+    const header = within(section).getByRole("heading", { name: "라이브 편성표" }).parentElement!;
+    const list = within(section).getByRole("list");
+    expect(header).toHaveClass("px-4");
+    expect(header.className).not.toMatch(/md:px-6/);
+    expect(list).toHaveClass("px-4", "md:scroll-px-4");
+    expect(list.className).not.toMatch(/md:px-6|md:scroll-px-6/);
+    expect(within(section).getByRole("link", { name: "더보기" })).toHaveClass("-mr-1");
+    expect(screen.getByText(liveBroadcasts[0].benefit)).toHaveClass("mt-1", "line-clamp-4");
+  });
 });
