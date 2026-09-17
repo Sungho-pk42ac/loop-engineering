@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { brandCategories, filterBrandsByCategory, notableBrands, type BrandCategory } from "@/data/brands";
 import { Badge } from "../ui/Badge";
+import { ScrollRow } from "../ScrollRow";
 
 // 주목할 만한 브랜드(#26). 원본 실측: 제목 줄(18/500, 좌우 16) 아래 원형 로고 칸(56×96)이 세로 6줄 열 우선으로 가로로 흐르고,
 // 넘치면 섹션 안에서만 가로 스크롤. 칸 = 원 56 + 원 아래에 겹친 혜택 배지 + 2줄 이름(11px). 호버 변화 없음, 새 탭.
@@ -15,6 +16,7 @@ const CHIPS: { label: string; value: BrandCategory | null }[] = [
   ...brandCategories.map((c) => ({ label: c, value: c })),
 ];
 const ICON_CHIP_INDEXES = new Set([2, 3, 4, 5, 10]);
+const BRAND_STEP = 204;
 
 export function NotableBrandsSection() {
   const [selected, setSelected] = useState<BrandCategory | null>(null);
@@ -44,9 +46,14 @@ export function NotableBrandsSection() {
           );
         })}
       </div>
-      <ul
+      {/* 호버 이전·다음 버튼(#28, ScrollRow 재사용): 원본처럼 한 번에 3열(68 × 3 = 204)씩, 처음·끝·넘침 없음이면 버튼 없음 */}
+      <ScrollRow
         key={selected ?? "전체"}
-        className="scrollbar-none grid grid-flow-col grid-rows-6 justify-start gap-x-3 gap-y-2 overflow-x-auto px-4 py-1 md:snap-x md:snap-mandatory md:scroll-px-4">
+        listClassName="scrollbar-none grid grid-flow-col grid-rows-6 justify-start gap-x-3 gap-y-2 overflow-x-auto px-4 py-1 md:snap-x md:snap-mandatory md:scroll-px-4"
+        prevLabel="이전 브랜드 보기"
+        nextLabel="다음 브랜드 보기"
+        step={() => BRAND_STEP}
+      >
         {brands.map(({ id, name, badge }) => (
           <li key={id} className="w-14 md:snap-start">
             <Link
@@ -68,7 +75,7 @@ export function NotableBrandsSection() {
             </Link>
           </li>
         ))}
-      </ul>
+      </ScrollRow>
     </section>
   );
 }
