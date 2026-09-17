@@ -49,6 +49,17 @@ describe("SportsPicks", () => {
     expect(first).toHaveTextContent("12,000원");
   });
 
+  it("모바일 카드 폭(#33): 열은 w-34(136 ≈ 원본 134)·md 이상은 w-65, 2줄 구조 유지", () => {
+    render(<SportsPicksSection />);
+
+    within(screen.getByRole("list"))
+      .getAllByRole("listitem")
+      .forEach((li) => {
+        expect(li).toHaveClass("w-34", "md:w-65", "grid", "auto-rows-fr");
+        expect(within(li).getAllByRole("article")).toHaveLength(2);
+      });
+  });
+
   it("호버 이전·다음 버튼(#32): 공용 ScrollRow — 처음엔 '다음'만, 누르면 열 단위 이동, 끝엔 '이전'만", () => {
     render(<SportsPicksSection />);
     const list = screen.getByRole("list");
