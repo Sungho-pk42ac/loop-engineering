@@ -60,6 +60,7 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `surface-muted` | gray-10 | 스켈레톤, 비활성 영역 |
 | | `surface-campaign` | teal-40 (다크 동일) | 기획전 섹션 전체 폭 캠페인 배경. 위 글자는 `ink`(다크 모드에서도 검정 — `dark:text-ink-inverse`), 흰 글자는 대비 미달이라 금지 |
 | | `surface-campaign-action` | black 15% (다크 동일) | 캠페인 배경 위 반투명 버튼(기획전 '관련 세일 상품 더보기') |
+| | `surface-campaign-chip` / `-chip-icon` / `-chip-active` | white 20% / white 60% / gray-0 (다크 동일) | 캠페인 배경 위 브랜드 칩 기본 배경 / 칩 로고 원 / 선택 칩 배경. 글자는 캠페인 배경 규칙대로 검정 |
 | | `surface-sunken` | gray-20 (다크: gray-70) | 한 단계 더 내려간 띠(검색 결과 서브탭 줄) |
 | | `surface-inverse` | gray-100 | 검정 버튼·헤더 |
 | | `surface-overlay` | black 60% | 모달 뒤 딤, 이미지 위 딤·라벨(배너 딤, 라이브 방송 시각 배지) |
@@ -163,6 +164,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 같은 크기의 컴포넌트가 나란히 놓이면 같은 라운드를 쓴다. `%` 는 완전한 원에만.
 
 예외: 원본이 4px 로 둥근 **가로 캐러셀 카드**(라이브 편성표 카드 등, 테두리·그림자 없음)는 `rounded-xl` 대신 `rounded-sm` 을 쓴다(원본 실측).
+
+예외: 캠페인 배경 위 **브랜드 칩**(기획전 필터, 원본 알약 radius 32)은 `rounded-sm` 대신 `rounded-full` 을 쓴다(원본 실측).
 
 ### 5.2 선 두께
 
