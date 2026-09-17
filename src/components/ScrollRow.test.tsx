@@ -57,4 +57,19 @@ describe("ScrollRow", () => {
     expect(screen.getByRole("button", { name: "이전 라이브 보기" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "다음 라이브 보기" })).not.toBeInTheDocument();
   });
+
+  it("step 을 주면 그 거리만큼 이동한다(기본은 clientWidth)", () => {
+    render(
+      <ScrollRow listClassName="overflow-x-auto" prevLabel="이전" nextLabel="다음" step={() => 520}>
+        <li>카드</li>
+      </ScrollRow>,
+    );
+    const list = screen.getByRole("list");
+    scrollTo(list, 0);
+    const scrollBy = vi.fn();
+    list.scrollBy = scrollBy;
+
+    fireEvent.click(screen.getByRole("button", { name: "다음" }));
+    expect(scrollBy).toHaveBeenCalledWith(expect.objectContaining({ left: 520 }));
+  });
 });

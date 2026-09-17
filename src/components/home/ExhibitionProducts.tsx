@@ -5,10 +5,26 @@ import Link from "next/link";
 import { useState } from "react";
 import { filterByBrand, type ExhibitionProduct } from "@/data/exhibition";
 import { formatPrice } from "@/lib/format";
+import { ScrollRow } from "../ScrollRow";
 import { Card } from "../ui";
 
 const newTab = { target: "_blank", rel: "noopener noreferrer" } as const;
 const CHIPS_PER_ROW = 8;
+// 원본: 상품이 적으면(브랜드 선택 시 6개 관측) 1줄, 많으면 열마다 위아래 2줄. 경계 개수는 원본에서 미확인(6개 1줄 관측만).
+const TWO_ROWS_OVER = 6;
+
+// 원본: 한 번에 "온전히 보이는 열 수 - 1" 만큼(1440 에서 4열 = 1040) 이동해 반쯤 보이던 열을 건너뛰지 않는다.
+function columnStep(el: HTMLElement): number {
+  const column = el.firstElementChild?.clientWidth ?? el.clientWidth;
+  const fullyVisible = Math.floor((el.clientWidth - 16) / column);
+  return Math.max(1, fullyVisible - 1) * column;
+}
+
+function toColumns<T>(items: T[], perColumn: number): T[][] {
+  const columns: T[][] = [];
+  for (let i = 0; i < items.length; i += perColumn) columns.push(items.slice(i, i + perColumn));
+  return columns;
+}
 
 // 기획전 브랜드 칩 필터 + 상품 목록(#22). 원본 실측: '전체' + 브랜드 칩이 한 줄 8칸 × 2줄 고정(nowrap, 넘치면 두 줄 블록째 가로 스크롤),
 // 알약 칩 h32 · 왼쪽 24 원형 로고 자리 · 13px, 기본 흰색 20% / 선택 흰색 + 600, 호버 변화 없음. 선택 칩을 다시 눌러도 해제 안 됨.
@@ -21,10 +37,11 @@ export function ExhibitionProducts({ brands, products }: { brands: string[]; pro
   ];
   const rows = [chips.slice(0, CHIPS_PER_ROW), chips.slice(CHIPS_PER_ROW)].filter((row) => row.length > 0);
   const visible = filterByBrand(products, selected);
+  const columns = toColumns(visible, visible.length > TWO_ROWS_OVER ? 2 : 1);
 
   return (
     <>
-      <div role="group" aria-label="브랜드 필터" className="scrollbar-none mx-auto mb-3 max-w-page overflow-x-auto px-4 md:px-6">
+      <div role="group" aria-label="브랜드 필터" className="scrollbar-none mb-3 overflow-x-auto px-4">
         <div className="flex w-max flex-col gap-2">
           {rows.map((row, r) => (
             <div key={r} className="flex gap-1">
@@ -55,30 +72,38 @@ export function ExhibitionProducts({ brands, products }: { brands: string[]; pro
         </div>
       </div>
 
-      <ul className="mx-auto grid max-w-page grid-cols-2 gap-4 px-4 md:grid-cols-3 md:px-6 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5">
-        {visible.map((product) => (
-          <li key={product.id}>
-            <Link href="/products" {...newTab} className="block text-ink">
-              <Card>
-                <div className="relative aspect-square bg-surface-subtle">
-                  <Image
-                    src={product.imageUrl}
-                    alt={product.name}
-                    fill
-                    sizes="(min-width: 1280px) 240px, (min-width: 768px) 33vw, 50vw"
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex flex-col gap-1 p-2">
-                  <p className="text-detail">{product.brand}</p>
-                  <p className="line-clamp-2 text-body">{product.name}</p>
-                  <p className="text-label font-bold text-price">{formatPrice(product.price)}</p>
-                </div>
-              </Card>
-            </Link>
+      <ScrollRow
+        key={selected ?? "전체"}
+        listClassName="scrollbar-none flex overflow-x-auto px-4 md:snap-x md:snap-mandatory md:scroll-pl-4"
+        prevLabel="이전"
+        nextLabel="다음"
+        step={columnStep}
+      >
+        {columns.map((column) => (
+          <li key={column[0].id} className="grid w-28 shrink-0 snap-start auto-rows-fr md:w-65">
+            {column.map((product) => (
+              <Link key={product.id} href="/products" {...newTab} className="block text-ink">
+                <Card className="h-full">
+                  <div className="relative aspect-square bg-surface-subtle">
+                    <Image
+                      src={product.imageUrl}
+                      alt={product.name}
+                      fill
+                      sizes="(min-width: 768px) 260px, 112px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1 p-2">
+                    <p className="text-detail">{product.brand}</p>
+                    <p className="line-clamp-2 text-body">{product.name}</p>
+                    <p className="text-label font-bold text-price">{formatPrice(product.price)}</p>
+                  </div>
+                </Card>
+              </Link>
+            ))}
           </li>
         ))}
-      </ul>
+      </ScrollRow>
     </>
   );
 }

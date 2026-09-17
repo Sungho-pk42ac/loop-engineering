@@ -21,7 +21,7 @@ describe("ExhibitionSection", () => {
   it("상품 그리드는 next/image + alt 상품명, 가격은 formatPrice", () => {
     render(<ExhibitionSection />);
 
-    const items = within(screen.getByRole("list")).getAllByRole("listitem");
+    const items = within(screen.getByRole("list")).getAllByRole("link");
     expect(items).toHaveLength(exhibition.products.length);
     exhibition.products.forEach((product) => {
       expect(screen.getByRole("img", { name: product.name })).toBeInTheDocument();
