@@ -1,10 +1,16 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { brandCategories, notableBrands } from "@/data/brands";
+import { brandCategories, filterBrandsByGender, notableBrands } from "@/data/brands";
 import { NotableBrandsSection } from "./NotableBrandsSection";
 
+let query = "";
+vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams(query) }));
+
 describe("NotableBrandsSection", () => {
-  afterEach(cleanup);
+  afterEach(() => {
+    cleanup();
+    query = "";
+  });
 
   it("제목 h2 와 브랜드 24개 이상, 항목은 원형 로고 → (있으면) 배지 → 이름(line-clamp-2) 순서", () => {
     render(<NotableBrandsSection />);
@@ -73,6 +79,17 @@ describe("NotableBrandsSection", () => {
     expect(screen.getByRole("button", { name: "뷰티" })).toHaveAttribute("aria-pressed", "true");
 
     fireEvent.click(screen.getByRole("button", { name: "전체" }));
+    expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(notableBrands.length);
+  });
+
+  it("gf(#29): ?gf=F 면 여성+공용 브랜드만, 잘못된 값이면 전체", () => {
+    query = "gf=F";
+    render(<NotableBrandsSection />);
+    expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(filterBrandsByGender(notableBrands, "F").length);
+    cleanup();
+
+    query = "gf=X";
+    render(<NotableBrandsSection />);
     expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(notableBrands.length);
   });
 });

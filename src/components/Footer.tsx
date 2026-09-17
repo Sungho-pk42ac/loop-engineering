@@ -61,7 +61,7 @@ function SectionTitle({ title }: { title: string }) {
 export function Footer() {
   return (
     <footer className="bg-surface-subtle">
-      <div className="mx-auto flex max-w-page flex-col gap-8 px-4 py-10 md:px-6">
+      <div className="mx-auto flex max-w-page flex-col gap-8 px-4 pt-10 pb-16 md:px-6">
         <ul aria-label="스토어 바로가기" className="flex gap-2 overflow-x-auto">
           {STORE_TABS.map((store) => (
             <li key={store} className="shrink-0 lg:flex-1">
