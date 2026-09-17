@@ -31,6 +31,10 @@ describe("SearchResultGrid", () => {
     within(list)
       .getAllByRole("img")
       .forEach((img) => expect(img.getAttribute("alt")).toBeTruthy());
+    // 같은 줄 카드 높이가 달라도 칸을 채워 회색 틈이 없게(#109 QA)
+    within(list)
+      .getAllByRole("link")
+      .forEach((a) => expect(a).toHaveClass("h-full", "bg-surface"));
   });
 
   it("열 보기 버튼: 3칸 ↔ 2칸, aria-label 2열 보기 ↔ 3열 보기, URL 불변", () => {

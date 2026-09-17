@@ -15,7 +15,7 @@ export interface ProductCardProps {
 export function ProductCard({ product, variant = "default", sizes }: ProductCardProps) {
   if (variant === "flat") {
     return (
-      <Link href={`/products/${product.id}`} className="block bg-surface focus-visible:-outline-offset-2">
+      <Link href={`/products/${product.id}`} className="block h-full bg-surface focus-visible:-outline-offset-2">
         {/* fill(absolute) 이미지는 링크 포커스 링을 덮어 위치 지정 없는 이미지로 둔다 */}
         <div className="bg-surface-subtle">
           <Image
