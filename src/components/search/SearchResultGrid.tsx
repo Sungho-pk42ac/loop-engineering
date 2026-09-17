@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { products } from "@/data/products";
 import { searchGoodsItems } from "@/data/search";
-import { sortSearchGoods } from "@/lib/searchGoods";
+import { filterSearchGoods, sortSearchGoods } from "@/lib/searchGoods";
 import { ProductCard } from "../ProductCard";
 import { Icon } from "../Icon";
 import { SearchSortMenu } from "./SearchSortMenu";
@@ -17,8 +17,9 @@ const byId = new Map(products.map((p) => [p.id, p]));
 // 검색 결과 그리드(#109). 원본 실측: 간격 0, 데스크톱 한 줄 6칸(최대 1440 가운데), 모바일 기본 3칸 ↔ 2칸 토글(URL 불변),
 // 끝 근처에서 다음 묶음 자동 추가(더보기 버튼·페이지 번호 없음). 가상 목록은 총량이 작아 생략.
 export function SearchResultGrid() {
-  const sortCode = useSearchParams().get("sortCode");
-  const results = sortSearchGoods(searchGoodsItems, sortCode);
+  const searchParams = useSearchParams();
+  const results = sortSearchGoods(filterSearchGoods(searchGoodsItems, searchParams), searchParams.get("sortCode"));
+  const total = results.length; // 필터 결과 수가 무한 스크롤 총량(이슈 110)
   const [visible, setVisible] = useState(GRID_BATCH);
   const [mobileCols, setMobileCols] = useState<2 | 3>(3);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -26,16 +27,16 @@ export function SearchResultGrid() {
   // visible 이 바뀔 때마다 다시 관찰해, 추가 뒤에도 센티널이 보이면 곧바로 다음 묶음을 붙인다.
   useEffect(() => {
     const sentinel = sentinelRef.current;
-    if (!sentinel || visible >= GRID_TOTAL) return;
+    if (!sentinel || visible >= total) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries.some((e) => e.isIntersecting)) setVisible((v) => Math.min(v + GRID_BATCH, GRID_TOTAL));
+        if (entries.some((e) => e.isIntersecting)) setVisible((v) => Math.min(v + GRID_BATCH, total));
       },
       { rootMargin: "400px 0px" },
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [visible]);
+  }, [visible, total]);
 
   return (
     <div className="relative bg-surface-subtle">
@@ -60,7 +61,7 @@ export function SearchResultGrid() {
           </li>
         ))}
       </ul>
-      {visible < GRID_TOTAL && <div ref={sentinelRef} aria-hidden="true" className="h-px" />}
+      {visible < total && <div ref={sentinelRef} aria-hidden="true" className="h-px" />}
     </div>
   );
 }

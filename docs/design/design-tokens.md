@@ -62,6 +62,7 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `surface-campaign-action` | black 15% (다크 동일) | 캠페인 배경 위 반투명 버튼(기획전 '관련 세일 상품 더보기') |
 | | `surface-campaign-chip` / `-chip-icon` / `-chip-active` | white 20% / white 60% / gray-0 (다크 동일) | 캠페인 배경 위 브랜드 칩 기본 배경 / 칩 로고 원 / 선택 칩 배경. 글자는 캠페인 배경 규칙대로 검정 |
 | | `surface-image-tint` | black 2% (다크 동일) | 상품 이미지 위 옅은 틴트(흰 배경 사진 경계, 기획전 카드 원본) |
+| | `surface-accent-subtle` | blue-60 5% (다크 동일) | 선택된 파란 칩 배경(검색 결과 빠른 필터) |
 | | `surface-sunken` | gray-20 (다크: gray-70) | 한 단계 더 내려간 띠(검색 결과 서브탭 줄) |
 | | `surface-inverse` | gray-100 | 검정 버튼·헤더 |
 | | `surface-overlay` | black 60% | 모달 뒤 딤, 이미지 위 딤·라벨(배너 딤, 라이브 방송 시각 배지) |
@@ -160,6 +161,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 예외(§6 레이아웃): **상품 상세 2단**(#61)은 원본 실측대로 `max-w-wide`(`--container-wide` 1440px) 컨테이너에 화면 여백 0, 2단 간격은 모든 폭 `gap-4`, 우측 패널 폭 `w-106`(426 → 424), 바깥 배경은 원본 #fafafa 대신 가장 가까운 `surface-subtle` 을 쓴다.
 
+예외(§6 레이아웃): **검색 결과 필터 줄·적용 필터 줄**(#110)은 검색 결과 상단과 같게 컨테이너 없이 모든 폭 `px-4` 를 쓴다.
+
 ---
 
 ## 5. 형태
@@ -183,6 +186,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 예외: 캠페인 배경 위 **브랜드 칩**(기획전 필터, 원본 알약 radius 32)은 `rounded-sm` 대신 `rounded-full` 을 쓴다(원본 실측).
 
 예외: **기획전 상품 카드**(간격 0 가로 캐러셀, 원본 radius 0·무테·그림자 없음)는 라운드·테두리 없이 평면으로 둔다(원본 실측).
+
+예외: **검색 결과 필터 레이어**(#110)는 원본 실측대로 모달·바텀시트 radius 8(`rounded-lg`·`rounded-t-lg`), 하단 44px 버튼 radius 4(`rounded-sm`)를 쓴다.
 
 ### 5.2 선 두께
 

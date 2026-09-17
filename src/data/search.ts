@@ -114,6 +114,11 @@ export interface SearchGoodsItem {
   saleCount: number;
   viewCount: number;
   likeCount: number;
+  /** 필터(#110) — 성별·별점·할인·무료배송 */
+  gender: "M" | "F" | "A";
+  reviewGrade: number;
+  discount: boolean;
+  freeDelivery: boolean;
 }
 
 // 자리표시자 결과 120개 — 상품 6종을 반복하고 정렬용 수치만 서로 다르게 둔다(원본 수치는 옮기지 않는다).
@@ -129,4 +134,23 @@ export const searchGoodsItems: SearchGoodsItem[] = Array.from({ length: 120 }, (
   saleCount: (i * 53) % 700,
   viewCount: (i * 89) % 9000,
   likeCount: (i * 29) % 1200,
+  gender: (["A", "M", "F"] as const)[i % 3],
+  reviewGrade: [4.9, 4.6, 4.3, 3.8, 5, 4.1][i % 6],
+  discount: i % 3 !== 2,
+  freeDelivery: i % 4 === 0,
 }));
+
+/** 빠른 필터 칩(#110) — 라벨·쿼리 키·켜짐 값 */
+export const quickFilters = [
+  { label: "할인", key: "discount", value: "Y" },
+  { label: "별점", key: "minReviewGrade", value: "4.5" },
+  { label: "무료배송", key: "freeDelivery", value: "Y" },
+] as const;
+
+/** 필터 레이어 탭 = 드롭다운 칩(#110) */
+export const filterDropdowns = [
+  { label: "카테고리", keys: [] as string[] },
+  { label: "가격", keys: [] as string[] },
+  { label: "별점", keys: ["minReviewGrade"] },
+  { label: "혜택", keys: ["discount", "freeDelivery"] },
+] as const;
