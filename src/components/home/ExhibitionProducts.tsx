@@ -1,14 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import { filterByBrand, type ExhibitionProduct } from "@/data/exhibition";
-import { formatPrice } from "@/lib/format";
 import { ScrollRow } from "../ScrollRow";
-import { Card } from "../ui";
+import { ExhibitionProductCard } from "./ExhibitionProductCard";
 
-const newTab = { target: "_blank", rel: "noopener noreferrer" } as const;
 const CHIPS_PER_ROW = 8;
 // 원본: 상품이 적으면(브랜드 선택 시 6개 관측) 1줄, 많으면 열마다 위아래 2줄. 경계 개수는 원본에서 미확인(6개 1줄 관측만).
 const TWO_ROWS_OVER = 6;
@@ -82,24 +78,7 @@ export function ExhibitionProducts({ brands, products }: { brands: string[]; pro
         {columns.map((column) => (
           <li key={column[0].id} className="grid w-28 shrink-0 snap-start auto-rows-fr md:w-65">
             {column.map((product) => (
-              <Link key={product.id} href="/products" {...newTab} className="block text-ink">
-                <Card className="h-full">
-                  <div className="relative aspect-square bg-surface-subtle">
-                    <Image
-                      src={product.imageUrl}
-                      alt={product.name}
-                      fill
-                      sizes="(min-width: 768px) 260px, 112px"
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1 p-2">
-                    <p className="text-detail">{product.brand}</p>
-                    <p className="line-clamp-2 text-body">{product.name}</p>
-                    <p className="text-label font-bold text-price">{formatPrice(product.price)}</p>
-                  </div>
-                </Card>
-              </Link>
+              <ExhibitionProductCard key={product.id} product={product} />
             ))}
           </li>
         ))}

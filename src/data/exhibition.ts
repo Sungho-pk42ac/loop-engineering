@@ -1,10 +1,17 @@
+/** 컬러 점에 쓸 수 있는 시멘틱 색 토큰 이름 */
+export type SwatchColor = "ink" | "surface" | "accent" | "price-sale";
+
 export interface ExhibitionProduct {
   id: string;
   brand: string;
   name: string;
-  /** 원 단위 정수 */
+  /** 원 단위 정수(할인 적용가) */
   price: number;
   imageUrl: string;
+  /** 정수 % */
+  discountRate?: number;
+  shippingBadge?: string;
+  colors?: SwatchColor[];
 }
 
 export interface Exhibition {
@@ -54,6 +61,9 @@ export const exhibition: Exhibition = {
         name: `${brand} ${kinds[i % kinds.length]} ${k + 1}호`,
         price: 12000 + ((i * 3) % 10) * 2000,
         imageUrl: `/images/product-0${(i % 6) + 1}.png`,
+        // 원본 비율 흉내: 할인율은 대부분, 배송 배지는 30개 중 18개
+        ...(i % 5 !== 4 ? { discountRate: 10 + ((i * 7) % 5) * 5 } : {}),
+        ...(i % 5 < 3 ? { shippingBadge: i % 2 === 0 ? "오늘 출발" : "무료배송" } : {}),
       };
     }),
   ),
