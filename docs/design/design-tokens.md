@@ -126,6 +126,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 굵기: `font-regular`(400) `font-medium`(500) `font-semibold`(600) `font-bold`(700). 무신사는 상품명 400/500, 가격 600/700.
 
+예외: **주목할 만한 브랜드** 제목(#26)은 원본 실측(18/500)대로 `title-sm` + `font-medium` 을 쓴다.
+
 반응형: KRDS 처럼 모바일에서 `heading` → `title-lg`, `display` → `heading` 으로 한 단계 낮춘다. 예: `text-title-lg md:text-heading`.
 
 ---
@@ -260,7 +262,7 @@ z-index 층: `z-sticky`(20, 헤더) < `z-dropdown`(30) < `z-overlay`(50, 딤) < 
 | 토큰 활성화 | `src/app/globals.css` 가 `tokens.css` 를 import, `@layer base` 에서 body 배경·글자·서체를 토큰으로 지정 | 적용됨 |
 | Pretendard 로딩 | `src/app/layout.tsx` `<head>` 의 jsDelivr 동적 서브셋 CSS | 적용됨 |
 | 루트 레이아웃 | body `bg-surface text-ink` (기존 `bg-zinc-50 text-zinc-900` 대체) | 적용됨 |
-| 기초 프리미티브 | `src/components/ui/` — `Button`(primary/secondary/accent/ghost × sm/md/lg), `Badge`(neutral/sale/soldout/info), `Card` | 적용됨 |
+| 기초 프리미티브 | `src/components/ui/` — `Button`(primary/secondary/accent/ghost × sm/md/lg), `Badge`(neutral/sale/soldout/info/overlay/outline), `Card` | 적용됨 |
 | 포커스 링 | `:focus-visible` 에 `accent` 2px 아웃라인 | 적용됨 |
 
 프리미티브는 시멘틱 토큰 클래스만 쓴다. `src/components/ui/ui.test.tsx` 가 HEX·px 리터럴·기본 팔레트 사용을 잡아낸다.
