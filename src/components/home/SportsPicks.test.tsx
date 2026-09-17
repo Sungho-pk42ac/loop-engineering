@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { sportsPicks } from "@/data/sportsPicks";
 import { SportsPicksSection } from "./SportsPicks";
 
@@ -47,5 +47,30 @@ describe("SportsPicks", () => {
     expect(links.filter((a) => a.getAttribute("href") === "/products")).toHaveLength(1);
     expect(within(first).getByRole("img")).toHaveAttribute("alt", sportsPicks.products[0].name);
     expect(first).toHaveTextContent("12,000원");
+  });
+
+  it("호버 이전·다음 버튼(#32): 공용 ScrollRow — 처음엔 '다음'만, 누르면 열 단위 이동, 끝엔 '이전'만", () => {
+    render(<SportsPicksSection />);
+    const list = screen.getByRole("list");
+    expect(screen.queryByRole("button", { name: /상품 보기/ })).toBeNull();
+
+    const scrollTo = (left: number) => {
+      Object.defineProperty(list, "clientWidth", { configurable: true, value: 1280 });
+      Object.defineProperty(list, "scrollWidth", { configurable: true, value: 3932 });
+      Object.defineProperty(list, "scrollLeft", { configurable: true, value: left, writable: true });
+      fireEvent.scroll(list);
+    };
+    scrollTo(0);
+    expect(screen.queryByRole("button", { name: "이전 상품 보기" })).toBeNull();
+    const scrollBy = vi.fn();
+    list.scrollBy = scrollBy;
+    fireEvent.click(screen.getByRole("button", { name: "다음 상품 보기" }));
+    expect(scrollBy).toHaveBeenCalledWith(expect.objectContaining({ behavior: "smooth" }));
+
+    scrollTo(1000);
+    expect(screen.getByRole("button", { name: "이전 상품 보기" })).toBeInTheDocument();
+    scrollTo(2652);
+    expect(screen.getByRole("button", { name: "이전 상품 보기" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "다음 상품 보기" })).toBeNull();
   });
 });
