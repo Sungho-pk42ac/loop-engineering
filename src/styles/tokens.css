@@ -82,6 +82,7 @@
   --color-surface-sunken: var(--ms-gray-20);
   --color-surface-inverse: var(--ms-gray-100);
   --color-surface-overlay: var(--ms-alpha-black-60);
+  --color-scrim: var(--ms-gray-100);
 
   /* 글자(ink) — 대비 4.5:1 이상: primary/secondary, 3:1 이상: tertiary */
   --color-ink: var(--ms-gray-100);
