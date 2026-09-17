@@ -11,14 +11,17 @@ vi.mock("next/navigation", () => ({
 }));
 
 describe("/products/[id]", () => {
-  it("이미지(alt=상품명)·상품명·콤마 포맷 가격·설명·목록 링크를 보여준다", async () => {
+  it("이미지(alt=상품명)·상품명·콤마 포맷 가격·설명, 목록으로 돌아가기 링크는 없다(#61)", async () => {
     render(await ProductPage({ params: Promise.resolve({ id: "1" }) }));
 
     expect(screen.getByRole("img", { name: "미니멀 화이트 머그컵" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "미니멀 화이트 머그컵" })).toBeInTheDocument();
     expect(screen.getByText("12,000원")).toBeInTheDocument();
     expect(screen.getByText(product.description)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /목록으로 돌아가기/ })).toHaveAttribute("href", "/products");
+    expect(screen.queryByRole("link", { name: /목록으로 돌아가기/ })).toBeNull();
+    const panel = screen.getByRole("heading", { name: "미니멀 화이트 머그컵" }).parentElement!;
+    expect(panel).toHaveClass("md:sticky", "md:top-38", "bg-surface");
+    expect(panel.parentElement).toHaveClass("md:flex-row", "max-w-wide");
   });
 
   it("generateStaticParams 는 상품 6개 경로를 만든다", () => {
