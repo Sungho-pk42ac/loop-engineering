@@ -28,7 +28,7 @@ export function ExhibitionProductCard({ product }: { product: ExhibitionProduct 
     <article className="flex h-full flex-col bg-surface text-ink">
       <div className="relative aspect-5/6">
         <Link href="/products" {...newTab} className="absolute inset-0">
-          <Image src={product.imageUrl} alt={product.name} fill sizes="(min-width: 768px) 260px, 112px" className="object-cover" />
+          <Image src={product.imageUrl} alt={product.name} fill sizes="(min-width: 1440px) 260px, (min-width: 768px) 18vw, 29vw" className="object-cover" />
           <span aria-hidden="true" className="absolute inset-0 bg-surface-image-tint" />
         </Link>
         {product.colors && product.colors.length > 0 && (

@@ -65,4 +65,14 @@ describe("ExhibitionProducts", () => {
       .getAllByRole("listitem")
       .forEach((column) => expect(within(column).getAllByRole("article")).toHaveLength(1));
   });
+
+  it("열 폭은 화면 비례(#186): w-[29vw] md:w-[18vw] 2xl:w-65", () => {
+    renderProducts();
+    within(screen.getByRole("list"))
+      .getAllByRole("listitem")
+      .forEach((column) => {
+        expect(column).toHaveClass("w-[29vw]", "md:w-[18vw]", "2xl:w-65");
+        expect(column).not.toHaveClass("w-28");
+      });
+  });
 });
