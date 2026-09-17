@@ -1,7 +1,8 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { formatPrice } from "@/lib/format";
 import { products } from "@/data/products";
+import { productDetails } from "@/data/productDetails";
+import { ProductGallery } from "@/components/product/ProductGallery";
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -24,16 +25,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     <div className="bg-surface-subtle">
       <article className="mx-auto flex max-w-wide flex-col md:flex-row md:items-start md:gap-4 md:pt-4">
         <div className="min-w-0 flex-1">
-          <div className="relative aspect-square bg-surface">
-            <Image
-              src={product.imageUrl}
-              alt={product.name}
-              fill
-              priority
-              sizes="(min-width: 768px) 60vw, 100vw"
-              className="object-cover"
-            />
-          </div>
+          <ProductGallery name={product.name} images={productDetails[product.id].images} />
         </div>
         <div className="flex flex-col gap-4 bg-surface p-4 md:sticky md:top-38 md:w-106 md:shrink-0">
           <h1 className="text-title font-semibold text-ink">{product.name}</h1>

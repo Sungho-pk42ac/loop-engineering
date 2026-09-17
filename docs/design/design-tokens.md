@@ -65,6 +65,7 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `surface-sunken` | gray-20 (다크: gray-70) | 한 단계 더 내려간 띠(검색 결과 서브탭 줄) |
 | | `surface-inverse` | gray-100 | 검정 버튼·헤더 |
 | | `surface-overlay` | black 60% | 모달 뒤 딤, 이미지 위 딤·라벨(배너 딤, 라이브 방송 시각 배지) |
+| | `scrim` | gray-100 (다크 동일) | 이미지 위 그라데이션 덮개 끝색(배너 캐러셀, 투명도 유틸과 함께). 다크에서 뒤집지 않는다 |
 | ink | `ink` | gray-100 | 본문, 상품명 |
 | | `ink-secondary` | gray-70 | 설명, 부제 |
 | | `ink-tertiary` | gray-50 | 메타 정보, 정가 |
@@ -86,6 +87,8 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | rank | `rank-up` / `rank-down` | red-50 / blue-60 | 검색어·랭킹 순위 상승 ▲ / 하락 ▼ (유지는 `ink-tertiary`) |
 
 Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`, `bg-brand hover:bg-brand-hover`, `text-price-sale`.
+
+`scrim` 은 투명도 유틸 없이 **전체화면 이미지 뷰어 배경**(상품 상세 갤러리, #62)에도 쓴다 — 다크 모드에서도 검정이어야 해서 `surface-inverse` 를 쓰지 않는다.
 
 ### 2.3 명도 대비 규칙 (KRDS 매직넘버)
 
@@ -184,6 +187,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 1px 만 쓴다. 선택·포커스 강조는 두께가 아니라 색(`line-strong`)으로 표현한다(무신사 방식).
 
 예외: 검색 결과 탭 줄처럼 **원본이 선택 탭 밑줄을 2px 로 쓰는 곳**은 `border-b-2 border-line-strong` 을 허용한다(원본 실측, 포커스 링 2px 선례). 그 밖의 선은 1px.
+
+예외: **상품 상세 갤러리 썸네일**(#62) 선택 테두리는 원본 실측대로 `border-2 border-line-strong`(미선택 `border-2 border-transparent`)을 쓴다.
 
 ### 5.3 그림자
 

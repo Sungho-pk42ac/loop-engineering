@@ -14,7 +14,7 @@ describe("/products/[id]", () => {
   it("이미지(alt=상품명)·상품명·콤마 포맷 가격·설명, 목록으로 돌아가기 링크는 없다(#61)", async () => {
     render(await ProductPage({ params: Promise.resolve({ id: "1" }) }));
 
-    expect(screen.getByRole("img", { name: "미니멀 화이트 머그컵" })).toBeInTheDocument();
+    expect(screen.getAllByRole("img", { name: "미니멀 화이트 머그컵" }).length).toBeGreaterThan(0);
     expect(screen.getByRole("heading", { name: "미니멀 화이트 머그컵" })).toBeInTheDocument();
     expect(screen.getByText("12,000원")).toBeInTheDocument();
     expect(screen.getByText(product.description)).toBeInTheDocument();
