@@ -43,4 +43,13 @@ describe("BannerCarousel", () => {
     vi.useRealTimers();
     vi.restoreAllMocks();
   });
+
+  it("이전·다음 배너 보기 버튼(type=button)이 있고 인디케이터는 없다", () => {
+    render(<BannerCarousel />);
+
+    for (const name of ["이전 배너 보기", "다음 배너 보기"]) {
+      expect(screen.getByRole("button", { name })).toHaveAttribute("type", "button");
+    }
+    expect(screen.getAllByRole("button")).toHaveLength(2);
+  });
 });
