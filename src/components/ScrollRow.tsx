@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useSyncExternalStore, type ReactNode } from "react";
+import { useHoverPointer } from "@/lib/pointer";
 import { Icon } from "./Icon";
 
 type Edge = "start" | "middle" | "end" | "none";
@@ -24,7 +25,7 @@ export interface ScrollRowProps {
 
 // 가로 스크롤 줄 + 호버 이전·다음 원형 버튼(#18, 원본 라이브 편성표 실측).
 // 처음에는 '이전', 끝에서는 '다음'을 DOM 에서 뺀다(루프 없음). 누르면 한 화면(clientWidth)씩 부드럽게 이동.
-// 버튼은 줄 호버(hover 기기만)·키보드 포커스(has-focus-visible) 때만 보이고, 평소 invisible 이라 터치 기기에서 탭을 가로채지 않는다.
+// 버튼은 줄 호버·키보드 포커스(has-focus-visible) 때만 보인다. 터치 기기(hover·fine pointer 아님)에서는 원본처럼 아예 렌더하지 않는다(#176).
 // 키보드로 카드를 다 지나지 않아도 되게 버튼을 목록 앞에 둔다(위치는 absolute).
 export function ScrollRow({ listClassName, prevLabel, nextLabel, step, children }: ScrollRowProps) {
   const ref = useRef<HTMLUListElement>(null);
@@ -40,6 +41,7 @@ export function ScrollRow({ listClassName, prevLabel, nextLabel, step, children 
   }, []);
   // 서버·하이드레이션은 처음 위치로 그린다('다음'만).
   const edge = useSyncExternalStore(subscribe, () => edgeOf(ref.current), () => "start" as Edge);
+  const hoverPointer = useHoverPointer();
 
   function move(direction: -1 | 1) {
     const el = ref.current;
@@ -53,12 +55,12 @@ export function ScrollRow({ listClassName, prevLabel, nextLabel, step, children 
 
   return (
     <div className="group relative">
-      {(edge === "middle" || edge === "end") && (
+      {hoverPointer && (edge === "middle" || edge === "end") && (
         <button type="button" aria-label={prevLabel} onClick={() => move(-1)} className={`${buttonClass} left-4`}>
           <Icon d="M14 6l-6 6 6 6" size={24} />
         </button>
       )}
-      {(edge === "start" || edge === "middle") && (
+      {hoverPointer && (edge === "start" || edge === "middle") && (
         <button type="button" aria-label={nextLabel} onClick={() => move(1)} className={`${buttonClass} right-4`}>
           <Icon d="M10 6l6 6-6 6" size={24} />
         </button>
