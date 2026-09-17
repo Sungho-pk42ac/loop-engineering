@@ -9,12 +9,23 @@ export const BUBBLE_ENTER_CLASS =
 
 type Mode = "animate" | "static";
 
+// 페이지 로드당 한 번만 읽는다. 헤더에 말풍선이 두 자리(데스크톱 스토어 바·모바일 로고 줄)라,
+// 한쪽이 키를 먼저 저장해도 다른 쪽이 같은 모드(첫 방문이면 둘 다 애니메이션)를 보게 한다(#134).
+let cachedMode: Mode | undefined;
+
 function readMode(): Mode {
+  if (cachedMode) return cachedMode;
   try {
-    return window.sessionStorage.getItem(BUBBLE_ANIMATED_KEY) === null ? "animate" : "static";
+    cachedMode = window.sessionStorage.getItem(BUBBLE_ANIMATED_KEY) === null ? "animate" : "static";
   } catch {
-    return "static";
+    cachedMode = "static";
   }
+  return cachedMode;
+}
+
+/** 테스트 전용: 페이지 새로 로드한 것처럼 캐시를 비운다 */
+export function resetBubbleModeCache() {
+  cachedMode = undefined;
 }
 
 const noopSubscribe = () => () => {};

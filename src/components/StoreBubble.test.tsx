@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { BUBBLE_ANIMATED_KEY, BUBBLE_ENTER_CLASS, StoreBubble } from "./StoreBubble";
+import { BUBBLE_ANIMATED_KEY, BUBBLE_ENTER_CLASS, resetBubbleModeCache, StoreBubble } from "./StoreBubble";
 
 const bubble = () => screen.queryByRole("button", { name: /패캠 팬스토어 굿즈를 만나보세요/ });
 
@@ -8,6 +8,7 @@ describe("StoreBubble", () => {
   beforeEach(() => {
     sessionStorage.clear();
     localStorage.clear();
+    resetBubbleModeCache();
   });
   afterEach(() => {
     cleanup();
@@ -38,5 +39,18 @@ describe("StoreBubble", () => {
     render(<StoreBubble />);
 
     expect(bubble()!.className).not.toContain(BUBBLE_ENTER_CLASS);
+  });
+
+  it("두 자리에 렌더돼도(헤더 데스크톱·모바일) 첫 방문이면 둘 다 애니메이션 클래스(#134)", () => {
+    render(
+      <>
+        <StoreBubble />
+        <StoreBubble />
+      </>,
+    );
+
+    const bubbles = screen.getAllByRole("button", { name: /패캠 팬스토어 굿즈를 만나보세요/ });
+    expect(bubbles).toHaveLength(2);
+    bubbles.forEach((b) => expect(b.className).toContain(BUBBLE_ENTER_CLASS));
   });
 });

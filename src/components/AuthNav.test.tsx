@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { login, SESSION_KEY, USERS_KEY } from "@/lib/auth";
 import { Header, STORE_TABS } from "./Header";
+import { BUBBLE_ENTER_CLASS, resetBubbleModeCache } from "./StoreBubble";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }), usePathname: () => "/products" }));
 
@@ -74,10 +75,13 @@ describe("Header / AuthNav", () => {
 
   it("팬스토어 말풍선(#55)은 스토어 바(md 이상)와 모바일 로고 줄(md 미만)에 하나씩", () => {
     sessionStorage.clear();
+    resetBubbleModeCache();
     render(<Header />);
 
     const bubbles = screen.getAllByRole("button", { name: /패캠 팬스토어 굿즈를 만나보세요/ });
     expect(bubbles).toHaveLength(2);
+    // 세션 첫 방문이면 두 자리 모두 첫 등장 애니메이션
+    bubbles.forEach((b) => expect(b.className).toContain(BUBBLE_ENTER_CLASS));
     expect(screen.getByRole("navigation", { name: "스토어" }).parentElement!.contains(bubbles[0])).toBe(true);
     expect(bubbles[1].parentElement).toHaveClass("md:hidden");
   });
