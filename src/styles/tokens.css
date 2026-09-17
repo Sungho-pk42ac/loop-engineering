@@ -180,6 +180,7 @@
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1440px;
   --container-page: 1200px;
+  --container-wide: 1440px;
 
   /* 모션 */
   --ease-standard: var(--ms-ease-standard);
