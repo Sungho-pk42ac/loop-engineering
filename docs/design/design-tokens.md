@@ -47,7 +47,7 @@
 | 90 | `#171717` | 다크 배경 |
 | 100 | `#000000` | 본문·브랜드 |
 
-유채색: blue 40/50/60 (`#37b0f4` `#3a6eff` `#245eff`), red 40/50/60 (`#f73c3b` `#f31110` `#b90000`), orange 50 `#ff5f00`, yellow 50 `#f7e74b`, green 50 `#00a651`.
+유채색: blue 40/50/60 (`#37b0f4` `#3a6eff` `#245eff`), red 40/50/60 (`#f73c3b` `#f31110` `#b90000`), orange 50 `#ff5f00`, yellow 50 `#f7e74b`, green 50 `#00a651`, teal 40 `#64b4cc`(기획전 캠페인 배경).
 
 ### 2.2 시멘틱 색상 (컴포넌트가 쓰는 이름)
 
@@ -58,6 +58,8 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | surface | `surface` | gray-0 | 페이지·카드 기본 배경 |
 | | `surface-subtle` | gray-5 | 섹션 구분, 입력 배경 |
 | | `surface-muted` | gray-10 | 스켈레톤, 비활성 영역 |
+| | `surface-campaign` | teal-40 (다크 동일) | 기획전 섹션 전체 폭 캠페인 배경. 위 글자는 `ink`(다크 모드에서도 검정 — `dark:text-ink-inverse`), 흰 글자는 대비 미달이라 금지 |
+| | `surface-campaign-action` | black 15% (다크 동일) | 캠페인 배경 위 반투명 버튼(기획전 '관련 세일 상품 더보기') |
 | | `surface-sunken` | gray-20 (다크: gray-70) | 한 단계 더 내려간 띠(검색 결과 서브탭 줄) |
 | | `surface-inverse` | gray-100 | 검정 버튼·헤더 |
 | | `surface-overlay` | black 60% | 모달 뒤 딤, 이미지 위 딤·라벨(배너 딤, 라이브 방송 시각 배지) |
