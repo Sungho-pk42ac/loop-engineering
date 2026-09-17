@@ -173,6 +173,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 예외: **기획전 상품 카드**(간격 0 가로 캐러셀, 원본 radius 0·무테·그림자 없음)는 라운드·테두리 없이 평면으로 둔다(원본 실측).
 
+예외: **모바일 진입 서비스 시트**(#164)는 원본 실측대로 시트 radius 0(`rounded-xl` 없음), 타일·광고 배너·아랫줄 이미지는 `rounded-sm` 을 쓴다.
+
 ### 5.2 선 두께
 
 1px 만 쓴다. 선택·포커스 강조는 두께가 아니라 색(`line-strong`)으로 표현한다(무신사 방식).
