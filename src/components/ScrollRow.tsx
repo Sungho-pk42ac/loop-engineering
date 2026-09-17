@@ -12,6 +12,13 @@ function edgeOf(el: HTMLElement | null): Edge {
   return "middle";
 }
 
+// 열 단위(2줄) 캐러셀 공통: 한 번에 "온전히 보이는 열 수 - 1" 만큼 이동해 반쯤 보이던 열을 건너뛰지 않는다(#23·#31).
+export function columnStep(el: HTMLElement): number {
+  const column = el.firstElementChild?.clientWidth ?? el.clientWidth;
+  const fullyVisible = Math.floor((el.clientWidth - 16) / column);
+  return Math.max(1, fullyVisible - 1) * column;
+}
+
 export interface ScrollRowProps {
   /** 스크롤 컨테이너(ul) 클래스 */
   listClassName: string;
