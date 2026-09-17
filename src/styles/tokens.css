@@ -37,9 +37,11 @@
   --ms-orange-50: #ff5f00;
   --ms-yellow-50: #f7e74b;
   --ms-green-50: #00a651;
+  --ms-teal-40: #64b4cc;
 
   /* 투명 오버레이 */
   --ms-alpha-black-10: rgb(0 0 0 / 0.1);
+  --ms-alpha-black-15: rgb(0 0 0 / 0.15);
   --ms-alpha-black-40: rgb(0 0 0 / 0.4);
   --ms-alpha-black-60: rgb(0 0 0 / 0.6);
   --ms-alpha-white-80: rgb(255 255 255 / 0.8);
@@ -68,6 +70,8 @@
   --color-surface: var(--ms-gray-0);
   --color-surface-subtle: var(--ms-gray-5);
   --color-surface-muted: var(--ms-gray-10);
+  --color-surface-campaign: var(--ms-teal-40);
+  --color-surface-campaign-action: var(--ms-alpha-black-15);
   --color-surface-sunken: var(--ms-gray-20);
   --color-surface-inverse: var(--ms-gray-100);
   --color-surface-overlay: var(--ms-alpha-black-60);
