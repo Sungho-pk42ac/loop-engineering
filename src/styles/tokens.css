@@ -180,8 +180,10 @@
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1440px;
   --container-page: 1200px;
+  --container-wide: 1440px;
 
   /* 모션 */
+  --transition-duration-base: var(--ms-duration-base);
   --ease-standard: var(--ms-ease-standard);
   --ease-out: var(--ms-ease-out);
   --default-transition-duration: var(--ms-duration-fast);

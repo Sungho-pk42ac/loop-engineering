@@ -3,6 +3,7 @@ import { AuthNav } from "./AuthNav";
 import { GnbTabs } from "./GnbTabs";
 import { Icon, ICON_PATHS } from "./Icon";
 import { SearchLayer } from "./SearchLayer";
+import { StoreBubble } from "./StoreBubble";
 
 // 원본 순서. 첫 탭은 원본 브랜드명 대신 우리 스토어명(클론 규칙 — 사칭 금지).
 export const STORE_TABS = ["FC STORE", "BEAUTY", "SPORTS", "OUTLET", "BOUTIQUE", "KICKS", "KIDS", "USED", "SNAP"] as const;
@@ -29,9 +30,12 @@ export function Header() {
   return (
     <header className="sticky top-0 z-sticky bg-surface-inverse text-ink-inverse">
       <div className="mx-auto flex max-w-page flex-wrap items-center justify-between gap-x-2 px-4 md:flex-nowrap md:px-6">
-        <Link href="/products" aria-label="메뉴" className={`${iconLinkClass} my-2`}>
-          <Icon d="M4 7h16M4 12h16M4 17h16" />
-        </Link>
+        <div className="relative">
+          <Link href="/products" aria-label="메뉴" className={`${iconLinkClass} my-2`}>
+            <Icon d="M4 7h16M4 12h16M4 17h16" />
+          </Link>
+          <StoreBubble />
+        </div>
         {/* 모바일에서는 둘째 줄로 내려가 이 줄만 가로 스크롤된다. */}
         <nav aria-label="스토어" className="order-last basis-full overflow-x-auto md:order-none md:min-w-0 md:flex-1 md:basis-auto">
           <ul className="flex h-10 items-center gap-4 whitespace-nowrap">

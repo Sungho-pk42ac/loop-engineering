@@ -126,6 +126,10 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 굵기: `font-regular`(400) `font-medium`(500) `font-semibold`(600) `font-bold`(700). 무신사는 상품명 400/500, 가격 600/700.
 
+예외: **주목할 만한 브랜드** 제목(#26)은 원본 실측(18/500)대로 `title-sm` + `font-medium` 을 쓴다.
+
+예외: **성별 토글**(#29)은 원본 실측(12/500·600)대로 `detail` + `font-medium`(선택 `font-semibold`)을 쓴다.
+
 반응형: KRDS 처럼 모바일에서 `heading` → `title-lg`, `display` → `heading` 으로 한 단계 낮춘다. 예: `text-title-lg md:text-heading`.
 
 ---
@@ -148,6 +152,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 이 8개 이외의 값(5, 7, 9 …)은 쓰지 않는다. 홀수 픽셀 여백이 필요해 보이면 디자인이 그리드에서 벗어난 것이다.
 
 이 규칙은 **여백·간격**(`p-*` `m-*` `gap-*` `space-*`)에만 적용된다. 컴포넌트 **크기**(`h-*` `w-*`)는 §5.1 라운드 표의 컨테이너 크기(버튼 32/40/48px, 헤더 56px 등)를 따르며, 4px 배수이면 된다.
+
+예외(§6 레이아웃): **상품 상세 2단**(#61)은 원본 실측대로 `max-w-wide`(`--container-wide` 1440px) 컨테이너에 화면 여백 0, 2단 간격은 모든 폭 `gap-4`, 우측 패널 폭 `w-106`(426 → 424), 바깥 배경은 원본 #fafafa 대신 가장 가까운 `surface-subtle` 을 쓴다.
 
 ---
 
@@ -260,7 +266,7 @@ z-index 층: `z-sticky`(20, 헤더) < `z-dropdown`(30) < `z-overlay`(50, 딤) < 
 | 토큰 활성화 | `src/app/globals.css` 가 `tokens.css` 를 import, `@layer base` 에서 body 배경·글자·서체를 토큰으로 지정 | 적용됨 |
 | Pretendard 로딩 | `src/app/layout.tsx` `<head>` 의 jsDelivr 동적 서브셋 CSS | 적용됨 |
 | 루트 레이아웃 | body `bg-surface text-ink` (기존 `bg-zinc-50 text-zinc-900` 대체) | 적용됨 |
-| 기초 프리미티브 | `src/components/ui/` — `Button`(primary/secondary/accent/ghost × sm/md/lg), `Badge`(neutral/sale/soldout/info), `Card` | 적용됨 |
+| 기초 프리미티브 | `src/components/ui/` — `Button`(primary/secondary/accent/ghost × sm/md/lg), `Badge`(neutral/sale/soldout/info/overlay/outline), `Card` | 적용됨 |
 | 포커스 링 | `:focus-visible` 에 `accent` 2px 아웃라인 | 적용됨 |
 
 프리미티브는 시멘틱 토큰 클래스만 쓴다. `src/components/ui/ui.test.tsx` 가 HEX·px 리터럴·기본 팔레트 사용을 잡아낸다.
