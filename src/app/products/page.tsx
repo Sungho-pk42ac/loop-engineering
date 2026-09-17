@@ -1,4 +1,5 @@
 import { BannerCarousel } from "@/components/BannerCarousel";
+import { LiveSchedule } from "@/components/LiveSchedule";
 import { QuickMenuServices } from "@/components/QuickMenuServices";
 import { QuickMenuSpecial } from "@/components/QuickMenuSpecial";
 import { ProductCard } from "@/components/ProductCard";
@@ -25,6 +26,8 @@ export default async function ProductsPage() {
           ))}
         </ul>
       </section>
+      {/* 원본: 라이브 편성표는 페이지 마지막 섹션(푸터 바로 위) */}
+      <LiveSchedule />
     </>
   );
 }

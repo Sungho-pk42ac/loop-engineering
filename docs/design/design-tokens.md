@@ -60,11 +60,11 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `surface-muted` | gray-10 | 스켈레톤, 비활성 영역 |
 | | `surface-sunken` | gray-20 (다크: gray-70) | 한 단계 더 내려간 띠(검색 결과 서브탭 줄) |
 | | `surface-inverse` | gray-100 | 검정 버튼·헤더 |
-| | `surface-overlay` | black 60% | 모달 뒤 딤 |
+| | `surface-overlay` | black 60% | 모달 뒤 딤, 이미지 위 딤·라벨(배너 딤, 라이브 방송 시각 배지) |
 | ink | `ink` | gray-100 | 본문, 상품명 |
 | | `ink-secondary` | gray-70 | 설명, 부제 |
 | | `ink-tertiary` | gray-50 | 메타 정보, 정가 |
-| | `ink-muted` | gray-60 (다크: gray-40) | 비선택 탭·결과 개수 — 회색 배경 위에서도 4.5:1 |
+| | `ink-muted` | gray-60 (다크: gray-40) | 비선택 탭·결과 개수·카드 보조 설명·회색 밑줄 '더보기' 링크 — 회색 배경 위에서도 4.5:1 |
 | | `ink-disabled` | gray-40 | 비활성 |
 | | `ink-inverse` | gray-0 | 검정 배경 위 글자 |
 | | `ink-link` | blue-60 | 텍스트 링크 |
@@ -159,6 +159,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 | `rounded-full` | 9999px | 아바타, 토글, 원형 버튼 |
 
 같은 크기의 컴포넌트가 나란히 놓이면 같은 라운드를 쓴다. `%` 는 완전한 원에만.
+
+예외: 원본이 4px 로 둥근 **가로 캐러셀 카드**(라이브 편성표 카드 등, 테두리·그림자 없음)는 `rounded-xl` 대신 `rounded-sm` 을 쓴다(원본 실측).
 
 ### 5.2 선 두께
 
