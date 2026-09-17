@@ -63,6 +63,8 @@ describe("Footer 아랫부분", () => {
 
     const text = screen.getByRole("contentinfo").textContent ?? "";
     expect(text).not.toMatch(/무신사|MUSINSA/i);
+    expect(text).not.toMatch(/All rights reserved/i);
+    expect(text).toContain("© 패캠 스토어. 모든 권리 보유.");
     expect(text).toContain("(주)패캠 스토어");
     expect(text).toContain("000-00-00000");
   });

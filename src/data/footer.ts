@@ -69,7 +69,7 @@ export const customerCenter = {
 };
 
 export const companyInfo = {
-  copyright: "© 패캠 스토어. All rights reserved.",
+  copyright: "© 패캠 스토어. 모든 권리 보유.",
   lines: ["(주)패캠 스토어 · 대표 홍길동 · 서울특별시 가상구 가상로 00", "사업자등록번호 000-00-00000 · 통신판매업신고 제0000-가상-0000호"],
   /** 회사 정보 줄 끝 밑줄 링크(원본은 새 탭) */
   links: [external("사업자정보확인")],
