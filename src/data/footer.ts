@@ -5,11 +5,11 @@ export interface Notice {
   isNew: boolean;
 }
 
-export type BenefitIcon = "card" | "percent" | "gift" | "coin" | "truck";
-
 export interface PaymentBenefit {
-  icon: BenefitIcon;
-  text: string;
+  /** 앞부분(진한 글자) */
+  lead: string;
+  /** 뒷부분(흐린 글자) */
+  detail: string;
 }
 
 // 패캠 스토어 자리표시자 문구 — 원본 공지·카드사 이름은 옮기지 않는다.
@@ -20,11 +20,11 @@ export const notices: Notice[] = [
 ];
 
 export const paymentBenefits: PaymentBenefit[] = [
-  { icon: "card", text: "패캠카드 결제 시 5% 할인" },
-  { icon: "percent", text: "첫 구매 10% 쿠폰 즉시 지급" },
-  { icon: "gift", text: "5만원 이상 구매 시 사은품 증정" },
-  { icon: "coin", text: "간편결제 이용 시 적립금 2배" },
-  { icon: "truck", text: "모든 상품 무료배송" },
+  { lead: "패캠카드", detail: "결제 시 5% 할인" },
+  { lead: "첫 구매", detail: "10% 쿠폰 즉시 지급" },
+  { lead: "5만원 이상 구매", detail: "시 사은품 증정" },
+  { lead: "간편결제", detail: "이용 시 적립금 2배" },
+  { lead: "모든 상품", detail: "무료배송" },
 ];
 
 export const paymentMethods: string[] = [

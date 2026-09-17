@@ -30,6 +30,47 @@ describe("Footer 윗부분", () => {
     });
     expect(container.querySelectorAll("[data-new-dot]")).toHaveLength(1);
   });
+
+  it("원본 실측(#149): 전체 폭 bg-surface-muted, 글자 없는 h-8 타일·칩, 공지 줄바꿈·점은 제목 뒤, 혜택 원형 자리 + 두 조각", () => {
+    const { container } = render(<Footer />);
+
+    const footer = screen.getByRole("contentinfo");
+    expect(footer).toHaveClass("bg-surface-muted");
+    expect(footer.querySelector(".max-w-page")).toBeNull();
+
+    const tiles = within(screen.getByRole("list", { name: "스토어 바로가기" })).getAllByRole("link");
+    expect(tiles).toHaveLength(9);
+    tiles.forEach((a) => {
+      expect(a).toHaveClass("h-8", "rounded-sm");
+      expect(a).not.toHaveClass("hover:opacity-80");
+      expect(a.firstElementChild).toHaveClass("sr-only");
+    });
+
+    const notices = within(screen.getByRole("heading", { name: "공지사항" }).closest("section")!).getAllByRole("listitem");
+    notices.forEach((li) => expect(li.querySelector(".truncate")).toBeNull());
+    const dot = container.querySelector("[data-new-dot]")!;
+    expect(dot).toHaveClass("size-1");
+    expect(dot.previousSibling?.textContent).toBeTruthy();
+
+    const benefits = screen.getByRole("heading", { name: "결제 혜택" }).closest("section")!.querySelector("ul")!;
+    const rows = within(benefits).getAllByRole("listitem");
+    expect(rows).toHaveLength(5);
+    rows.forEach((li) => {
+      expect(li.querySelector(".size-5.rounded-full")).not.toBeNull();
+      expect(li.querySelector(".text-ink")).not.toBeNull();
+      expect(li.querySelector(".text-ink-muted")).not.toBeNull();
+    });
+
+    const chips = within(screen.getByRole("list", { name: "결제수단" })).getAllByRole("listitem");
+    expect(chips).toHaveLength(8);
+    chips.forEach((li) => {
+      expect(li).toHaveClass("h-7", "bg-surface");
+      expect(li.firstElementChild).toHaveClass("sr-only");
+    });
+    [screen.getByRole("list", { name: "스토어 바로가기" }), screen.getByRole("list", { name: "결제수단" })].forEach((ul) =>
+      expect(ul).not.toHaveClass("overflow-x-auto"),
+    );
+  });
 });
 
 describe("Footer 아랫부분", () => {

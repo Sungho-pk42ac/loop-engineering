@@ -62,7 +62,7 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `surface-campaign-action` | black 15% (다크 동일) | 캠페인 배경 위 반투명 버튼(기획전 '관련 세일 상품 더보기') |
 | | `surface-campaign-chip` / `-chip-icon` / `-chip-active` | white 20% / white 60% / gray-0 (다크 동일) | 캠페인 배경 위 브랜드 칩 기본 배경 / 칩 로고 원 / 선택 칩 배경. 글자는 캠페인 배경 규칙대로 검정 |
 | | `surface-image-tint` | black 2% (다크 동일) | 상품 이미지 위 옅은 틴트(흰 배경 사진 경계, 기획전 카드 원본) |
-| | `surface-sunken` | gray-20 (다크: gray-70) | 한 단계 더 내려간 띠(검색 결과 서브탭 줄) |
+| | `surface-sunken` | gray-20 (다크: gray-70) | 한 단계 더 내려간 띠·칸(검색 결과 서브탭 줄, 푸터 스토어 타일) |
 | | `surface-inverse` | gray-100 | 검정 버튼·헤더 |
 | | `surface-overlay` | black 60% | 모달 뒤 딤, 이미지 위 딤·라벨(배너 딤, 라이브 방송 시각 배지) |
 | ink | `ink` | gray-100 | 본문, 상품명 |
