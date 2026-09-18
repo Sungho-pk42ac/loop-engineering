@@ -76,6 +76,7 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `ink-link` | blue-60 | 텍스트 링크 |
 | | `ink-promo-inverse` | red-50 (다크: red-60) | 반전 배경(검정 헤더) 위 기획전 강조 글자 — 두 모드 모두 4.5:1 |
 | line | `line` / `line-subtle` / `line-strong` | gray-30 / 20 / 100 | 카드 테두리 / 리스트 구분선 / 선택 강조 |
+| | `line-muted` | gray-40 (다크: gray-60) | 비선택 칩 테두리(랭킹 필터 칩) — 흰 배경 위에서 칩 윤곽이 보이는 한 단계 진한 선 |
 | icon | `icon` / `icon-muted` / `icon-inverse` | gray-100 / 50 / 0 | |
 | | `icon-like` | red-50 (다크 동일) | 좋아요(하트) 눌린 상태 채움 |
 | action | `brand` / `brand-hover` | gray-100 / 80 | 주 버튼(무신사 블랙 버튼) |
