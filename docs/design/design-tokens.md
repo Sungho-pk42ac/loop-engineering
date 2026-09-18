@@ -134,6 +134,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 예외: **성별 토글**(#29)은 원본 실측(12/500·600)대로 `detail` + `font-medium`(선택 `font-semibold`)을 쓴다.
 
+예외: **퀵메뉴 서비스 버튼**(#255)은 원본 실측(14/400)대로 `body` + `font-regular` 를 쓴다. 표의 `label`(버튼) 배정과 다르지만 원본 값이 14px 이다.
+
 반응형: KRDS 처럼 모바일에서 `heading` → `title-lg`, `display` → `heading` 으로 한 단계 낮춘다. 예: `text-title-lg md:text-heading`.
 
 ---

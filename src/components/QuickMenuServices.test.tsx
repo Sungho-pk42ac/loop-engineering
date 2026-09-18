@@ -30,6 +30,15 @@ describe("QuickMenuServices", () => {
     within(nav)
       .getAllByRole("link")
       .forEach((a) => expect(a).toHaveClass("py-1", "justify-center", "h-9", "pl-1", "pr-2"));
+    // 실측(255): 라벨 14/400, 아이콘 칸 24 를 svg 가 그대로 채운다
+    within(nav)
+      .getAllByRole("link")
+      .forEach((a) => {
+        expect(a).toHaveClass("text-body", "font-regular");
+        expect(a).not.toHaveClass("text-label", "font-medium");
+        expect(a.querySelector("span")).toHaveClass("size-6", "rounded-xs");
+        expect(a.querySelector("svg")).toHaveAttribute("width", "24");
+      });
     // 모바일 한 줄 가로 스크롤(#16) 유지
     expect(nav.querySelector("ul")).toHaveClass("w-max", "px-4");
   });
