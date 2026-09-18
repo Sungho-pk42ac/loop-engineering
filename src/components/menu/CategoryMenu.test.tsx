@@ -22,6 +22,17 @@ describe("CategoryMenu", () => {
     });
   });
 
+  it("성별 줄: 아래 1px 구분선, 선택은 굵은 검정(밑줄 없음)·비선택은 얇은 회색 (실측 247)", () => {
+    render(<CategoryMenu categories={menuCategories} />);
+
+    const row = screen.getByRole("group", { name: "성별" });
+    expect(row).toHaveClass("border-b", "border-line");
+    const [all, ...rest] = within(row).getAllByText(/전체|남성|여성/);
+    expect(all).toHaveClass("font-semibold", "text-ink");
+    expect(all).not.toHaveClass("underline");
+    rest.forEach((item) => expect(item).toHaveClass("font-regular", "text-ink-muted"));
+  });
+
   it("대분류를 누르면 우측 scrollTop 이 그 구역 offsetTop 으로, 우측 스크롤하면 선택이 따라간다", () => {
     render(<CategoryMenu categories={menuCategories} />);
     const sections = screen.getAllByRole("region");
