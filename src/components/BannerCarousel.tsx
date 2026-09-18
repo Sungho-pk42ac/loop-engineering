@@ -15,7 +15,10 @@ type Direction = "prev" | "next";
 
 // 뷰포트 폭 전체 가로 슬라이드 줄. 3초마다 한 화면씩 넘기고 끝에서 처음으로(#11). 호버해도 멈추지 않는다(원본).
 // 호버 시 이전·다음 버튼(#12): 양 끝은 반대쪽 끝으로, 누르면 자동 넘김 타이머를 다시 센다(원본).
-// 간격 없이 붙인 전폭 줄이라 배너 라운드(2xl)는 쓰지 않는다(원본과 같음).
+// 간격 없이 붙인 줄이라 배너 라운드(2xl)는 쓰지 않는다(원본과 같음).
+// 원본 실측(#151): 최대 1440 가운데, 768 이상 화면 1/3 폭(4:3) 3장, 767 이하 앞뒤 16 남긴 한 장. 글자는 좌하단 20·오른쪽 72 자리,
+// 덮개는 아래로 갈수록 짙어지는 검정 그라데이션(두 모드 모두 검정 — scrim). 원본 투명도 12% 는 우리 밝은 상품 사진 위
+// 흰 글자 대비가 1.3:1 로 §2.3 미달이라 90% 로 올렸다(원본 결함 미모방, 그라데이션 지점은 원본 그대로).
 export function BannerCarousel() {
   const ref = useRef<HTMLElement>(null);
   const timer = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
@@ -50,20 +53,23 @@ export function BannerCarousel() {
   }
 
   return (
-    <div className="group relative">
-      <section ref={ref} aria-label="기획전 배너" className="flex snap-x snap-mandatory overflow-x-auto">
+    <div className="group relative mx-auto max-w-wide">
+      <section
+        ref={ref}
+        aria-label="기획전 배너"
+        className="flex snap-x snap-mandatory scroll-px-4 overflow-x-auto px-4 md:scroll-px-0 md:px-0"
+      >
         {banners.map((banner) => (
-          <Link
-            key={banner.id}
-            href={banner.href}
-            className="relative aspect-4/3 w-62 shrink-0 snap-start bg-surface-subtle md:w-120"
-          >
-            <Image src={banner.imageUrl} alt={banner.title.replace("\n", " ")} fill sizes="(min-width: 768px) 480px, 248px" className="object-cover" />
-            {/* 밝은 이미지 위 흰 글씨 가독성용 딤(검정 60%) */}
-            <div className="absolute inset-0 bg-surface-overlay" />
-            <div className="absolute inset-x-0 bottom-0 flex flex-col gap-1 p-4 text-ink-inverse md:p-6 dark:text-ink">
-              <p className="whitespace-pre-line text-title-sm font-semibold md:text-title-lg md:font-bold">{banner.title}</p>
-              <p className="text-detail">{banner.subtitle}</p>
+          <Link key={banner.id} href={banner.href} className="relative aspect-4/3 w-full shrink-0 snap-start bg-surface md:w-1/3">
+            <Image src={banner.imageUrl} alt={banner.title.replace("\n", " ")} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
+            <div aria-hidden="true" className="absolute inset-0 bg-surface-image-tint" />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-linear-to-b from-transparent from-30% via-surface-overlay via-60% to-scrim opacity-90"
+            />
+            <div className="absolute right-18 bottom-5 left-5 text-ink-inverse dark:text-ink">
+              <p className="line-clamp-2 text-title font-semibold whitespace-pre-line">{banner.title}</p>
+              <p className="mt-2 line-clamp-2 text-label font-semibold whitespace-pre-line">{banner.subtitle}</p>
             </div>
           </Link>
         ))}

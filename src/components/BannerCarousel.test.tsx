@@ -44,6 +44,24 @@ describe("BannerCarousel", () => {
     vi.restoreAllMocks();
   });
 
+  it("슬라이드 폭·덮개·글자 자리 원본 실측(#151)", () => {
+    render(<BannerCarousel />);
+
+    const section = screen.getByRole("region", { name: "기획전 배너" });
+    expect(section.parentElement).toHaveClass("mx-auto", "max-w-wide");
+    expect(section).toHaveClass("px-4", "scroll-px-4", "md:px-0", "md:scroll-px-0");
+    expect(section.querySelector(".bg-surface-overlay")).toBeNull();
+    for (const slide of within(section).getAllByRole("link")) {
+      expect(slide).toHaveClass("w-full", "md:w-1/3", "aspect-4/3", "bg-surface");
+      expect(slide.querySelector(".bg-linear-to-b")).toHaveClass("opacity-90");
+      expect(slide.querySelector(".bg-surface-image-tint")).not.toBeNull();
+      const [title, subtitle] = slide.querySelectorAll("p");
+      expect(title).toHaveClass("text-title", "line-clamp-2");
+      expect(subtitle).toHaveClass("text-label", "font-semibold", "line-clamp-2", "mt-2");
+      expect(title.parentElement).toHaveClass("left-5", "bottom-5", "right-18");
+    }
+  });
+
   it("이전·다음 배너 보기 버튼(type=button)이 있고 인디케이터는 없다", () => {
     render(<BannerCarousel />);
 
