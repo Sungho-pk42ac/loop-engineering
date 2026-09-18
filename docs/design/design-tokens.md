@@ -92,6 +92,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 `scrim` 은 투명도 유틸 없이 **전체화면 이미지 뷰어 배경**(상품 상세 갤러리, #62)에도 쓴다 — 다크 모드에서도 검정이어야 해서 `surface-inverse` 를 쓰지 않는다.
 
+예외: **로그인 안내 부제**(#282 "하나의 계정으로 …")는 원본 실측대로 `ink`(검정)를 쓴다. 표의 `ink-secondary`(설명·부제)와 다르지만 원본이 `#000000` 이고, 위계는 색이 아니라 크기·굵기(워드마크 18/700 vs 부제 14/400)로 준다.
+
 ### 2.3 명도 대비 규칙 (KRDS 매직넘버)
 
 - 본문 글자(`ink`, `ink-secondary`)는 배경 대비 **4.5:1 이상** (KRDS 매직넘버 50).
@@ -134,6 +136,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 예외: **홈 가로 캐러셀 섹션 제목**(라이브 편성표 #17 · 주목할 만한 브랜드 #26 · 스포츠 종목 추천 #31)은 원본 실측(18/500)대로 `title-sm` + `font-medium` 을 쓴다.
 
 예외: **성별 토글**(#29)은 원본 실측(12/500·600)대로 `detail` + `font-medium`(선택 `font-semibold`)을 쓴다.
+
+예외: **로그인 브랜드 워드마크**(#282)는 원본 실측(18px 로고 자리)대로 `title-sm` + `font-bold` 를 쓴다. 표의 권장 굵기 600 보다 진한 것은 로고를 글자로 대신하기 때문이다.
 
 반응형: KRDS 처럼 모바일에서 `heading` → `title-lg`, `display` → `heading` 으로 한 단계 낮춘다. 예: `text-title-lg md:text-heading`.
 

@@ -18,7 +18,8 @@ describe("AuthPanel", () => {
       </AuthPanel>,
     );
 
-    const title = screen.getByRole("heading", { name: "로그인" });
+    // 상단 바 제목은 heading 이 아니라 크롬 라벨이다(#282) — 문서 h1 은 각 페이지가 갖는다
+    const title = screen.getByText("로그인");
     expect(title).toHaveClass("text-body", "text-ink");
     const bar = title.parentElement!;
     expect(bar).toHaveClass("h-13", "bg-surface-subtle", "px-4", "py-3");

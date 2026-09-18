@@ -29,6 +29,8 @@ export default function SignUpPage() {
   return (
     <AuthPanel title="회원가입">
       <div className="flex flex-col gap-6 py-6">
+        {/* 상단 바 제목이 heading 이 아니게 되면서(#282) 이 페이지의 h1 을 남긴다. 보이는 제목은 #281 소관 */}
+        <h1 className="sr-only">회원가입</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <label htmlFor="email" className="flex flex-col gap-2 text-label text-ink">
             이메일

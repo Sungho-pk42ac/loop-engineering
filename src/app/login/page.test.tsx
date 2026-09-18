@@ -15,6 +15,19 @@ describe("/login 폼 (실측 278)", () => {
   });
   afterEach(cleanup);
 
+  it("상단 브랜드 줄이 h1 이고 안내 부제가 따라온다 (실측 282)", () => {
+    const brand = screen.getByRole("heading", { level: 1 });
+    expect(brand).toHaveTextContent("패캠 스토어");
+    expect(brand).toHaveClass("mt-8", "text-center", "text-title-sm", "font-bold", "text-ink");
+
+    const lead = screen.getByText("하나의 계정으로 패캠 스토어의 모든 서비스를 이용하세요");
+    expect(lead).toHaveClass("my-4", "text-center", "text-body", "font-regular", "text-ink");
+    // 좌측 정렬 '로그인' 제목은 더 이상 heading 이 아니다
+    expect(screen.queryByRole("heading", { name: "로그인" })).toBeNull();
+    // 폼 첫 칸은 브랜드 줄 아래
+    expect(brand.compareDocumentPosition(screen.getByLabelText("이메일")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it("보이는 라벨 없이 placeholder 만 쓰고, 라벨은 sr-only 로 남아 접근성 이름이 유지된다", () => {
     const email = screen.getByLabelText("이메일");
     const password = screen.getByLabelText("비밀번호");
