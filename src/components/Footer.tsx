@@ -10,20 +10,11 @@ import {
   paymentMethods,
   snsLinks,
   termsLinks,
-  type BenefitIcon,
   type FooterLink as FooterLinkData,
   type SnsName,
 } from "@/data/footer";
 import { STORE_TABS } from "./Header";
 import { Icon } from "./Icon";
-
-const BENEFIT_ICON: Record<BenefitIcon, string> = {
-  card: "M3 7h18v10H3zM3 11h18",
-  percent: "M6 18L18 6M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z",
-  gift: "M4 11h16v9H4zM3 7h18v4H3zM12 7v13M12 7c-1-3-5-3-5 0M12 7c1-3 5-3 5 0",
-  coin: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9 12h6",
-  truck: "M3 6h11v10H3zM14 10h4l3 3v3h-7M7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
-};
 
 const SNS_ICON: Record<SnsName, string> = {
   instagram: "M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM17.5 6.5h.01",
@@ -47,9 +38,9 @@ function FooterLink({ link, className }: { link: FooterLinkData; className: stri
 
 function SectionTitle({ title }: { title: string }) {
   return (
-    <div className="mb-3 flex items-center justify-between">
-      <h2 className="text-title-sm font-semibold text-ink">{title}</h2>
-      <Link href="/products" className="text-label text-ink-secondary underline">
+    <div className="flex items-center justify-between pb-2">
+      <h2 className="text-body font-medium text-ink">{title}</h2>
+      <Link href="/products" className="text-label font-regular text-ink-muted underline">
         전체보기
       </Link>
     </div>
@@ -57,65 +48,61 @@ function SectionTitle({ title }: { title: string }) {
 }
 
 // 푸터 윗부분(#52: 스토어 타일·공지·결제 혜택) + 아랫부분(#53: 링크 5열·고객센터·회사 정보·약관·인증·SNS).
+// 윗부분 원본 실측(#149): 전체 폭 좌우 16, 글자 없는 작은 타일(로고 자리)·13px 행·블록마다 옅은 아래 구분선, 767 이하 3열·6열 그리드.
+// 원본 로고·카드사 이름은 옮기지 않아 칸만 두고 이름은 sr-only.
 // 회사 정보·약관·전화는 모두 가상 값(클론 규칙).
 export function Footer() {
   return (
-    <footer className="bg-surface-subtle">
-      <div className="mx-auto flex max-w-page flex-col gap-8 px-4 pt-10 pb-16 md:px-6">
-        <ul aria-label="스토어 바로가기" className="flex gap-2 overflow-x-auto">
+    <footer className="bg-surface-muted">
+      <div className="flex flex-col px-4 pb-16 md:pt-4">
+        <ul aria-label="스토어 바로가기" className="grid grid-cols-3 gap-1 border-b border-line-subtle py-6 md:flex md:flex-wrap">
           {STORE_TABS.map((store) => (
-            <li key={store} className="shrink-0 lg:flex-1">
-              <Link
-                href="/products"
-                className="flex h-12 items-center justify-center whitespace-nowrap rounded-md bg-surface-muted px-4 text-label font-bold text-ink hover:opacity-80"
-              >
-                {store}
+            <li key={store} className="md:w-20">
+              <Link href="/products" className="block h-8 rounded-sm bg-surface-sunken">
+                <span className="sr-only">{store}</span>
               </Link>
             </li>
           ))}
         </ul>
 
-        <section>
+        <section className="mt-6 border-b border-line-subtle pb-4">
           <SectionTitle title="공지사항" />
           <ul>
             {notices.map(({ title, date, isNew }) => (
               <li key={title}>
-                <Link href="/products" className="flex items-center justify-between gap-4 py-2 text-body text-ink hover:underline">
-                  <span className="flex min-w-0 items-center gap-2">
+                <Link href="/products" className="flex items-start justify-between gap-4 py-1 text-label font-regular text-ink">
+                  <span className="relative pr-3">
+                    {title}
                     {isNew && (
                       <>
-                        <span data-new-dot aria-hidden="true" className="size-2 shrink-0 rounded-full bg-accent" />
+                        <span data-new-dot aria-hidden="true" className="absolute top-0 right-0 size-1 rounded-full bg-accent" />
                         <span className="sr-only">새 글</span>
                       </>
                     )}
-                    <span className="truncate">{title}</span>
                   </span>
-                  <span className="shrink-0 text-detail text-ink-secondary">{date}</span>
+                  <span className="w-18 shrink-0 text-label font-regular text-ink-muted">{date}</span>
                 </Link>
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="border-t border-line pt-8">
+        <section className="mt-6 border-b border-line-subtle pb-4">
           <SectionTitle title="결제 혜택" />
-          <ul className="flex flex-col gap-2">
-            {paymentBenefits.map(({ icon, text }) => (
-              <li key={text} className="flex items-center gap-2 text-body text-ink-secondary">
-                <span className="text-icon-muted">
-                  <Icon d={BENEFIT_ICON[icon]} />
-                </span>
-                {text}
+          <ul className="pt-1">
+            {paymentBenefits.map(({ lead, detail }) => (
+              <li key={lead} className="flex items-start py-1">
+                <span aria-hidden="true" className="size-5 shrink-0 rounded-full bg-surface" />
+                <p className="pl-2 text-label font-regular">
+                  <span className="text-ink">{lead}</span> <span className="text-ink-muted">{detail}</span>
+                </p>
               </li>
             ))}
           </ul>
-          <ul aria-label="결제수단" className="mt-4 flex gap-2 overflow-x-auto">
+          <ul aria-label="결제수단" className="mt-3 mb-2 grid grid-cols-6 gap-1 md:flex">
             {paymentMethods.map((method) => (
-              <li
-                key={method}
-                className="flex h-8 shrink-0 items-center whitespace-nowrap rounded-sm bg-surface-muted px-3 text-caption text-ink-secondary"
-              >
-                {method}
+              <li key={method} className="h-7 rounded-sm bg-surface md:w-13">
+                <span className="sr-only">{method}</span>
               </li>
             ))}
           </ul>
