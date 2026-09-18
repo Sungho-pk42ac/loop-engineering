@@ -12,13 +12,13 @@ export default function SignUpPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     const password = String(form.get("password"));
     if (password !== String(form.get("passwordConfirm"))) {
       setError("비밀번호가 일치하지 않습니다.");
-    } else if (signUp(String(form.get("email")), password) === "duplicate") {
+    } else if ((await signUp(String(form.get("email")), password)) === "duplicate") {
       setError("이미 가입된 이메일입니다.");
     } else {
       router.push("/login");
