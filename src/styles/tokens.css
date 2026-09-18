@@ -93,6 +93,7 @@
   --color-ink-muted: var(--ms-gray-60);
   --color-ink-disabled: var(--ms-gray-40);
   --color-ink-inverse: var(--ms-gray-0);
+  --color-ink-inverse-muted: var(--ms-alpha-white-60);
   --color-ink-link: var(--ms-blue-60);
   --color-ink-promo-inverse: var(--ms-red-50);
 
@@ -215,6 +216,7 @@
     --color-ink-muted: var(--ms-gray-40);
     --color-ink-disabled: var(--ms-gray-70);
     --color-ink-inverse: var(--ms-gray-100);
+    --color-ink-inverse-muted: var(--ms-alpha-black-60);
     --color-ink-promo-inverse: var(--ms-red-60);
     --color-line: var(--ms-gray-80);
     --color-line-subtle: var(--ms-gray-90);

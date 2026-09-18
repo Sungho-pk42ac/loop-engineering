@@ -73,6 +73,7 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `ink-muted` | gray-60 (다크: gray-40) | 비선택 탭·결과 개수·카드 보조 설명·회색 밑줄 '더보기' 링크 — 회색 배경 위에서도 4.5:1 |
 | | `ink-disabled` | gray-40 | 비활성 |
 | | `ink-inverse` | gray-0 | 검정 배경 위 글자 |
+| | `ink-inverse-muted` | white 60% (다크: black 60%) | 반전 배경 위 비선택 탭 글자(GNB 탭 줄) — 두 모드 모두 4.5:1 |
 | | `ink-link` | blue-60 | 텍스트 링크 |
 | | `ink-promo-inverse` | red-50 (다크: red-60) | 반전 배경(검정 헤더) 위 기획전 강조 글자 — 두 모드 모두 4.5:1 |
 | line | `line` / `line-subtle` / `line-strong` | gray-30 / 20 / 100 | 카드 테두리 / 리스트 구분선 / 선택 강조 |
@@ -128,6 +129,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 | `caption` | 11 / 14 | 400 | 뱃지, 안내 문구 |
 
 예외: **기획전 상품 카드** 브랜드명은 원본 실측(11/600/14)대로 `caption` + `font-semibold` 를 쓴다.
+
+예외: **GNB 탭 줄**(#136)은 원본 실측대로 탭 `body`, 기획전 탭 `detail` + `font-semibold` 를 쓰고, 레이아웃도 §6 표 대신 전체 폭 `px-2`·칸 `px-2`·gap 0 이다.
 
 굵기: `font-regular`(400) `font-medium`(500) `font-semibold`(600) `font-bold`(700). 무신사는 상품명 400/500, 가격 600/700.
 
