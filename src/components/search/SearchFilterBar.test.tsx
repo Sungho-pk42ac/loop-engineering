@@ -41,7 +41,8 @@ describe("SearchFilterBar", () => {
     const quick = within(screen.getByRole("group", { name: "빠른 필터" }));
     expect(quick.getByRole("button", { name: "별점" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("button", { name: "상세필터" }).querySelector(".bg-accent")).not.toBeNull();
-    fireEvent.click(screen.getByLabelText("별점 필터 제거"));
+    // 별점 칩 라벨은 선택 값(reviewGradeOptions)으로 표시된다(#112)
+    fireEvent.click(screen.getByLabelText("4.5점 이상 필터 제거"));
     const params = lastUrl();
     expect(params.get("minReviewGrade")).toBeNull();
     expect(params.get("gf")).toBe("M");

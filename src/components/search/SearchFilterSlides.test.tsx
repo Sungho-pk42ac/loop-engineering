@@ -75,4 +75,22 @@ describe("필터 레이어 본문(#112)", () => {
     openLayer(/^별점/);
     expect(within(screen.getByRole("dialog")).getByLabelText("4.5점 이상")).toBeChecked();
   });
+
+  it("레이어 라디오 '4점 이상'(minReviewGrade=4)도 적용 필터 줄·상세필터 배지에 잡힌다(#112 리뷰)", () => {
+    query = "keyword=%EB%A8%B8%EA%B7%B8&minReviewGrade=4";
+    render(<SearchFilterBar />);
+
+    // 필터 줄의 적용 필터 줄(레이어 밖)
+    expect(screen.getByRole("button", { name: "4점 이상 필터 제거" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "상세필터" }).querySelector(".bg-accent")).not.toBeNull();
+
+    openLayer(/^별점/);
+    const dialog = screen.getByRole("dialog");
+    expect(within(dialog).getByRole("tab", { name: "별점 1" })).toBeInTheDocument();
+    expect(within(dialog).getByLabelText("4점 이상")).toBeChecked();
+    expect(within(dialog).getByRole("button", { name: "4점 이상 필터 제거" })).toBeInTheDocument();
+
+    fireEvent.click(within(dialog).getByRole("button", { name: "4점 이상 필터 제거" }));
+    expect(lastUrl().get("minReviewGrade")).toBeNull();
+  });
 });
