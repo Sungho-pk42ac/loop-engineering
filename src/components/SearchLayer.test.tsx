@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { popularKeywords, risingKeywords } from "@/data/search";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { popularKeywords, risingKeywords, searchPlaceholders } from "@/data/search";
 import { Header } from "./Header";
 
 const push = vi.fn();
@@ -16,6 +16,32 @@ describe("헤더 로고·검색창 줄 / SearchLayer", () => {
   afterEach(() => {
     cleanup();
     push.mockClear();
+  });
+
+  it("헤더 문구는 3.8초마다 위로 밀려 교체되고 돋보기는 오른쪽 끝 (실측 252)", () => {
+    vi.useFakeTimers();
+    render(<Header />);
+
+    const button = screen.getByRole("button", { name: new RegExp(searchPlaceholders[0]) });
+    const track = button.querySelector("span > span")!;
+    const texts = [...track.children].map((c) => c.textContent);
+    expect(texts).toEqual(searchPlaceholders);
+    // 한 칸 = 100 / 문구 수 % (트랙 자기 높이 기준이라 -100% 면 트랙이 통째로 밀려 빈칸이 된다)
+    const step = 100 / searchPlaceholders.length;
+    expect(track).toHaveStyle({ transform: "translateY(-0%)" });
+    // 보이는 문구만 접근성 이름에 남는다
+    expect(button).toHaveAccessibleName(searchPlaceholders[0]);
+    // 돋보기는 문구 다음(오른쪽 끝)
+    expect(button.lastElementChild!.querySelector("svg")).not.toBeNull();
+
+    act(() => void vi.advanceTimersByTime(3800));
+    expect(track).toHaveStyle({ transform: `translateY(-${step}%)` });
+    expect(screen.getByRole("button", { name: searchPlaceholders[1] })).toBe(button);
+    // 마지막 문구까지 돌면 처음으로 되돌아온다
+    act(() => void vi.advanceTimersByTime(3800 * (searchPlaceholders.length - 1)));
+    expect(track).toHaveStyle({ transform: "translateY(-0%)" });
+    expect(button).toHaveAccessibleName(searchPlaceholders[0]);
+    vi.useRealTimers();
   });
 
   it("스토어 바 아래 줄에 패캠 스토어 로고 링크와 검색창, 앱테크·알림 링크가 있다", () => {
