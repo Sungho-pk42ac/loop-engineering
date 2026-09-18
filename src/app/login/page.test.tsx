@@ -91,6 +91,43 @@ describe("/login 폼 (실측 278)", () => {
     expect(screen.getByRole("link", { name: "아이디 찾기" }).parentElement).toHaveClass("divide-x", "divide-line-subtle", "text-ink-tertiary");
   });
 
+  it("빈 값 제출: 브라우저 기본 검사 대신 칸별 빨간 테두리와 칸 아래 문구 (실측 280)", () => {
+    expect(screen.getByLabelText("이메일").closest("form")).toHaveAttribute("noValidate");
+    expect(screen.getByLabelText("이메일")).not.toHaveAttribute("required");
+
+    fireEvent.click(screen.getByRole("button", { name: "로그인" }));
+
+    const alerts = screen.getAllByRole("alert");
+    const emailError = alerts[0];
+    const passwordError = alerts[1];
+    expect(emailError).toHaveTextContent("통합계정 또는 이메일을 입력해 주세요.");
+    expect(passwordError).toHaveTextContent("비밀번호를 입력해 주세요.");
+    alerts.forEach((p) => expect(p).toHaveClass("mt-2", "text-caption", "text-danger"));
+
+    const email = screen.getByLabelText("이메일");
+    const password = screen.getByLabelText("비밀번호");
+    expect(email).toHaveAttribute("aria-invalid", "true");
+    expect(email).toHaveAttribute("aria-describedby", emailError.id);
+    expect(password).toHaveAttribute("aria-describedby", passwordError.id);
+    expect(email).toHaveClass("border-danger");
+    expect(push).not.toHaveBeenCalled();
+
+    // 다시 입력하면 그 칸의 에러만 사라진다
+    fireEvent.change(email, { target: { value: "a@b.com" } });
+    expect(screen.queryByText("통합계정 또는 이메일을 입력해 주세요.")).toBeNull();
+    expect(screen.getByText("비밀번호를 입력해 주세요.")).toBeInTheDocument();
+    expect(email).not.toHaveClass("border-danger");
+  });
+
+  it("한 칸만 비면 그 칸의 문구만 뜬다", () => {
+    fireEvent.change(screen.getByLabelText("이메일"), { target: { value: "a@b.com" } });
+    fireEvent.click(screen.getByRole("button", { name: "로그인" }));
+
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
+    expect(screen.getByRole("alert")).toHaveTextContent("비밀번호를 입력해 주세요.");
+    expect(screen.getByLabelText("이메일")).not.toHaveClass("border-danger");
+  });
+
   it("가입한 계정으로 로그인하면 /products 로 가고, 틀리면 경고 문구가 남는다", async () => {
     await signUp("a@b.com", "pw1234");
 
@@ -99,6 +136,9 @@ describe("/login 폼 (실측 278)", () => {
     fireEvent.click(screen.getByRole("button", { name: "로그인" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("이메일 또는 비밀번호가 올바르지 않습니다.");
     expect(push).not.toHaveBeenCalled();
+    // 자격 불일치는 두 칸 모두 빨간 테두리(문구는 비밀번호 칸 아래 한 곳)
+    expect(screen.getByLabelText("이메일")).toHaveClass("border-danger");
+    expect(screen.getByLabelText("비밀번호")).toHaveClass("border-danger");
 
     fireEvent.change(screen.getByLabelText("비밀번호"), { target: { value: "pw1234" } });
     fireEvent.click(screen.getByRole("button", { name: "로그인" }));
