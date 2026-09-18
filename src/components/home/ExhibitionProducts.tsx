@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type MouseEvent } from "react";
 import { filterByBrand, type ExhibitionProduct } from "@/data/exhibition";
 import { ScrollRow } from "../ScrollRow";
 import { ExhibitionProductCard } from "./ExhibitionProductCard";
@@ -16,6 +16,17 @@ function columnStep(el: HTMLElement): number {
   return Math.max(1, fullyVisible - 1) * column;
 }
 
+// 원본(375): 칩을 누르면 선택 칩이 가운데 근처로 오도록 칩 줄만 부드럽게 가로 스크롤(#184). 페이지 세로 스크롤은 그대로.
+function centerChip(group: HTMLElement, chip: HTMLElement) {
+  const g = group.getBoundingClientRect();
+  const c = chip.getBoundingClientRect();
+  const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  group.scrollTo({
+    left: group.scrollLeft + c.left - g.left + c.width / 2 - group.clientWidth / 2,
+    behavior: reduce ? "auto" : "smooth",
+  });
+}
+
 function toColumns<T>(items: T[], perColumn: number): T[][] {
   const columns: T[][] = [];
   for (let i = 0; i < items.length; i += perColumn) columns.push(items.slice(i, i + perColumn));
@@ -27,6 +38,7 @@ function toColumns<T>(items: T[], perColumn: number): T[][] {
 // 누르면 URL 변화 없이 목록만 즉시 교체. 원본 흰 글자·캠페인색 글자는 대비 미달이라 검정(#20 규칙). 로고 에셋 대신 브랜드 첫 글자.
 export function ExhibitionProducts({ brands, products }: { brands: string[]; products: ExhibitionProduct[] }) {
   const [selected, setSelected] = useState<string | null>(null);
+  const groupRef = useRef<HTMLDivElement>(null);
   const chips: { label: string; value: string | null }[] = [
     { label: "전체", value: null },
     ...brands.map((b) => ({ label: b, value: b })),
@@ -37,7 +49,7 @@ export function ExhibitionProducts({ brands, products }: { brands: string[]; pro
 
   return (
     <>
-      <div role="group" aria-label="브랜드 필터" className="scrollbar-none mb-3 overflow-x-auto px-4">
+      <div ref={groupRef} role="group" aria-label="브랜드 필터" className="scrollbar-none mb-3 overflow-x-auto px-4">
         <div className="flex w-max flex-col gap-2">
           {rows.map((row, r) => (
             <div key={r} className="flex gap-1">
@@ -48,7 +60,10 @@ export function ExhibitionProducts({ brands, products }: { brands: string[]; pro
                     key={label}
                     type="button"
                     aria-pressed={active}
-                    onClick={() => setSelected(value)}
+                    onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                      setSelected(value);
+                      if (groupRef.current) centerChip(groupRef.current, e.currentTarget);
+                    }}
                     className={`flex h-8 shrink-0 items-center gap-1 rounded-full py-1 pr-3 pl-1 text-label whitespace-nowrap ${
                       active ? "bg-surface-campaign-chip-active font-semibold" : "bg-surface-campaign-chip font-regular"
                     }`}
