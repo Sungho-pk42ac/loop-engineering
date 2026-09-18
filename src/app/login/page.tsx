@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AuthPanel } from "@/components/AuthPanel";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui";
 import { login } from "@/lib/auth";
@@ -23,9 +24,8 @@ export default function LoginPage() {
   }
 
   return (
-    <section className="mx-auto max-w-page px-4 py-10 md:px-6">
-      <div className="mx-auto flex max-w-96 flex-col gap-6">
-        <h1 className="text-title-lg font-bold text-ink">로그인</h1>
+    <AuthPanel title="로그인">
+      <div className="flex flex-col gap-6 py-6">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <label htmlFor="email" className="flex flex-col gap-2 text-label text-ink">
             이메일
@@ -55,6 +55,6 @@ export default function LoginPage() {
           회원가입
         </Link>
       </div>
-    </section>
+    </AuthPanel>
   );
 }

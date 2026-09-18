@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { SiteChrome } from "@/components/SiteChrome";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,9 +24,10 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-full flex-col bg-surface text-ink">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        {/* /login·/signup 은 전역 헤더·푸터 없이 단독 패널로 보여준다(#277) */}
+        <SiteChrome header={<Header />} footer={<Footer />}>
+          {children}
+        </SiteChrome>
       </body>
     </html>
   );
