@@ -23,13 +23,29 @@ describe("ProductGallery", () => {
     screen.getAllByRole("img").forEach((img) => expect(img).toHaveAttribute("alt", "미니멀 화이트 머그컵"));
   });
 
+  it("인디케이터는 알약 2개(텍스트 + 크게 보기)로 나뉜다. 배경은 대비 때문에 60% 유지 (실측 223)", () => {
+    render(<ProductGallery name="머그컵" images={["/images/product-01.png", "/images/product-02.png"]} />);
+
+    const zoom = screen.getByRole("button", { name: "크게 보기" });
+    expect(zoom).toHaveClass("size-6", "rounded-sm", "bg-surface-overlay");
+    expect(zoom.querySelector("svg")).toHaveAttribute("width", "20");
+    const text = screen.getByText("1 / 2");
+    expect(text.tagName).toBe("SPAN");
+    expect(text).toHaveClass("h-6", "rounded-sm", "bg-surface-overlay", "text-label");
+    expect(text.parentElement).toHaveClass("gap-1");
+  });
+
   it("두 번째 썸네일을 누르면 인디케이터 2 / N, 그 썸네일만 선택 테두리", () => {
     renderGallery();
 
     fireEvent.click(screen.getByRole("button", { name: "이미지 2" }));
     expect(screen.getByText(`2 / ${images.length}`)).toBeInTheDocument();
     const thumbs = within(screen.getByRole("list", { name: "이미지 목록" })).getAllByRole("button");
-    thumbs.forEach((b, i) => expect(b).toHaveClass(i === 1 ? "border-line-strong" : "border-transparent"));
+    // 선택 테두리는 이미지를 깎지 않도록 이미지 위 오버레이에 겹쳐 그린다(ring), 전환 250ms (실측 223)
+    thumbs.forEach((b, i) => expect(b.querySelector("span")).toHaveClass(i === 1 ? "ring-scrim" : "ring-transparent"));
+    // 링은 이미지 위 오버레이에 건다(inset 그림자는 자식 아래에 깔린다). 버튼은 outline 을 비워 base 포커스 링을 살린다
+    thumbs.forEach((b) => expect(b.querySelector("span")).toHaveClass("ring-2", "ring-inset", "transition-shadow", "duration-base"));
+    thumbs.forEach((b) => expect(b.className).not.toMatch(/outline-/));
   });
 
   it("크게 보기 → 전체화면 뷰어, 다음 화살표로 n/N +1, Esc 로 닫힘", () => {
