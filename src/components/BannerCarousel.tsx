@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef } from "react";
 import { banners } from "@/data/banners";
 import { nextScrollLeft, pageStep, prevScrollLeft } from "@/lib/carousel";
-import { Icon } from "./Icon";
+import { Chevron } from "./Chevron";
 
 export const AUTOPLAY_MS = 3000;
 // 이동 중 연속 클릭은 무시한다(원본 500ms 전환).
@@ -80,7 +80,7 @@ export function BannerCarousel() {
             direction === "prev" ? "left-4" : "right-4"
           }`}
         >
-          <Icon d={direction === "prev" ? "M14 6l-6 6 6 6" : "M10 6l6 6-6 6"} />
+          <Chevron direction={direction} />
         </button>
       ))}
     </div>

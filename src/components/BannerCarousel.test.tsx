@@ -52,4 +52,19 @@ describe("BannerCarousel", () => {
     }
     expect(screen.getAllByRole("button")).toHaveLength(2);
   });
+
+  it("이전·다음 꺾쇠는 40×40 · 선 1.5 · 각진 끝(butt/miter), 원본 실측(#156)", () => {
+    render(<BannerCarousel />);
+
+    for (const name of ["이전 배너 보기", "다음 배너 보기"]) {
+      const svg = screen.getByRole("button", { name }).querySelector("svg")!;
+      expect(svg).toHaveAttribute("width", "40");
+      expect(svg).toHaveAttribute("height", "40");
+      expect(svg).toHaveAttribute("viewBox", "0 0 40 40");
+      expect(svg).toHaveAttribute("stroke-width", "1.5");
+      const path = svg.querySelector("path")!;
+      expect(path).toHaveAttribute("stroke-linecap", "butt");
+      expect(path).toHaveAttribute("stroke-linejoin", "miter");
+    }
+  });
 });
