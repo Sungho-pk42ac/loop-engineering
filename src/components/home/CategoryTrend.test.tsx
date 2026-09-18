@@ -35,9 +35,18 @@ describe("CategoryTrend", () => {
     expect(more).toHaveAttribute("rel", "noopener noreferrer");
 
     expect(chips()).toHaveLength(10);
+    // 실측(292): 알약 칩 + 미선택 테두리 line-muted, 모바일 2줄·md 1줄
+    const group = screen.getByRole("group", { name: "브랜드" });
+    expect(group).toHaveClass("grid", "grid-flow-col", "grid-rows-2", "md:grid-rows-1");
+    chips().forEach((chip) => expect(chip).toHaveClass("rounded-full", "py-1", "pr-3", "pl-1"));
+    expect(chips()[1]).toHaveClass("border-line-muted");
     expect(chips()[0]).toHaveAttribute("aria-pressed", "true");
-    const items = within(screen.getByRole("list")).getAllByRole("listitem");
+    const list = screen.getByRole("list");
+    // 캐러셀도 모바일 2줄(상품 10개 = 5열 × 2), 카드 폭 108 → md 260
+    expect(list).toHaveClass("grid", "grid-flow-col", "grid-rows-2", "md:grid-rows-1");
+    const items = within(list).getAllByRole("listitem");
     expect(items).toHaveLength(trendProductsOf(first.id).length);
+    items.forEach((li) => expect(li).toHaveClass("w-27", "md:w-65"));
     expect(screen.getAllByText(formatPrice(trendProductsOf(first.id)[0].price)).length).toBeGreaterThan(0);
   });
 

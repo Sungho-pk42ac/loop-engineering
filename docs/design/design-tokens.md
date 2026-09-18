@@ -76,6 +76,7 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `ink-link` | blue-60 | 텍스트 링크 |
 | | `ink-promo-inverse` | red-50 (다크: red-60) | 반전 배경(검정 헤더) 위 기획전 강조 글자 — 두 모드 모두 4.5:1 |
 | line | `line` / `line-subtle` / `line-strong` | gray-30 / 20 / 100 | 카드 테두리 / 리스트 구분선 / 선택 강조 |
+| | `line-muted` | gray-40 | 비선택 칩 테두리(브랜드 칩 #292 — 원본 #cccccc) |
 | icon | `icon` / `icon-muted` / `icon-inverse` | gray-100 / 50 / 0 | |
 | | `icon-like` | red-50 (다크 동일) | 좋아요(하트) 눌린 상태 채움 |
 | action | `brand` / `brand-hover` | gray-100 / 80 | 주 버튼(무신사 블랙 버튼) |
@@ -95,6 +96,7 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 - 본문 글자(`ink`, `ink-secondary`)는 배경 대비 **4.5:1 이상** (KRDS 매직넘버 50).
 - 보조 글자(`ink-tertiary`)·선·아이콘은 **3:1 이상** (매직넘버 40). `ink-tertiary`(gray-50, #8a8a8a) 는 흰 배경에서 약 3.3:1 이므로 **본문에 쓰지 않는다**.
+- 예외: **비선택 칩 테두리**(`line-muted`, 카테고리 트렌드 #292)는 원본 실측 `#cccccc`(흰 배경 1.6:1)를 그대로 쓴다. 선택 상태는 테두리 색이 아니라 굵기·글자색(`line-strong`·`font-semibold`)으로 구분되므로, 이 선이 안 보여도 상태를 읽는 데 지장이 없다.
 - `ink-disabled` 는 대비 기준 예외(비활성 상태 표시용).
 
 ### 2.4 선명한 화면 모드(다크)
@@ -184,6 +186,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 예외: 원본이 4px 로 둥근 **가로 캐러셀 카드**(라이브 편성표 카드 등, 테두리·그림자 없음)는 `rounded-xl` 대신 `rounded-sm` 을 쓴다(원본 실측).
 
 예외: 캠페인 배경 위 **브랜드 칩**(기획전 필터, 원본 알약 radius 32)은 `rounded-sm` 대신 `rounded-full` 을 쓴다(원본 실측).
+
+예외: **카테고리 트렌드 브랜드 칩**(#292, 흰 배경 위, 원본 알약 radius 32)도 `rounded-full` 을 쓴다(원본 실측).
 
 예외: **기획전 상품 카드**(간격 0 가로 캐러셀, 원본 radius 0·무테·그림자 없음)는 라운드·테두리 없이 평면으로 둔다(원본 실측).
 

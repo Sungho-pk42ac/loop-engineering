@@ -99,6 +99,7 @@
   /* 선(line) */
   --color-line: var(--ms-gray-30);
   --color-line-subtle: var(--ms-gray-20);
+  --color-line-muted: var(--ms-gray-40);
   --color-line-strong: var(--ms-gray-100);
 
   /* 아이콘 */
