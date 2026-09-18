@@ -15,13 +15,13 @@ const getSecond = () => Math.floor(Date.now() / 1000);
 const getServerSecond = () => null;
 
 // 기획전 배너 하단 줄(#21). 원본 실측: 카운트다운과 혜택 문구가 같은 자리에 겹쳐 4초마다 교차 페이드,
-// 13px/400/18 · 투명도 80% · 숫자 고정폭 · 줄바꿈 없음. 페이드는 원본 1s 대신 §7 토큰 250ms.
+// 13px/400/18 · 투명도 80% · 숫자 고정폭 · 줄바꿈 없음. 페이드는 원본 실측 1s(§7 duration-slow, #180).
 export function ExhibitionCountdown({ endsAt, subtitle }: { endsAt: string; subtitle: string }) {
   const second = useSyncExternalStore(subscribeSecond, getSecond, getServerSecond);
   const showCountdown = second !== null && Math.floor(second / SWAP_SECONDS) % 2 === 0;
   const remaining = second === null ? 0 : new Date(endsAt).getTime() - second * 1000;
 
-  const line = "col-start-1 row-start-1 whitespace-nowrap transition-opacity duration-250 motion-reduce:transition-none";
+  const line = "col-start-1 row-start-1 whitespace-nowrap transition-opacity duration-slow motion-reduce:transition-none";
 
   return (
     <span className="grid w-full text-center text-label font-regular">

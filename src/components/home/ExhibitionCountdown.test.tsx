@@ -37,6 +37,8 @@ describe("ExhibitionCountdown", () => {
 
     expect(countdown()).toHaveClass("opacity-80");
     expect(subtitle()).toHaveClass("opacity-0");
+    // 교차 페이드는 원본 실측 1s(#180)
+    [countdown(), subtitle()].forEach((line) => expect(line).toHaveClass("transition-opacity", "duration-slow"));
 
     act(() => {
       vi.advanceTimersByTime(SWAP_SECONDS * 1000);

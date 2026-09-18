@@ -57,6 +57,7 @@
   /* 모션 */
   --ms-duration-fast: 150ms;
   --ms-duration-base: 250ms;
+  --ms-duration-slow: 1000ms;
   --ms-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --ms-ease-out: cubic-bezier(0, 0, 0.2, 1);
 }
@@ -190,6 +191,7 @@
   --ease-standard: var(--ms-ease-standard);
   --ease-out: var(--ms-ease-out);
   --default-transition-duration: var(--ms-duration-fast);
+  --transition-duration-slow: var(--ms-duration-slow);
   --default-transition-timing-function: var(--ms-ease-standard);
 
   /* z-index 층 */
