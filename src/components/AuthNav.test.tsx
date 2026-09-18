@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { login, SESSION_KEY, USERS_KEY } from "@/lib/auth";
+import { login, SESSION_KEY, signUp } from "@/lib/auth";
 import { Header, STORE_TABS } from "./Header";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }), usePathname: () => "/products" }));
@@ -40,12 +40,12 @@ describe("Header / AuthNav", () => {
     expect(screen.queryByText("a@b.com")).not.toBeInTheDocument();
   });
 
-  it("이미 렌더된 Header 도 login() 직후 이메일로 바뀐다 (레이아웃은 재마운트되지 않음)", () => {
-    localStorage.setItem(USERS_KEY, JSON.stringify([{ email: "a@b.com", password: "pw1234" }]));
+  it("이미 렌더된 Header 도 login() 직후 이메일로 바뀐다 (레이아웃은 재마운트되지 않음)", async () => {
+    await signUp("a@b.com", "pw1234");
     render(<Header />);
 
-    act(() => {
-      login("a@b.com", "pw1234");
+    await act(async () => {
+      await login("a@b.com", "pw1234");
     });
 
     expect(screen.getByText("a@b.com")).toBeInTheDocument();

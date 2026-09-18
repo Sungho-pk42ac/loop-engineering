@@ -12,10 +12,10 @@ export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState(false);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    if (login(String(form.get("email")), String(form.get("password")))) {
+    if (await login(String(form.get("email")), String(form.get("password")))) {
       router.push("/products");
     } else {
       setError(true);
