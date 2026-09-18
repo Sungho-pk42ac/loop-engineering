@@ -21,6 +21,15 @@ describe("ExhibitionProducts", () => {
     expect(chips[0].parentElement!.children).toHaveLength(8);
   });
 
+  it("칩 스크롤 상자는 전폭 기준 모든 폭 좌우 16(#182): px-4, max-w-page·md:px-6 없음", () => {
+    renderProducts();
+
+    const group = screen.getByRole("group", { name: "브랜드 필터" });
+    expect(group).toHaveClass("px-4", "overflow-x-auto");
+    expect(group).not.toHaveClass("max-w-page");
+    expect(group).not.toHaveClass("md:px-6");
+  });
+
   it("브랜드 칩을 누르면 그 칩만 선택(aria-pressed)·목록은 그 브랜드만, URL 은 그대로, '전체'로 복귀", () => {
     renderProducts();
     const href = location.href;
