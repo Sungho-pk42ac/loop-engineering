@@ -2,16 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 import { popularKeywords, risingKeywords, searchPlaceholders, type RankChange } from "@/data/search";
 import { searchResultHref } from "@/lib/search";
 import { Icon, ICON_PATHS } from "./Icon";
 
 // 레이어는 sticky 헤더의 쌓임 맥락(z-sticky)을 벗어나도록 body 에 portal 로 렌더한다.
-// 자리표시 문구는 클라이언트에서만 무작위로 고른다(SSR·하이드레이션은 첫 문구).
-const clientIndex = Math.floor(Math.random() * searchPlaceholders.length);
-const noopSubscribe = () => () => {};
+// 헤더 검색창 문구는 원본처럼 3.8초마다 위로 밀려 교체된다(실측 252). SSR·첫 렌더는 항상 첫 문구라 하이드레이션이 어긋나지 않는다.
+const ROLL_MS = 3800;
 
 const CHANGE: Record<RankChange, { mark: string; label: string; className: string }> = {
   up: { mark: "▲", label: "상승", className: "text-rank-up" },
@@ -26,14 +25,14 @@ export function SearchLayer({ keyword }: { keyword?: string }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const placeholder =
-    searchPlaceholders[
-      useSyncExternalStore(
-        noopSubscribe,
-        () => clientIndex,
-        () => 0,
-      )
-    ];
+  const [rolled, setRolled] = useState(0);
+
+  useEffect(() => {
+    // 동작 줄이기 설정이면 자동 롤링을 걸지 않고 첫 문구를 고정한다(BannerCarousel 과 같은 규칙).
+    if (keyword !== undefined || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = setInterval(() => setRolled((i) => (i + 1) % searchPlaceholders.length), ROLL_MS);
+    return () => clearInterval(timer);
+  }, [keyword]);
 
   useEffect(() => {
     if (!open) return;
@@ -69,12 +68,26 @@ export function SearchLayer({ keyword }: { keyword?: string }) {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="flex h-10 w-full min-w-0 items-center gap-2 rounded-md bg-surface-subtle px-3 text-left text-body text-ink-tertiary"
+          className="flex h-10 w-full min-w-0 items-center gap-2 rounded-md bg-surface-subtle px-3 text-left text-body text-ink-muted"
         >
-          <span className="text-icon-muted">
+          {/* 문구는 세로로 밀려 교체된다(창 높이 = text-body 줄높이 20).
+              translateY 의 % 는 트랙 자기 높이(20 × 문구 수) 기준이라 한 칸 = 100 / 문구 수 % 다. */}
+          <span className="h-5 min-w-0 flex-1 overflow-hidden">
+            <span
+              className="block transition-transform duration-base ease-standard motion-reduce:transition-none"
+              style={{ transform: `translateY(-${(rolled * 100) / searchPlaceholders.length}%)` }}
+            >
+              {searchPlaceholders.map((text, i) => (
+                // 창 밖 문구는 접근성 트리에서도 빼 버튼 이름이 문구 3개로 이어지지 않게 한다
+                <span key={text} aria-hidden={i !== rolled} className="block h-5 truncate">
+                  {text}
+                </span>
+              ))}
+            </span>
+          </span>
+          <span className="shrink-0 text-icon-muted">
             <Icon d={ICON_PATHS.search} />
           </span>
-          <span className="truncate">{placeholder}</span>
         </button>
       )}
 
