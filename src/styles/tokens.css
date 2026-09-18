@@ -82,6 +82,7 @@
   --color-surface-image-tint: var(--ms-alpha-black-2);
   --color-surface-accent-subtle: var(--ms-alpha-blue-5);
   --color-surface-sunken: var(--ms-gray-20);
+  --color-surface-kakao: var(--ms-yellow-50);
   --color-surface-inverse: var(--ms-gray-100);
   --color-surface-overlay: var(--ms-alpha-black-60);
   --color-scrim: var(--ms-gray-100);
