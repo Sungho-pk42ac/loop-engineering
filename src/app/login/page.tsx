@@ -5,13 +5,16 @@ import { useRouter } from "next/navigation";
 import { AuthPanel } from "@/components/AuthPanel";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui";
+import { Icon, ICON_PATHS } from "@/components/Icon";
 import { login } from "@/lib/auth";
 
-const inputClass = "h-10 rounded-md border border-line bg-surface-subtle px-3 text-body text-ink";
+// 실측(278): 36px 칸·radius 4·1px 테두리·흰 배경·좌우 8·14px. 보이는 라벨 없이 placeholder 만 쓴다(라벨은 sr-only 로 남김).
+const inputClass = "h-9 w-full rounded-sm border border-line bg-surface px-2 text-body text-ink";
 
 export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -26,23 +29,53 @@ export default function LoginPage() {
   return (
     <AuthPanel title="로그인">
       <div className="flex flex-col gap-6 py-6">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <label htmlFor="email" className="flex flex-col gap-2 text-label text-ink">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <label htmlFor="email" className="sr-only">
             이메일
-            <input id="email" name="email" type="email" required autoComplete="email" className={inputClass} />
           </label>
-          <label htmlFor="password" className="flex flex-col gap-2 text-label text-ink">
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="통합계정 또는 이메일"
+            className={inputClass}
+          />
+          <label htmlFor="password" className="sr-only">
             비밀번호
+          </label>
+          <div className="relative flex">
             <input
               id="password"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               required
               autoComplete="current-password"
-              className={inputClass}
+              placeholder="비밀번호 입력"
+              className={`${inputClass} pr-8`}
             />
+            <button
+              type="button"
+              aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보이기"}
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute inset-y-0 right-2 flex items-center text-icon"
+            >
+              <Icon d={showPassword ? ICON_PATHS.eyeOff : ICON_PATHS.eye} size={20} />
+            </button>
+          </div>
+          {/* 체크박스는 FilterOption(#112)과 같은 방식 — 네이티브 input 을 sr-only 로 숨기고 박스를 직접 그린다 */}
+          <label htmlFor="autoLogin" className="flex cursor-pointer items-center py-1 text-body text-ink">
+            <input id="autoLogin" name="autoLogin" type="checkbox" className="peer sr-only" />
+            <span
+              aria-hidden="true"
+              className="flex size-4 shrink-0 items-center justify-center rounded-xs border border-icon-muted bg-surface text-icon-inverse peer-checked:border-line-strong peer-checked:bg-surface-inverse peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent"
+            >
+              <Icon d={ICON_PATHS.check} size={10} />
+            </span>
+            <span className="ml-2">자동 로그인</span>
           </label>
-          <Button type="submit" size="lg">
+          <Button type="submit" size="cta" className="w-full">
             로그인
           </Button>
           {error && (
