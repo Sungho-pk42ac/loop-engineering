@@ -9,12 +9,19 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(query),
 }));
 
-let intersect: () => void = () => {};
+let intersect: (on?: boolean) => void = () => {};
+let rootMargin = "";
 
 class MockObserver {
-  constructor(private cb: IntersectionObserverCallback) {}
+  constructor(
+    private cb: IntersectionObserverCallback,
+    options?: IntersectionObserverInit,
+  ) {
+    rootMargin = options?.rootMargin ?? "";
+  }
   observe() {
-    intersect = () => this.cb([{ isIntersecting: true } as IntersectionObserverEntry], this as unknown as IntersectionObserver);
+    intersect = (on = true) =>
+      this.cb([{ isIntersecting: on } as IntersectionObserverEntry], this as unknown as IntersectionObserver);
   }
   disconnect() {}
 }
@@ -56,12 +63,45 @@ describe("SearchResultGrid", () => {
     expect(location.href).toBe(href);
   });
 
-  it("센티널이 보이면 다음 묶음을 붙이고, 총량에 닿으면 더 늘지 않는다", () => {
+  it("센티널 교차 1회 = 한 묶음만, 보이는 상태가 이어지면 더 붙지 않는다 (실측 228)", () => {
     render(<SearchResultGrid />);
+    expect(cards()).toHaveLength(GRID_BATCH);
 
     act(() => intersect());
     expect(cards()).toHaveLength(GRID_BATCH * 2);
-    for (let i = 0; i < 10; i++) act(() => intersect());
+    // 같은 교차 상태에서 콜백이 연달아 와도 늘지 않는다(연쇄 발동 방지)
+    for (let i = 0; i < 5; i++) act(() => intersect());
+    expect(cards()).toHaveLength(GRID_BATCH * 2);
+    // 발동 거리는 바닥 약 2,000px
+    expect(rootMargin).toBe("2000px 0px");
+  });
+
+  it("필터로 총량이 바뀌면 교차 상태를 버려 다음 묶음이 계속 붙는다", () => {
+    query = "discount=Y";
+    const { rerender } = render(<SearchResultGrid />);
+
+    act(() => intersect());
+    const narrowed = cards().length;
+    query = "";
+    rerender(<SearchResultGrid />);
+    act(() => intersect());
+    expect(cards().length).toBeGreaterThan(narrowed);
+  });
+
+  it("센티널이 나갔다 다시 들어오면 다음 묶음이 붙고, 총량에서 멈춘다", () => {
+    render(<SearchResultGrid />);
+
+    act(() => intersect());
+    act(() => intersect(false));
+    act(() => intersect());
+    expect(cards()).toHaveLength(Math.min(GRID_BATCH * 3, GRID_TOTAL));
+
+    for (let i = 0; i < 10; i++) {
+      act(() => intersect(false));
+      act(() => intersect());
+    }
     expect(cards()).toHaveLength(GRID_TOTAL);
+    // 총량에 닿으면 센티널(div.h-px)이 사라진다
+    expect(screen.getByRole("list").parentElement!.querySelector("div.h-px")).toBeNull();
   });
 });
