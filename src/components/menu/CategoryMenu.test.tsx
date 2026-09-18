@@ -22,6 +22,15 @@ describe("CategoryMenu", () => {
     });
   });
 
+  it("창 스크롤을 잠그지 않는다 — 아래 푸터까지 내려갈 수 있어야 한다 (실측 290)", () => {
+    document.body.style.overflow = "";
+    const { unmount } = render(<CategoryMenu categories={menuCategories} />);
+
+    expect(document.body.style.overflow).toBe("");
+    unmount();
+    expect(document.body.style.overflow).toBe("");
+  });
+
   it("대분류를 누르면 우측 scrollTop 이 그 구역 offsetTop 으로, 우측 스크롤하면 선택이 따라간다", () => {
     render(<CategoryMenu categories={menuCategories} />);
     const sections = screen.getAllByRole("region");

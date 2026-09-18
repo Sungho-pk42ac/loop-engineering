@@ -16,22 +16,20 @@ export function CategoryMenu({ categories }: { categories: MenuCategory[] }) {
   const panesRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
 
-  // 두 목록 높이 = 화면 끝 - 자기 top. 이 화면 동안 창 스크롤을 잠근다(원본은 창 scrollY 0 유지).
+  // 두 목록 높이 = 화면 끝 − 패널 top. 창 스크롤은 잠그지 않는다(실측 290) —
+  // 이 화면은 portal·dialog·딤이 없는 라우트 페이지라 막을 배경이 없고, 잠그면 아래 푸터에 닿을 수 없다.
+  // top 은 문서 기준(rect.top + scrollY)으로 재서 스크롤을 내린 상태에서 창 크기를 바꿔도 값이 어긋나지 않게 한다.
   useEffect(() => {
     const panes = panesRef.current;
     if (!panes) return;
     const fit = () => {
-      panes.style.height = `${window.innerHeight - panes.getBoundingClientRect().top}px`;
+      const top = panes.getBoundingClientRect().top + window.scrollY;
+      panes.style.height = `${window.innerHeight - top}px`;
     };
-    const overflow = document.body.style.overflow;
     window.scrollTo(0, 0);
-    document.body.style.overflow = "hidden";
     fit();
     window.addEventListener("resize", fit);
-    return () => {
-      window.removeEventListener("resize", fit);
-      document.body.style.overflow = overflow;
-    };
+    return () => window.removeEventListener("resize", fit);
   }, []);
 
   const sections = () => Array.from(rightRef.current?.querySelectorAll("section") ?? []);
