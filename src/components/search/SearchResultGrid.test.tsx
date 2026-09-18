@@ -1,6 +1,25 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { GRID_BATCH, GRID_TOTAL, SearchResultGrid } from "./SearchResultGrid";
+import { GRID_BATCH, SearchResultGrid } from "./SearchResultGrid";
+
+// 총량이 GRID_BATCH*2 면 첫 묶음에 상한까지 닿아 연쇄 발동 여부를 구별할 수 없다(#228 리뷰).
+// 300개로 늘려 "교차 1회 = +60" 과 "재진입해야 다음 묶음" 이 실제로 갈라지게 한다.
+vi.mock("@/data/search", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/data/search")>();
+  const [sample] = actual.searchGoodsItems;
+  return {
+    ...actual,
+    // 300 — vi.mock 은 호이스팅돼 바깥 상수를 못 쓰므로 리터럴로 둔다(MOCK_TOTAL 과 같은 값)
+    searchGoodsItems: Array.from({ length: 300 }, (_, i) => ({
+      ...actual.searchGoodsItems[i % actual.searchGoodsItems.length],
+      id: `mock-goods-${i + 1}`,
+      recommendRank: i,
+      gender: sample.gender,
+    })),
+  };
+});
+
+const MOCK_TOTAL = 300;
 
 let query = "";
 vi.mock("next/navigation", () => ({
@@ -9,12 +28,19 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(query),
 }));
 
-let intersect: () => void = () => {};
+let intersect: (on?: boolean) => void = () => {};
+let rootMargin = "";
 
 class MockObserver {
-  constructor(private cb: IntersectionObserverCallback) {}
+  constructor(
+    private cb: IntersectionObserverCallback,
+    options?: IntersectionObserverInit,
+  ) {
+    rootMargin = options?.rootMargin ?? "";
+  }
   observe() {
-    intersect = () => this.cb([{ isIntersecting: true } as IntersectionObserverEntry], this as unknown as IntersectionObserver);
+    intersect = (on = true) =>
+      this.cb([{ isIntersecting: on } as IntersectionObserverEntry], this as unknown as IntersectionObserver);
   }
   disconnect() {}
 }
@@ -56,12 +82,47 @@ describe("SearchResultGrid", () => {
     expect(location.href).toBe(href);
   });
 
-  it("센티널이 보이면 다음 묶음을 붙이고, 총량에 닿으면 더 늘지 않는다", () => {
+  it("센티널 교차 1회 = 한 묶음만, 보이는 상태가 이어지면 더 붙지 않는다 (실측 228)", () => {
     render(<SearchResultGrid />);
+    expect(cards()).toHaveLength(GRID_BATCH);
 
     act(() => intersect());
     expect(cards()).toHaveLength(GRID_BATCH * 2);
-    for (let i = 0; i < 10; i++) act(() => intersect());
-    expect(cards()).toHaveLength(GRID_TOTAL);
+    // 같은 교차 상태에서 콜백이 연달아 와도 늘지 않는다(연쇄 발동 방지).
+    // 총량이 300 이라 옛 코드(전이 판정 없음)라면 여기서 180·240·300 으로 늘어난다.
+    for (let i = 0; i < 5; i++) act(() => intersect());
+    expect(cards()).toHaveLength(GRID_BATCH * 2);
+    // 발동 거리는 바닥 약 2,000px
+    expect(rootMargin).toBe("2000px 0px");
+  });
+
+  it("필터로 총량이 바뀌면 교차 상태를 버려 다음 묶음이 계속 붙는다", () => {
+    query = "discount=Y";
+    const { rerender } = render(<SearchResultGrid />);
+
+    act(() => intersect());
+    const narrowed = cards().length;
+    query = "";
+    rerender(<SearchResultGrid />);
+    act(() => intersect());
+    expect(cards().length).toBeGreaterThan(narrowed);
+  });
+
+  it("센티널이 나갔다 다시 들어오면 다음 묶음이 붙고, 총량에서 멈춘다", () => {
+    render(<SearchResultGrid />);
+
+    act(() => intersect());
+    act(() => intersect(false));
+    act(() => intersect());
+    // 재진입해야 다음 묶음이 붙는다(180). 재진입이 아무 일도 안 하면 120 이라 갈라진다.
+    expect(cards()).toHaveLength(GRID_BATCH * 3);
+
+    for (let i = 0; i < 10; i++) {
+      act(() => intersect(false));
+      act(() => intersect());
+    }
+    expect(cards()).toHaveLength(MOCK_TOTAL);
+    // 총량에 닿으면 센티널(div.h-px)이 사라진다
+    expect(screen.getByRole("list").parentElement!.querySelector("div.h-px")).toBeNull();
   });
 });

@@ -10,7 +10,7 @@ import { Icon } from "../Icon";
 import { SearchSortMenu } from "./SearchSortMenu";
 
 export const GRID_TOTAL = 120;
-export const GRID_BATCH = 24;
+export const GRID_BATCH = 60;
 
 const byId = new Map(products.map((p) => [p.id, p]));
 
@@ -23,16 +23,25 @@ export function SearchResultGrid() {
   const [visible, setVisible] = useState(GRID_BATCH);
   const [mobileCols, setMobileCols] = useState<2 | 3>(3);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  // 센티널이 계속 보이는 동안에는 한 묶음만 붙인다. 화면(+여유) 밖으로 나갔다 들어와야 다음 묶음이 붙는다(실측 228).
+  const wasVisibleRef = useRef(false);
+  const lastTotalRef = useRef(total);
 
-  // visible 이 바뀔 때마다 다시 관찰해, 추가 뒤에도 센티널이 보이면 곧바로 다음 묶음을 붙인다.
   useEffect(() => {
     const sentinel = sentinelRef.current;
+    // 필터가 바뀌어 총량이 달라지면 이전 교차 상태는 버린다(그대로 두면 다음 묶음이 안 붙는다)
+    if (lastTotalRef.current !== total) {
+      lastTotalRef.current = total;
+      wasVisibleRef.current = false;
+    }
     if (!sentinel || visible >= total) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries.some((e) => e.isIntersecting)) setVisible((v) => Math.min(v + GRID_BATCH, total));
+        const on = entries.some((e) => e.isIntersecting);
+        if (on && !wasVisibleRef.current) setVisible((v) => Math.min(v + GRID_BATCH, total));
+        wasVisibleRef.current = on;
       },
-      { rootMargin: "400px 0px" },
+      { rootMargin: "2000px 0px" },
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
