@@ -201,6 +201,7 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 - 링은 **이미지 위 오버레이 요소**(`<span aria-hidden>` + `absolute inset-0 pointer-events-none`)에 건다. 버튼 자신에 걸면 inset box-shadow 가 `<Image fill>` 자식 **아래**에 깔려 보이지 않는다(실측 확인). 전환은 `transition-shadow duration-base`(`transition-colors` 는 box-shadow 를 포함하지 않는다).
 - 링 색은 이미지 위에 놓이므로 다크에서 뒤집히면 밝은 사진에 묻힌다 → `line-strong` 대신 뒤집지 않는 `ring-scrim` 을 쓴다.
+- 전체화면 뷰어(#224)의 화살표는 이미지 **바깥** 16px 에 붙는다. 원이 40 이라 음수 inset 은 파생값 `-left-14`·`-right-14`(56 = 40 + 16)를 쓴다(§4 의 8종 밖이지만 4px 배수 파생).
 - 선택 링에 `outline-*` 유틸을 쓰지 않는다. `outline-*` 는 `@layer base` 의 `:focus-visible` 링을 이겨 키보드 포커스를 지운다(실측 확인). `ring`(box-shadow)은 outline 을 건드리지 않아 포커스 링이 그대로 살아 있다.
 
 ### 5.3 그림자

@@ -57,8 +57,18 @@ describe("ProductGallery", () => {
     expect(dialog).toHaveClass("z-modal");
     expect(within(dialog).getByText(`1/${images.length}`)).toBeInTheDocument();
 
-    fireEvent.click(within(dialog).getByRole("button", { name: "다음 이미지" }));
+    // 원본은 첫 장에서도 이전·다음을 모두 보여준다 — 경계에서는 disabled 로 막는다(실측 224)
+    const prev = within(dialog).getByRole("button", { name: "이전 이미지" });
+    const next = within(dialog).getByRole("button", { name: "다음 이미지" });
+    expect(prev).toBeDisabled();
+    expect(next).toBeEnabled();
+
+    fireEvent.click(next);
     expect(within(dialog).getByText(`2/${images.length}`)).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "이전 이미지" })).toBeEnabled();
+    // 닫기 28·아래 n/N 은 label 회색(실측 224)
+    expect(within(dialog).getByRole("button", { name: "닫기" })).toHaveClass("size-7", "top-3");
+    expect(within(dialog).getByText(`2/${images.length}`)).toHaveClass("text-label", "text-ink-tertiary");
 
     expect(document.body.style.overflow).toBe("hidden");
 

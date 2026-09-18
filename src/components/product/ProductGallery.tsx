@@ -98,9 +98,13 @@ export function ProductGallery({ name, images }: { name: string; images: string[
 function GalleryViewer({ name, images, start, onClose }: { name: string; images: string[]; start: number; onClose: () => void }) {
   const [i, setI] = useState(start);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const slidesRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     closeRef.current?.focus();
+    // 연 장면부터 보여준다(스와이프·화살표 모두 같은 스크롤러를 쓴다)
+    const el = slidesRef.current;
+    if (el) el.scrollTo({ left: start * el.clientWidth, behavior: "auto" });
     // 뷰어가 열린 동안 뒤 페이지 스크롤 잠금
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -112,41 +116,62 @@ function GalleryViewer({ name, images, start, onClose }: { name: string; images:
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = overflow;
     };
-  }, [onClose]);
+  }, [onClose, start]);
 
-  // 뷰어 배경(scrim)은 다크에서도 검정이라 화살표 원은 다크에서 반전 토큰으로 흰 원 유지
+  function go(next: number) {
+    const el = slidesRef.current;
+    if (el) el.scrollTo({ left: next * el.clientWidth, behavior: "auto" });
+    setI(next);
+  }
+
+  // 뷰어 배경(scrim)은 다크에서도 검정이라 화살표 원은 다크에서 반전 토큰으로 흰 원 유지.
+  // 실측(224): 이미지는 폭 기준(모바일 전폭 375×450 · md 600×720), 화살표는 이미지 바깥 16(= 원 40 + 16 → -14)이고
+  // 원본 모바일에는 화살표가 없다 → 그 폭에서는 가로 스와이프(snap)로 넘긴다. 닫기 28 은 md 에서 이미지 오른쪽 가장자리.
   const arrow =
-    "absolute top-1/2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-surface text-icon dark:bg-surface-inverse dark:text-icon-inverse";
+    "absolute top-1/2 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full bg-surface text-icon md:flex disabled:bg-surface-muted disabled:text-icon-muted disabled:cursor-not-allowed dark:bg-surface-inverse dark:text-icon-inverse";
 
   return (
     <div role="dialog" aria-modal="true" aria-label="상품 이미지 크게 보기" className="fixed inset-0 z-modal bg-scrim">
-      <div className="flex h-full items-center justify-center px-16 py-16">
-        <div className="relative aspect-5/6 h-full max-w-full">
-          <Image src={images[i]} alt={name} fill sizes="100vw" className="object-contain" />
+      <div className="relative mx-auto flex h-full w-full flex-col justify-center md:w-150">
+        <div className="relative">
+          <ul
+            ref={slidesRef}
+            aria-label="크게 본 이미지"
+            onScroll={(e) => setI(Math.round(e.currentTarget.scrollLeft / (e.currentTarget.clientWidth || 1)))}
+            className="scrollbar-none flex snap-x snap-mandatory overflow-x-auto"
+          >
+            {images.map((src, n) => (
+              <li key={n} className="relative aspect-5/6 w-full shrink-0 snap-start md:h-180 md:w-150">
+                <Image src={src} alt={name} fill sizes="(min-width: 768px) 600px, 100vw" className="object-contain" />
+              </li>
+            ))}
+          </ul>
+          <button type="button" aria-label="이전 이미지" disabled={i === 0} onClick={() => go(i - 1)} className={`${arrow} -left-14`}>
+            <Icon d={PREV} size={40} />
+          </button>
+          <button
+            type="button"
+            aria-label="다음 이미지"
+            disabled={i === images.length - 1}
+            onClick={() => go(i + 1)}
+            className={`${arrow} -right-14`}
+          >
+            <Icon d={NEXT} size={40} />
+          </button>
         </div>
+        <button
+          ref={closeRef}
+          type="button"
+          aria-label="닫기"
+          onClick={onClose}
+          className="absolute top-3 right-4 flex size-7 items-center justify-center text-ink-inverse md:right-0 dark:text-ink"
+        >
+          <Icon d={ICON_PATHS.close} size={24} />
+        </button>
+        <p className="absolute inset-x-0 bottom-10 text-center text-label text-ink-tertiary md:bottom-3">
+          {i + 1}/{images.length}
+        </p>
       </div>
-      {i > 0 && (
-        <button type="button" aria-label="이전 이미지" onClick={() => setI(i - 1)} className={`${arrow} left-4`}>
-          <Icon d={PREV} />
-        </button>
-      )}
-      {i < images.length - 1 && (
-        <button type="button" aria-label="다음 이미지" onClick={() => setI(i + 1)} className={`${arrow} right-4`}>
-          <Icon d={NEXT} />
-        </button>
-      )}
-      <button
-        ref={closeRef}
-        type="button"
-        aria-label="닫기"
-        onClick={onClose}
-        className="absolute top-4 right-4 flex size-10 items-center justify-center text-ink-inverse dark:text-ink"
-      >
-        <Icon d={ICON_PATHS.close} size={24} />
-      </button>
-      <p className="absolute inset-x-0 bottom-4 text-center text-body text-ink-inverse dark:text-ink">
-        {i + 1}/{images.length}
-      </p>
     </div>
   );
 }
