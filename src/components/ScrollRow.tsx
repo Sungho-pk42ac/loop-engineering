@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useSyncExternalStore, type ReactNode } from "react";
-import { Icon } from "./Icon";
+import { Chevron } from "./Chevron";
 
 type Edge = "start" | "middle" | "end" | "none";
 
@@ -62,12 +62,12 @@ export function ScrollRow({ listClassName, prevLabel, nextLabel, step, children 
     <div className="group relative">
       {(edge === "middle" || edge === "end") && (
         <button type="button" aria-label={prevLabel} onClick={() => move(-1)} className={`${buttonClass} left-4`}>
-          <Icon d="M14 6l-6 6 6 6" size={24} />
+          <Chevron direction="prev" />
         </button>
       )}
       {(edge === "start" || edge === "middle") && (
         <button type="button" aria-label={nextLabel} onClick={() => move(1)} className={`${buttonClass} right-4`}>
-          <Icon d="M10 6l6 6-6 6" size={24} />
+          <Chevron direction="next" />
         </button>
       )}
       <ul ref={ref} className={listClassName}>
