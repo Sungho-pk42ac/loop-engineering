@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { popularKeywords, risingKeywords } from "@/data/search";
+import { addRecentSearch, parseRecent, readRecentRaw } from "@/lib/recentSearches";
+import { searchResultHref } from "@/lib/search";
 import { Header } from "./Header";
 
 const push = vi.fn();
@@ -16,6 +18,47 @@ describe("헤더 로고·검색창 줄 / SearchLayer", () => {
   afterEach(() => {
     cleanup();
     push.mockClear();
+    localStorage.clear();
+  });
+
+  it("최근 검색어: 이력이 없으면 블록이 없고, 있으면 제목·모두삭제·칩이 보인다 (#270)", () => {
+    expect(within(openLayer()).queryByRole("heading", { name: "최근 검색어" })).toBeNull();
+    cleanup();
+
+    addRecentSearch("머그컵");
+    addRecentSearch("도마");
+    const layer = openLayer();
+
+    expect(within(layer).getByRole("heading", { name: "최근 검색어" })).toBeInTheDocument();
+    expect(within(layer).getByRole("button", { name: "모두삭제" })).toBeInTheDocument();
+    // 최근 것이 앞
+    const chips = within(layer).getAllByRole("button", { name: /^(도마|머그컵)$/ });
+    expect(chips.map((b) => b.textContent)).toEqual(["도마", "머그컵"]);
+
+    // 항목 × 는 그 항목만 지운다
+    fireEvent.click(within(layer).getByRole("button", { name: "도마 삭제" }));
+    expect(parseRecent(readRecentRaw()).map((i) => i.keyword)).toEqual(["머그컵"]);
+    expect(within(layer).queryByRole("button", { name: "도마" })).toBeNull();
+
+    // 모두삭제 → 블록이 사라진다
+    fireEvent.click(within(layer).getByRole("button", { name: "모두삭제" }));
+    expect(screen.queryByRole("heading", { name: "최근 검색어" })).toBeNull();
+  });
+
+  it("최근 검색어 칩을 누르면 결과로 이동하며 레이어가 닫히고, 검색하면 맨 앞에 쌓인다 (#270)", () => {
+    addRecentSearch("머그컵");
+    const layer = openLayer();
+
+    fireEvent.click(within(layer).getByRole("button", { name: "머그컵" }));
+    expect(push).toHaveBeenCalledWith(searchResultHref("머그컵"));
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    cleanup();
+    const reopened = openLayer();
+    const input = within(reopened).getByLabelText("검색어");
+    fireEvent.change(input, { target: { value: "도마" } });
+    fireEvent.submit(input.closest("form")!);
+    expect(parseRecent(readRecentRaw()).map((i) => i.keyword)).toEqual(["도마", "머그컵"]);
   });
 
   it("스토어 바 아래 줄에 패캠 스토어 로고 링크와 검색창, 앱테크·알림 링크가 있다", () => {
