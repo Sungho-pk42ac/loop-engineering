@@ -37,8 +37,12 @@ export function SearchFilterBar() {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
+  // 별점은 값이 여러 개(빠른 칩 4.5 · 레이어 라디오 4 등)라 키 존재로 켜짐을 판정한다(AppliedFilters·countFilters 와 같은 기준, #112 QA).
+  const quickOn = (key: string, value: string) =>
+    key === "minReviewGrade" ? searchParams.get(key) !== null : searchParams.get(key) === value;
+
   const toggleQuick = (key: string, value: string) =>
-    apply((params) => (params.get(key) === value ? params.delete(key) : params.set(key, value)));
+    apply((params) => (quickOn(key, value) ? params.delete(key) : params.set(key, value)));
 
   const toggleGender = (value: "M" | "F") => apply((params) => params.set("gf", gf === value ? "A" : value));
 
@@ -52,7 +56,7 @@ export function SearchFilterBar() {
     <div>
       <div role="group" aria-label="빠른 필터" className="scrollbar-none flex gap-1 overflow-x-auto px-4 pt-3">
         {quickFilters.map(({ label, key, value }) => {
-          const on = searchParams.get(key) === value;
+          const on = quickOn(key, value);
           return (
             <button
               key={label}

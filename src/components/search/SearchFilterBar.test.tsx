@@ -34,6 +34,27 @@ describe("SearchFilterBar", () => {
     expect(params.get("sortCode")).toBe("LOW_PRICE");
   });
 
+  it("레이어에서 고른 '4점 이상'도 빠른 칩이 켜지고, 다시 누르면 해제된다 (#112 QA)", () => {
+    query = "keyword=%EB%A8%B8%EA%B7%B8&minReviewGrade=4";
+    render(<SearchFilterBar />);
+
+    const chip = within(screen.getByRole("group", { name: "빠른 필터" })).getByRole("button", { name: "별점" });
+    expect(chip).toHaveAttribute("aria-pressed", "true");
+    fireEvent.click(chip);
+    expect(lastUrl().has("minReviewGrade")).toBe(false);
+    expect(lastUrl().get("keyword")).toBe("머그");
+  });
+
+  it("빠른 필터 '할인'은 값 일치로 판정하고 다시 누르면 해제된다", () => {
+    query = "keyword=%EB%A8%B8%EA%B7%B8&discount=Y";
+    render(<SearchFilterBar />);
+
+    const chip = within(screen.getByRole("group", { name: "빠른 필터" })).getByRole("button", { name: "할인" });
+    expect(chip).toHaveAttribute("aria-pressed", "true");
+    fireEvent.click(chip);
+    expect(lastUrl().has("discount")).toBe(false);
+  });
+
   it("필터가 있으면 적용 필터 줄과 상세필터 점이 보이고, × 는 그 쿼리만 뺀다", () => {
     query = "keyword=%EB%A8%B8%EA%B7%B8&minReviewGrade=4.5&gf=M";
     render(<SearchFilterBar />);
