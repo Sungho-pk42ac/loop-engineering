@@ -21,7 +21,7 @@ describe("GenderToggle", () => {
     render(<GenderToggle />);
 
     const group = screen.getByRole("group", { name: "성별" });
-    expect(group).toHaveClass("fixed", "bottom-3", "left-1/2", "rounded-full");
+    expect(group).toHaveClass("fixed", "bottom-17", "md:bottom-3", "left-1/2", "rounded-full");
     const buttons = within(group).getAllByRole("button");
     expect(buttons.map((b) => b.textContent)).toEqual(["전체", "남성", "여성"]);
     buttons.forEach((b, i) => {
@@ -29,6 +29,9 @@ describe("GenderToggle", () => {
       expect(b).toHaveAttribute("aria-pressed", String(i === 0));
     });
     expect(buttons[0]).toHaveClass("text-ink-inverse");
+    // 실측(222): 배경 흰색 92% → surface-floating(흰 90%), 글자색만 전환
+    expect(group).toHaveClass("bg-surface-floating");
+    buttons.forEach((b) => expect(b).toHaveClass("transition-colors", "motion-reduce:transition-none"));
   });
 
   it("?gf=F 면 '여성' 선택·커서 이동, 누르면 스크롤 유지하며 쿼리만 교체", () => {
