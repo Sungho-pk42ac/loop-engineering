@@ -21,7 +21,16 @@ const SWATCH: Record<SwatchColor, { className: string; label: string }> = {
 // 사진 위 하트 선은 다크 모드에서도 흰색(dark:stroke-icon), 배송 글자는 다크에서 대비용 accent-hover. 이미지 5:6·브랜드 caption 은 design-tokens 예외.
 // 이미지·브랜드·상품명이 각각 새 탭 링크이고 가격 줄·하트는 링크 밖(중첩 인터랙티브 없음). 좋아요는 localStorage 목업.
 // productHref: 이미지·상품명 링크 대상. 기본은 기획전처럼 /products, 상세가 있는 섹션(#31)은 /products/<id> 를 넘긴다.
-export function ExhibitionProductCard({ product, productHref = "/products" }: { product: ExhibitionProduct; productHref?: string }) {
+export function ExhibitionProductCard({
+  product,
+  productHref = "/products",
+  note,
+}: {
+  product: ExhibitionProduct;
+  productHref?: string;
+  /** 가격 아래 회색 한 줄(예: 트렌드 뷰티 '옵션비 별도', #34) */
+  note?: string;
+}) {
   const liked = parseLikes(useSyncExternalStore(subscribeLikes, readLikesRaw, () => "[]")).includes(product.id);
   const priceText = "text-detail font-semibold md:text-label";
 
@@ -75,6 +84,7 @@ export function ExhibitionProductCard({ product, productHref = "/products" }: { 
             <span className="truncate">{product.shippingBadge}</span>
           </p>
         )}
+        {note && <p className="pt-1 text-caption text-ink-muted">{note}</p>}
       </div>
     </article>
   );
