@@ -1,13 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { parseGf, type Gf } from "@/data/brands";
-import { detailIdOf, sportsPicks } from "@/data/sportsPicks";
+import { detailIdOf } from "@/data/exhibition";
+import { sportsPicks } from "@/data/sportsPicks";
 import { columnStep, ScrollRow } from "../ScrollRow";
 import { ExhibitionProductCard } from "./ExhibitionProductCard";
-
-const newTab = { target: "_blank", rel: "noopener noreferrer" } as const;
+import { SectionHeader } from "./SectionHeader";
 
 function toColumns<T>(items: T[]): T[][] {
   const columns: T[][] = [];
@@ -28,15 +27,13 @@ export function SportsPicks({ gf }: { gf: Gf }) {
 
   return (
     <section aria-labelledby="sports-picks" className="pb-4">
-      <div className="flex items-end justify-between gap-4 px-4 pt-3 pb-2">
-        <h2 id="sports-picks" className="text-title-sm font-medium text-ink">
-          <span className="block">{sportsPicks.titleLine}</span>
-          <span className="block">{sportsPicks.keyword}</span>
-        </h2>
-        <Link href={`/products?gf=${gf}`} {...newTab} className="shrink-0 px-1 py-2 text-label text-ink-muted underline">
-          {sportsPicks.moreLabel}
-        </Link>
-      </div>
+      <SectionHeader
+        id="sports-picks"
+        titleLine={sportsPicks.titleLine}
+        keyword={sportsPicks.keyword}
+        moreLabel={sportsPicks.moreLabel}
+        moreHref={`/products?gf=${gf}`}
+      />
 
       <ScrollRow
         listClassName="scrollbar-none flex overflow-x-auto px-4 md:snap-x md:snap-mandatory md:scroll-pl-4"

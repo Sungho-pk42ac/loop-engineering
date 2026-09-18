@@ -87,3 +87,14 @@ describe("filterSearchGoods", () => {
     expect(combo.length).toBeLessThan(grade.length);
   });
 });
+
+describe("filterSearchGoods — category(#112)", () => {
+  it("콤마로 여러 카테고리를 거른다", () => {
+    const one = filterSearchGoods(searchGoodsItems, new URLSearchParams("category=kitchen"));
+    expect(one.every((i) => i.category === "kitchen")).toBe(true);
+    const two = filterSearchGoods(searchGoodsItems, new URLSearchParams("category=kitchen,bath"));
+    expect(two.every((i) => i.category === "kitchen" || i.category === "bath")).toBe(true);
+    expect(two.length).toBeGreaterThan(one.length);
+    expect(filterSearchGoods(searchGoodsItems, new URLSearchParams("category="))).toHaveLength(searchGoodsItems.length);
+  });
+});

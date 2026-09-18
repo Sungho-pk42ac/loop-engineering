@@ -8,7 +8,7 @@ import {
 } from "@/data/search";
 
 /** 필터 쿼리 키(초기화 대상). gf 는 A 로 되돌린다. */
-export const FILTER_KEYS = ["discount", "freeDelivery", "minReviewGrade"] as const;
+export const FILTER_KEYS = ["discount", "freeDelivery", "minReviewGrade", "category"] as const;
 
 /** gf·빠른 필터 쿼리로 거르기(#110). 없는 값은 거르지 않는다. */
 export function filterSearchGoods(items: SearchGoodsItem[], params: URLSearchParams): SearchGoodsItem[] {
@@ -17,7 +17,10 @@ export function filterSearchGoods(items: SearchGoodsItem[], params: URLSearchPar
   const discount = params.get("discount") === "Y";
   const freeDelivery = params.get("freeDelivery") === "Y";
 
+  const categories = (params.get("category") ?? "").split(",").filter(Boolean);
+
   return items.filter((item) => {
+    if (categories.length > 0 && !categories.includes(item.category)) return false;
     if ((gf === "M" || gf === "F") && item.gender !== gf && item.gender !== "A") return false;
     if (Number.isFinite(minGrade) && minGrade > 0 && item.reviewGrade < minGrade) return false;
     if (discount && !item.discount) return false;

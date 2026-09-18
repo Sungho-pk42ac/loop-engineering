@@ -31,7 +31,7 @@ export function Header() {
     <header className="sticky top-0 z-sticky bg-surface-inverse text-ink-inverse">
       <div className="mx-auto flex max-w-page flex-wrap items-center justify-between gap-x-2 px-4 md:flex-nowrap md:px-6">
         <div className="relative">
-          <Link href="/products" aria-label="메뉴" className={`${iconLinkClass} my-2`}>
+          <Link href="/menu/category" aria-label="메뉴" className={`${iconLinkClass} my-2`}>
             <Icon d="M4 7h16M4 12h16M4 17h16" />
           </Link>
           <StoreBubble />
