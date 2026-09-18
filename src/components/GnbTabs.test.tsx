@@ -36,6 +36,8 @@ describe("GnbTabs", () => {
       expect(a).toHaveAttribute("href", "/products");
     });
     expect(links[2]).toHaveAttribute("href", "/products");
+    // 랭킹만 랭킹 경로, 나머지 탭은 /products (#128 이 dev 에서 추가한 기대)
+    expect(links.find((a) => a.textContent === "랭킹")).toHaveAttribute("href", "/main/musinsa/ranking");
     links.forEach((a) => expect(a.className).not.toMatch(/hover:/));
   });
 
@@ -52,6 +54,14 @@ describe("GnbTabs", () => {
       .getAllByRole("link")
       .filter((a) => gnbTabs.some((t) => t.label === a.textContent) && a !== current[0])
       .forEach((a) => expect(a).toHaveClass("font-regular", "text-ink-inverse-muted"));
+  });
+
+  it("랭킹 경로에서는 랭킹 탭이 현재 탭", () => {
+    pathname.mockReturnValueOnce("/main/musinsa/ranking");
+    render(<GnbTabs />);
+
+    const current = screen.getAllByRole("link").filter((a) => a.getAttribute("aria-current") === "page");
+    expect(current.map((a) => a.textContent)).toEqual(["랭킹"]);
   });
 
   it("다른 경로에서는 현재 탭이 없다", () => {

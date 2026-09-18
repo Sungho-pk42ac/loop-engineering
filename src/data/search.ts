@@ -1,3 +1,5 @@
+import { products } from "./products";
+
 export type RankChange = "up" | "down" | "same";
 
 export interface PopularKeyword {
@@ -59,3 +61,113 @@ export const resultTabs: ResultTab[] = [
 ];
 
 export const resultCounts = { newGoods: 1284, used: 57 };
+
+
+// ── 검색 결과 정렬(#111) ──
+// (가격은 products.ts 가 SSOT — 아래 자리표시자 결과가 그대로 참조한다)
+export const sortPeriods = [
+  { label: "1일", code: "ONE_DAY" },
+  { label: "3일", code: "THREE_DAY" },
+  { label: "1주일", code: "ONE_WEEK" },
+  { label: "1개월", code: "ONE_MONTH" },
+  { label: "3개월", code: "THREE_MONTH" },
+  { label: "6개월", code: "SIX_MONTH" },
+  { label: "1년", code: "ONE_YEAR" },
+] as const;
+
+export type SortPeriodCode = (typeof sortPeriods)[number]["code"];
+
+/** 원본 브랜드명이 들어간 '무신사 추천순'은 클론 규칙상 '추천순'으로 둔다(#111). */
+export const searchSortSingles = [
+  { label: "추천순", code: "RECOMMEND" },
+  { label: "신상품순", code: "NEW" },
+  { label: "낮은 가격순", code: "LOW_PRICE" },
+  { label: "높은 가격순", code: "HIGH_PRICE" },
+  { label: "할인율순", code: "DISCOUNT_RATE" },
+  { label: "후기 많은순", code: "REVIEW" },
+] as const;
+
+/** 기간 하위 7개를 펼치는 그룹. 코드는 `<prefix>_<기간>_<suffix>` 형태 */
+export const searchSortGroups = [
+  { label: "판매금액순", prefix: "SALE", suffix: "AMOUNT" },
+  { label: "판매수량순", prefix: "SALE", suffix: "COUNT" },
+  { label: "조회순", prefix: "VIEW", suffix: "" },
+  { label: "좋아요순", prefix: "LIKE", suffix: "" },
+] as const;
+
+export function groupSortCode(group: (typeof searchSortGroups)[number], period: SortPeriodCode): string {
+  return group.suffix ? `${group.prefix}_${period}_${group.suffix}` : `${group.prefix}_${period}`;
+}
+
+export interface SearchGoodsItem {
+  id: string;
+  /** src/data/products.ts 의 상품 id(상세 링크·이미지·이름) */
+  productId: string;
+  /** 화면에 보이는 가격과 같아야 하므로 products.ts 값을 그대로 쓴다(가격 SSOT) */
+  price: number;
+  recommendRank: number;
+  /** ISO 날짜 */
+  createdAt: string;
+  discountRate: number;
+  reviewCount: number;
+  saleAmount: number;
+  saleCount: number;
+  viewCount: number;
+  likeCount: number;
+  /** 필터(#110) — 성별·별점·할인·무료배송 */
+  gender: "M" | "F" | "A";
+  /** 필터 레이어 카테고리(#112) — 자리표시자 코드 */
+  category: string;
+  reviewGrade: number;
+  discount: boolean;
+  freeDelivery: boolean;
+}
+
+// 자리표시자 결과 120개 — 상품 6종을 반복하고 정렬용 수치만 서로 다르게 둔다(원본 수치는 옮기지 않는다).
+export const searchGoodsItems: SearchGoodsItem[] = Array.from({ length: 120 }, (_, i) => ({
+  id: `goods-${i + 1}`,
+  productId: String((i % 6) + 1),
+  price: products[i % products.length].price,
+  recommendRank: i,
+  createdAt: new Date(Date.UTC(2026, 8, 1 + ((i * 5) % 30))).toISOString(),
+  discountRate: (i * 13) % 40,
+  reviewCount: (i * 37) % 900,
+  saleAmount: (i * 101) % 5000,
+  saleCount: (i * 53) % 700,
+  viewCount: (i * 89) % 9000,
+  likeCount: (i * 29) % 1200,
+  gender: (["A", "M", "F"] as const)[i % 3],
+  category: ["kitchen", "living", "bath", "stationery"][i % 4],
+  reviewGrade: [4.9, 4.6, 4.3, 3.8, 5, 4.1][i % 6],
+  discount: i % 3 !== 2,
+  freeDelivery: i % 4 === 0,
+}));
+
+/** 빠른 필터 칩(#110) — 라벨·쿼리 키·켜짐 값 */
+export const quickFilters = [
+  { label: "할인", key: "discount", value: "Y" },
+  { label: "별점", key: "minReviewGrade", value: "4.5" },
+  { label: "무료배송", key: "freeDelivery", value: "Y" },
+] as const;
+
+/** 필터 레이어 '카테고리' 탭 옵션(#112) — 패캠 스토어 자리표시자 */
+export const searchCategories = [
+  { label: "주방", code: "kitchen" },
+  { label: "리빙", code: "living" },
+  { label: "욕실", code: "bath" },
+  { label: "문구", code: "stationery" },
+] as const;
+
+/** 필터 레이어 '별점' 탭 옵션(#112) — 빠른 필터 칩과 같은 minReviewGrade 쿼리 */
+export const reviewGradeOptions = [
+  { label: "4.5점 이상", value: "4.5" },
+  { label: "4점 이상", value: "4" },
+] as const;
+
+/** 필터 레이어 탭 = 드롭다운 칩(#110) */
+export const filterDropdowns = [
+  { label: "카테고리", keys: ["category"] as string[] },
+  { label: "가격", keys: [] as string[] },
+  { label: "별점", keys: ["minReviewGrade"] },
+  { label: "혜택", keys: ["discount", "freeDelivery"] },
+] as const;
