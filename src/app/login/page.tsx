@@ -91,9 +91,45 @@ export default function LoginPage() {
             </p>
           )}
         </form>
-        <Link href="/signup" className="text-label text-ink-link hover:underline">
-          회원가입
-        </Link>
+        {/* 실측(279): 쿠폰 문구 2줄 + 전폭 버튼 3개(소셜 2개는 준비 중) + 찾기 줄.
+            외부 상표 로고는 넣지 않고 글자만 쓴다(클론 규칙). */}
+        <div className="flex flex-col gap-3 pt-6">
+          <p className="text-center text-label font-medium text-ink">
+            지금 가입하면,
+            <br />
+            신규 할인 쿠폰 즉시 발급
+          </p>
+          {/* 공용 Button 은 disabled 를 회색으로 칠하는 계약이라 여기선 쓰지 않는다 — 원본 색을 보여주는 게 이 버튼의 사양이고,
+              비활성은 disabled 속성·커서·접근 이름('준비 중')으로 알린다. 배경이 다크에서 안 뒤집히므로 글자는 검정 고정. */}
+          <button
+            type="button"
+            disabled
+            className="h-10 w-full rounded-sm bg-surface-kakao text-body font-medium text-ink disabled:cursor-not-allowed dark:text-ink-inverse"
+          >
+            카카오로 시작하기<span className="sr-only"> (준비 중)</span>
+          </button>
+          <button
+            type="button"
+            disabled
+            className="h-10 w-full rounded-sm border border-line bg-surface text-body font-medium text-ink disabled:cursor-not-allowed"
+          >
+            Apple로 시작하기<span className="sr-only"> (준비 중)</span>
+          </button>
+          <Link
+            href="/signup"
+            className="flex h-10 w-full items-center justify-center rounded-sm border border-line bg-surface text-body font-medium text-ink hover:bg-surface-subtle"
+          >
+            이메일로 가입하기
+          </Link>
+          <div className="flex justify-center divide-x divide-line-subtle text-label text-ink-tertiary">
+            <Link href="/products" className="px-3">
+              아이디 찾기
+            </Link>
+            <Link href="/products" className="px-3">
+              비밀번호 찾기
+            </Link>
+          </div>
+        </div>
       </div>
     </AuthPanel>
   );

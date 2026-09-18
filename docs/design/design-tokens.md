@@ -64,6 +64,7 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `surface-image-tint` | black 2% (다크 동일) | 상품 이미지 위 옅은 틴트(흰 배경 사진 경계, 기획전 카드 원본) |
 | | `surface-accent-subtle` | blue-60 5% (다크 동일) | 선택된 파란 칩 배경(검색 결과 빠른 필터) |
 | | `surface-sunken` | gray-20 (다크: gray-70) | 한 단계 더 내려간 띠(검색 결과 서브탭 줄) |
+| | `surface-kakao` | yellow-50 (다크 동일) | 카카오로 시작하기 버튼 배경(#279 — 원본 #fee500 에 가장 가까운 프리미티브). 배경이 안 뒤집히므로 글자는 `dark:text-ink-inverse` 로 검정을 유지한다 |
 | | `surface-inverse` | gray-100 | 검정 버튼·헤더 |
 | | `surface-overlay` | black 60% | 모달 뒤 딤, 이미지 위 딤·라벨(배너 딤, 라이브 방송 시각 배지) |
 | | `scrim` | gray-100 (다크 동일) | 이미지 위 그라데이션 덮개 끝색(배너 캐러셀, 투명도 유틸과 함께). 다크에서 뒤집지 않는다 |

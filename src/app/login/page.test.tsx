@@ -64,6 +64,33 @@ describe("/login 폼 (실측 278)", () => {
     expect(submit).toHaveClass("h-11", "rounded-sm", "font-medium", "w-full");
   });
 
+  it("하단 가입 블록: 쿠폰 문구·소셜 2개(준비 중 비활성)·이메일 가입·찾기 줄 (실측 279)", () => {
+    expect(screen.getByText(/지금 가입하면,/)).toHaveClass("text-center", "text-label", "font-medium");
+
+    const kakao = screen.getByRole("button", { name: /카카오로 시작하기/ });
+    const apple = screen.getByRole("button", { name: /Apple로 시작하기/ });
+    [kakao, apple].forEach((b) => {
+      expect(b).toBeDisabled();
+      expect(b).toHaveAccessibleName(expect.stringContaining("준비 중"));
+      expect(b).toHaveClass("h-10", "w-full", "rounded-sm", "text-body", "font-medium", "disabled:cursor-not-allowed");
+    });
+    expect(kakao).toHaveClass("bg-surface-kakao");
+    expect(apple).toHaveClass("border-line", "bg-surface");
+    // 준비 중이어도 원본 색을 그대로 보여준다(공용 Button 의 회색 disabled 를 덮음)
+    expect(kakao).toHaveClass("bg-surface-kakao", "dark:text-ink-inverse");
+
+    const signup = screen.getByRole("link", { name: "이메일로 가입하기" });
+    expect(signup).toHaveAttribute("href", "/signup");
+    expect(signup).toHaveClass("h-10", "rounded-sm", "border-line", "bg-surface");
+    // 파란 텍스트 링크는 사라졌다
+    expect(screen.queryByRole("link", { name: "회원가입" })).toBeNull();
+
+    ["아이디 찾기", "비밀번호 찾기"].forEach((name) => {
+      expect(screen.getByRole("link", { name })).toHaveAttribute("href", "/products");
+    });
+    expect(screen.getByRole("link", { name: "아이디 찾기" }).parentElement).toHaveClass("divide-x", "divide-line-subtle", "text-ink-tertiary");
+  });
+
   it("가입한 계정으로 로그인하면 /products 로 가고, 틀리면 경고 문구가 남는다", async () => {
     await signUp("a@b.com", "pw1234");
 
