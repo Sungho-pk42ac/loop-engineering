@@ -190,7 +190,9 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 예외: **검색 결과 필터 레이어**(#110)는 원본 실측대로 모달·바텀시트 radius 8(`rounded-lg`·`rounded-t-lg`), 하단 44px 버튼 radius 4(`rounded-sm`)를 쓴다.
 
-예외: **필터 옵션 체크박스**(#112)는 원본 실측대로 radius 2(`rounded-xs`)를 쓴다(라디오는 원).
+예외: **로그인·회원가입 화면**(#278)은 원본 실측대로 36px 입력칸과 44px 주 버튼(`Button` `size="cta"`) 모두 radius 4(`rounded-sm`)를 쓴다. 표의 "버튼(40~48px)·입력 = `rounded-md`" 와 다르지만 원본 값이 4px 이다.
+
+예외: **필터 옵션 체크박스**(#112)와 **로그인 자동 로그인 체크박스**(#278)는 원본 실측대로 radius 2(`rounded-xs`)를 쓴다(라디오는 원).
 
 ### 5.2 선 두께
 
