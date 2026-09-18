@@ -58,6 +58,22 @@ describe("ScrollRow", () => {
     expect(screen.queryByRole("button", { name: "다음 라이브 보기" })).not.toBeInTheDocument();
   });
 
+  it("이전·다음 꺾쇠는 SVG 40×40·선 1.5·각진 끝(원본 실측 175)", () => {
+    const list = renderRow();
+    scrollTo(list, 1000); // 가운데 — 두 버튼이 모두 있는 위치
+
+    ["이전 라이브 보기", "다음 라이브 보기"].forEach((name) => {
+      const svg = screen.getByRole("button", { name }).querySelector("svg")!;
+      expect(svg).toHaveAttribute("width", "40");
+      expect(svg).toHaveAttribute("height", "40");
+      expect(svg).toHaveAttribute("viewBox", "0 0 40 40");
+      expect(svg).toHaveAttribute("stroke-width", "1.5");
+      const path = svg.querySelector("path")!;
+      expect(path).toHaveAttribute("stroke-linecap", "butt");
+      expect(path).toHaveAttribute("stroke-linejoin", "miter");
+    });
+  });
+
   it("step 을 주면 그 거리만큼 이동한다(기본은 clientWidth)", () => {
     render(
       <ScrollRow listClassName="overflow-x-auto" prevLabel="이전" nextLabel="다음" step={() => 520}>
