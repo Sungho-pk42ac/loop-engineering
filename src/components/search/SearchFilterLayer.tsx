@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { filterDropdowns } from "@/data/search";
+import { AppliedFilters } from "./AppliedFilters";
+import { countByTab, SearchFilterSlides } from "./SearchFilterSlides";
 import { Icon, ICON_PATHS } from "../Icon";
 
 // 필터 레이어 틀(#110). 원본 실측: ≥768 가운데 모달 480×584(radius 8), <768 바텀시트(위쪽만 radius 8), 딤 검정 60%.
@@ -10,15 +12,20 @@ export function SearchFilterLayer({
   tab,
   onTab,
   resultCount,
+  params,
+  onChange,
   onClose,
   onReset,
 }: {
   tab: number;
   onTab: (index: number) => void;
   resultCount: number;
+  params: URLSearchParams;
+  onChange: (change: (params: URLSearchParams) => void) => void;
   onClose: () => void;
   onReset: () => void;
 }) {
+  const counts = countByTab(params);
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -37,7 +44,7 @@ export function SearchFilterLayer({
         role="dialog"
         aria-modal="true"
         aria-label="필터"
-        className="fixed inset-x-0 bottom-0 z-modal flex max-h-full flex-col rounded-t-lg bg-surface md:inset-0 md:m-auto md:h-146 md:w-120 md:rounded-lg"
+        className="fixed inset-x-0 top-16 bottom-0 z-modal flex flex-col rounded-t-lg bg-surface md:inset-0 md:m-auto md:h-146 md:w-120 md:rounded-lg"
       >
         <div className="flex h-12 items-center justify-between px-4">
           <h2 className="text-body-lg font-medium text-ink">필터</h2>
@@ -58,13 +65,14 @@ export function SearchFilterLayer({
                 i === tab ? "border-line-strong font-semibold text-ink" : "border-transparent font-regular text-ink-muted"
               }`}
             >
-              {dropdown.label}
+              {counts[i] > 0 ? `${dropdown.label} ${counts[i]}` : dropdown.label}
             </button>
           ))}
         </div>
 
-        {/* 본문 옵션 UI 는 #112·#113 */}
-        <div className="min-h-40 flex-1 overflow-y-auto px-4 py-4" />
+        <AppliedFilters params={params} onRemove={onChange} onReset={onReset} className="bg-surface-subtle px-4 py-3" />
+
+        <SearchFilterSlides tab={tab} params={params} onChange={onChange} />
 
         <div className="flex flex-col items-center gap-2 px-4 pt-2 pb-3">
           <button

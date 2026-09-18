@@ -116,6 +116,8 @@ export interface SearchGoodsItem {
   likeCount: number;
   /** 필터(#110) — 성별·별점·할인·무료배송 */
   gender: "M" | "F" | "A";
+  /** 필터 레이어 카테고리(#112) — 자리표시자 코드 */
+  category: string;
   reviewGrade: number;
   discount: boolean;
   freeDelivery: boolean;
@@ -135,6 +137,7 @@ export const searchGoodsItems: SearchGoodsItem[] = Array.from({ length: 120 }, (
   viewCount: (i * 89) % 9000,
   likeCount: (i * 29) % 1200,
   gender: (["A", "M", "F"] as const)[i % 3],
+  category: ["kitchen", "living", "bath", "stationery"][i % 4],
   reviewGrade: [4.9, 4.6, 4.3, 3.8, 5, 4.1][i % 6],
   discount: i % 3 !== 2,
   freeDelivery: i % 4 === 0,
@@ -147,9 +150,23 @@ export const quickFilters = [
   { label: "무료배송", key: "freeDelivery", value: "Y" },
 ] as const;
 
+/** 필터 레이어 '카테고리' 탭 옵션(#112) — 패캠 스토어 자리표시자 */
+export const searchCategories = [
+  { label: "주방", code: "kitchen" },
+  { label: "리빙", code: "living" },
+  { label: "욕실", code: "bath" },
+  { label: "문구", code: "stationery" },
+] as const;
+
+/** 필터 레이어 '별점' 탭 옵션(#112) — 빠른 필터 칩과 같은 minReviewGrade 쿼리 */
+export const reviewGradeOptions = [
+  { label: "4.5점 이상", value: "4.5" },
+  { label: "4점 이상", value: "4" },
+] as const;
+
 /** 필터 레이어 탭 = 드롭다운 칩(#110) */
 export const filterDropdowns = [
-  { label: "카테고리", keys: [] as string[] },
+  { label: "카테고리", keys: ["category"] as string[] },
   { label: "가격", keys: [] as string[] },
   { label: "별점", keys: ["minReviewGrade"] },
   { label: "혜택", keys: ["discount", "freeDelivery"] },
