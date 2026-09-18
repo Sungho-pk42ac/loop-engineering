@@ -35,8 +35,9 @@ export function Header() {
       {/* 스토어 바(#134 원본 실측): 1280 이상 전체 폭 56·탭 16/500·아이콘 링크 글자 라벨, 768~1279 축소, 767 이하 없음. */}
       <div className="hidden h-14 pr-2 pl-1 md:flex">
         <div className="relative flex">
+          {/* 메뉴는 #116 에서 /menu/category 로 바뀌었다(dev 병합) */}
           <Link
-            href="/products"
+            href="/menu/category"
             aria-label="메뉴"
             className="flex w-6 items-center justify-center text-icon-inverse *:size-5 xl:w-auto xl:px-2 xl:*:size-7"
           >
