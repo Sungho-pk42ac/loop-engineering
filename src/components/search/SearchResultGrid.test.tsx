@@ -1,6 +1,25 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { GRID_BATCH, GRID_TOTAL, SearchResultGrid } from "./SearchResultGrid";
+import { GRID_BATCH, SearchResultGrid } from "./SearchResultGrid";
+
+// 총량이 GRID_BATCH*2 면 첫 묶음에 상한까지 닿아 연쇄 발동 여부를 구별할 수 없다(#228 리뷰).
+// 300개로 늘려 "교차 1회 = +60" 과 "재진입해야 다음 묶음" 이 실제로 갈라지게 한다.
+vi.mock("@/data/search", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/data/search")>();
+  const [sample] = actual.searchGoodsItems;
+  return {
+    ...actual,
+    // 300 — vi.mock 은 호이스팅돼 바깥 상수를 못 쓰므로 리터럴로 둔다(MOCK_TOTAL 과 같은 값)
+    searchGoodsItems: Array.from({ length: 300 }, (_, i) => ({
+      ...actual.searchGoodsItems[i % actual.searchGoodsItems.length],
+      id: `mock-goods-${i + 1}`,
+      recommendRank: i,
+      gender: sample.gender,
+    })),
+  };
+});
+
+const MOCK_TOTAL = 300;
 
 let query = "";
 vi.mock("next/navigation", () => ({
@@ -69,7 +88,8 @@ describe("SearchResultGrid", () => {
 
     act(() => intersect());
     expect(cards()).toHaveLength(GRID_BATCH * 2);
-    // 같은 교차 상태에서 콜백이 연달아 와도 늘지 않는다(연쇄 발동 방지)
+    // 같은 교차 상태에서 콜백이 연달아 와도 늘지 않는다(연쇄 발동 방지).
+    // 총량이 300 이라 옛 코드(전이 판정 없음)라면 여기서 180·240·300 으로 늘어난다.
     for (let i = 0; i < 5; i++) act(() => intersect());
     expect(cards()).toHaveLength(GRID_BATCH * 2);
     // 발동 거리는 바닥 약 2,000px
@@ -94,13 +114,14 @@ describe("SearchResultGrid", () => {
     act(() => intersect());
     act(() => intersect(false));
     act(() => intersect());
-    expect(cards()).toHaveLength(Math.min(GRID_BATCH * 3, GRID_TOTAL));
+    // 재진입해야 다음 묶음이 붙는다(180). 재진입이 아무 일도 안 하면 120 이라 갈라진다.
+    expect(cards()).toHaveLength(GRID_BATCH * 3);
 
     for (let i = 0; i < 10; i++) {
       act(() => intersect(false));
       act(() => intersect());
     }
-    expect(cards()).toHaveLength(GRID_TOTAL);
+    expect(cards()).toHaveLength(MOCK_TOTAL);
     // 총량에 닿으면 센티널(div.h-px)이 사라진다
     expect(screen.getByRole("list").parentElement!.querySelector("div.h-px")).toBeNull();
   });
