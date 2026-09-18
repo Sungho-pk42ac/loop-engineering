@@ -29,8 +29,3 @@ export const sportsPicks: SportsPicks = {
     shippingBadge: shipping[i % shipping.length],
   })),
 };
-
-/** 카드 상세 링크용 기존 상품 id(1~6) 순환 */
-export function detailIdOf(index: number): string {
-  return String((index % 6) + 1);
-}
