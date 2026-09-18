@@ -134,6 +134,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 예외: **성별 토글**(#29)은 원본 실측(12/500·600)대로 `detail` + `font-medium`(선택 `font-semibold`)을 쓴다.
 
+예외: **상품 상세 갤러리 인디케이터**(#223 `n / N`)는 원본 실측(13/18)대로 `label` 을 쓴다. 표의 `label` 용도(버튼·탭·가격)에 없는 역할이지만 원본 값이 13px 이다.
+
 반응형: KRDS 처럼 모바일에서 `heading` → `title-lg`, `display` → `heading` 으로 한 단계 낮춘다. 예: `text-title-lg md:text-heading`.
 
 ---
@@ -195,7 +197,11 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 예외: 검색 결과 탭 줄처럼 **원본이 선택 탭 밑줄을 2px 로 쓰는 곳**은 `border-b-2 border-line-strong` 을 허용한다(원본 실측, 포커스 링 2px 선례). 그 밖의 선은 1px.
 
-예외: **상품 상세 갤러리 썸네일**(#62) 선택 테두리는 원본 실측대로 `border-2 border-line-strong`(미선택 `border-2 border-transparent`)을 쓴다.
+예외: **상품 상세 갤러리 썸네일**(#62·#223) 선택 테두리는 원본 실측대로 2px 이되, 이미지를 깎지 않도록 `ring-2 ring-inset`(미선택 `ring-transparent`)으로 **겹쳐 그린다**. 전환은 `duration-base`(원본 0.3s 근사). 아래 세 가지를 함께 지킨다:
+
+- 링은 **이미지 위 오버레이 요소**(`<span aria-hidden>` + `absolute inset-0 pointer-events-none`)에 건다. 버튼 자신에 걸면 inset box-shadow 가 `<Image fill>` 자식 **아래**에 깔려 보이지 않는다(실측 확인). 전환은 `transition-shadow duration-base`(`transition-colors` 는 box-shadow 를 포함하지 않는다).
+- 링 색은 이미지 위에 놓이므로 다크에서 뒤집히면 밝은 사진에 묻힌다 → `line-strong` 대신 뒤집지 않는 `ring-scrim` 을 쓴다.
+- 선택 링에 `outline-*` 유틸을 쓰지 않는다. `outline-*` 는 `@layer base` 의 `:focus-visible` 링을 이겨 키보드 포커스를 지운다(실측 확인). `ring`(box-shadow)은 outline 을 건드리지 않아 포커스 링이 그대로 살아 있다.
 
 ### 5.3 그림자
 

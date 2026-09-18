@@ -30,23 +30,32 @@ export function ProductGallery({ name, images }: { name: string; images: string[
 
   return (
     <div className="flex gap-4">
-      <ul aria-label="이미지 목록" className="hidden shrink-0 flex-col gap-1 md:flex">
-        {images.map((src, i) => (
-          <li key={i}>
-            <button
-              type="button"
-              aria-label={`이미지 ${i + 1}`}
-              aria-current={i === index ? "true" : undefined}
-              onClick={() => show(i)}
-              className={`relative block aspect-5/6 w-18 border-2 bg-surface-subtle transition-colors ${
-                i === index ? "border-line-strong" : "border-transparent"
-              }`}
-            >
-              <Image src={src} alt={name} fill sizes="72px" className="object-cover" />
-            </button>
-          </li>
-        ))}
-      </ul>
+      {/* 썸네일 열은 absolute 라 행 높이에 끼지 않는다 → 열이 메인 이미지 높이에서 잘리고 넘치면 세로 스크롤(실측 223) */}
+      <div className="relative hidden w-18 shrink-0 md:block">
+        {/* 좌우 4px 은 포커스 링(2px + offset 2) 자리 — overflow-y-auto 가 가로도 잘라서 필요하다 */}
+        <ul aria-label="이미지 목록" className="scrollbar-none absolute -inset-x-1 inset-y-0 flex flex-col gap-1 overflow-y-auto px-1">
+          {images.map((src, i) => (
+            <li key={i}>
+              <button
+                type="button"
+                aria-label={`이미지 ${i + 1}`}
+                aria-current={i === index ? "true" : undefined}
+                onClick={() => show(i)}
+                className="relative block aspect-5/6 w-18 bg-surface-subtle"
+              >
+                <Image src={src} alt={name} fill sizes="72px" className="object-cover" />
+                {/* 선택 링은 이미지 위에 그려야 보인다 — inset box-shadow 는 자식 아래에 깔린다(실측 223) */}
+                <span
+                  aria-hidden="true"
+                  className={`pointer-events-none absolute inset-0 ring-2 ring-inset transition-shadow duration-base ${
+                    i === index ? "ring-scrim" : "ring-transparent"
+                  }`}
+                />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <div className="relative min-w-0 flex-1">
         <ul
@@ -61,18 +70,22 @@ export function ProductGallery({ name, images }: { name: string; images: string[
             </li>
           ))}
         </ul>
-        <button
-          ref={zoomRef}
-          type="button"
-          aria-label="크게 보기"
-          onClick={() => setViewer(index)}
-          className="absolute right-4 bottom-4 flex h-6 items-center gap-1 rounded-sm bg-surface-overlay px-2 text-detail text-ink-inverse dark:text-ink"
-        >
-          <span>
+        {/* 원본은 알약 2개(텍스트 + 아이콘)가 4px 떨어져 있다(실측 223). 배경 20% 는 원본 사진이 어두워 성립하는 값이라
+            우리 밝은 자리표시자 사진에서는 흰 글자 대비가 2.2:1 로 떨어진다 → 접근성 우선으로 surface-overlay(60%) 유지 */}
+        <div className="absolute right-4 bottom-4 flex items-center gap-1">
+          <span className="flex h-6 items-center rounded-sm bg-surface-overlay px-2 text-label text-ink-inverse dark:text-ink">
             {index + 1} / {images.length}
           </span>
-          <Icon d={ZOOM} size={16} />
-        </button>
+          <button
+            ref={zoomRef}
+            type="button"
+            aria-label="크게 보기"
+            onClick={() => setViewer(index)}
+            className="flex size-6 items-center justify-center rounded-sm bg-surface-overlay text-ink-inverse dark:text-ink"
+          >
+            <Icon d={ZOOM} size={20} />
+          </button>
+        </div>
       </div>
 
       {viewer !== null && (
