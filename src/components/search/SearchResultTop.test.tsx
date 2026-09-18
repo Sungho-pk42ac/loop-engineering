@@ -3,7 +3,11 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { resultTabs } from "@/data/search";
 import { SearchResultTop } from "./SearchResultTop";
 
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), back: vi.fn() }) }));
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), back: vi.fn(), replace: vi.fn() }),
+  usePathname: () => "/search/goods",
+  useSearchParams: () => new URLSearchParams("keyword=%EB%8B%88%ED%8A%B8"),
+}));
 
 const query = "keyword=%EB%8B%88%ED%8A%B8&keywordType=keyword&gf=A";
 

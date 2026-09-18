@@ -1,5 +1,15 @@
-// PRD(docs/prd/README.md) 샘플 데이터 6개.
-export const products = [
+// 상품 SSOT — PRD(docs/prd/README.md §4) 샘플 데이터 6개. 페이지·컴포넌트가 직접 import 한다.
+export interface Product {
+  id: string;
+  name: string;
+  /** 원 단위 정수 */
+  price: number;
+  /** /images/ 로 시작하는 로컬 경로 */
+  imageUrl: string;
+  description: string;
+}
+
+export const products: Product[] = [
   {
     id: "1",
     name: "미니멀 화이트 머그컵",
