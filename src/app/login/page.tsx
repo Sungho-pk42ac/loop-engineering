@@ -29,6 +29,13 @@ export default function LoginPage() {
   return (
     <AuthPanel title="로그인">
       <div className="flex flex-col gap-6 py-6">
+        {/* 실측(282): 가운데 워드마크(원본은 3사 로고 SVG — 클론 규칙상 우리 텍스트로) + 14px 안내 부제 */}
+        <div>
+          <h1 className="mt-8 text-center text-title-sm font-bold text-ink">패캠 스토어</h1>
+          <p className="my-4 text-center text-body font-regular text-ink">
+            하나의 계정으로 패캠 스토어의 모든 서비스를 이용하세요
+          </p>
+        </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <label htmlFor="email" className="sr-only">
             이메일

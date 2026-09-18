@@ -16,7 +16,8 @@ export function AuthPanel({ title, children }: { title: string; children: ReactN
           <button type="button" aria-label="뒤로 가기" onClick={() => router.back()} className="-ml-1 text-icon md:hidden">
             <Icon d={ICON_PATHS.chevronLeft} />
           </button>
-          <h1 className="text-body text-ink">{title}</h1>
+          {/* 상단 바 제목은 화면 크롬 라벨이라 heading 이 아니다 — 문서의 h1 은 각 페이지가 갖는다(#282) */}
+          <p className="text-body text-ink">{title}</p>
         </div>
         {/* 헤더·푸터가 없는 화면이라 본문 랜드마크는 여기서 준다 */}
         <main className="px-4">{children}</main>
