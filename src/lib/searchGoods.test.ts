@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { searchGoodsItems, searchSortSingles } from "@/data/search";
-import { resolveSort, sortSearchGoods } from "./searchGoods";
+import { filterSearchGoods, resolveSort, sortSearchGoods } from "./searchGoods";
 
 const ids = (items: ReturnType<typeof sortSearchGoods>) => items.map((i) => i.id);
 
@@ -62,5 +62,28 @@ describe("sortSearchGoods", () => {
       { ...searchGoodsItems[2], id: "c", likeCount: 20 },
     ];
     expect(ids(sortSearchGoods(items, "LIKE_ONE_DAY"))).toEqual(["c", "a", "b"]);
+  });
+});
+
+describe("filterSearchGoods", () => {
+  const params = (q: string) => new URLSearchParams(q);
+
+  it("쿼리가 없으면 전부", () => {
+    expect(filterSearchGoods(searchGoodsItems, params("keyword=머그"))).toHaveLength(searchGoodsItems.length);
+  });
+
+  it("gf=M 은 남성+공용, gf=A 는 전부", () => {
+    const men = filterSearchGoods(searchGoodsItems, params("gf=M"));
+    expect(men.every((i) => i.gender === "M" || i.gender === "A")).toBe(true);
+    expect(men.length).toBeLessThan(searchGoodsItems.length);
+    expect(filterSearchGoods(searchGoodsItems, params("gf=A"))).toHaveLength(searchGoodsItems.length);
+  });
+
+  it("minReviewGrade·discount·freeDelivery 조합", () => {
+    const grade = filterSearchGoods(searchGoodsItems, params("minReviewGrade=4.5"));
+    expect(grade.every((i) => i.reviewGrade >= 4.5)).toBe(true);
+    const combo = filterSearchGoods(searchGoodsItems, params("minReviewGrade=4.5&discount=Y&freeDelivery=Y&gf=F"));
+    expect(combo.every((i) => i.reviewGrade >= 4.5 && i.discount && i.freeDelivery && (i.gender === "F" || i.gender === "A"))).toBe(true);
+    expect(combo.length).toBeLessThan(grade.length);
   });
 });

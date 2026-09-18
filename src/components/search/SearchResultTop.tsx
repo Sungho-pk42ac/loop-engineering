@@ -3,6 +3,8 @@ import { relatedKeywords, resultCounts, resultTabs } from "@/data/search";
 import { searchResultHref } from "@/lib/search";
 import { Icon } from "../Icon";
 import { SearchLayer } from "../SearchLayer";
+import { SearchFilterBar } from "./SearchFilterBar";
+import { SearchResultCount } from "./SearchResultCount";
 import { BackButton } from "./BackButton";
 
 const container = "mx-auto max-w-page px-4 md:px-6";
@@ -71,8 +73,10 @@ export function SearchResultTop({ keyword, query }: { keyword: string; query: st
         </nav>
       </div>
 
+      {/* 필터 줄·적용 필터 줄(#110)은 개수 줄 위(원본 순서) */}
+      <SearchFilterBar />
       <p className={`${container} flex h-8 items-end pb-3 text-label text-ink-muted`}>
-        {resultCounts.newGoods.toLocaleString("ko-KR")}개
+        <SearchResultCount />
       </p>
     </>
   );

@@ -7,6 +7,25 @@ import {
   type SortPeriodCode,
 } from "@/data/search";
 
+/** 필터 쿼리 키(초기화 대상). gf 는 A 로 되돌린다. */
+export const FILTER_KEYS = ["discount", "freeDelivery", "minReviewGrade"] as const;
+
+/** gf·빠른 필터 쿼리로 거르기(#110). 없는 값은 거르지 않는다. */
+export function filterSearchGoods(items: SearchGoodsItem[], params: URLSearchParams): SearchGoodsItem[] {
+  const gf = params.get("gf");
+  const minGrade = Number(params.get("minReviewGrade"));
+  const discount = params.get("discount") === "Y";
+  const freeDelivery = params.get("freeDelivery") === "Y";
+
+  return items.filter((item) => {
+    if ((gf === "M" || gf === "F") && item.gender !== gf && item.gender !== "A") return false;
+    if (Number.isFinite(minGrade) && minGrade > 0 && item.reviewGrade < minGrade) return false;
+    if (discount && !item.discount) return false;
+    if (freeDelivery && !item.freeDelivery) return false;
+    return true;
+  });
+}
+
 export interface ResolvedSort {
   /** 트리거에 보이는 글자 — 하위 선택이면 '상위 하위' */
   label: string;
