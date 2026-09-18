@@ -1,10 +1,16 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { brandCategories, notableBrands } from "@/data/brands";
+import { brandCategories, filterBrandsByGender, notableBrands } from "@/data/brands";
 import { NotableBrandsSection } from "./NotableBrandsSection";
 
+let query = "";
+vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams(query) }));
+
 describe("NotableBrandsSection", () => {
-  afterEach(cleanup);
+  afterEach(() => {
+    cleanup();
+    query = "";
+  });
 
   it("제목 h2 와 브랜드 24개 이상, 항목은 원형 로고 → (있으면) 배지 → 이름(line-clamp-2) 순서", () => {
     render(<NotableBrandsSection />);
@@ -46,6 +52,29 @@ describe("NotableBrandsSection", () => {
       });
   });
 
+  it("호버 이전·다음 버튼(#28): 넘치지 않으면 없음, 처음엔 '다음'만·누르면 3열(204)씩, 끝엔 '이전'만", () => {
+    render(<NotableBrandsSection />);
+    const list = screen.getByRole("list");
+    expect(screen.queryByRole("button", { name: /브랜드 보기/ })).toBeNull();
+
+    const scrollTo = (left: number) => {
+      Object.defineProperty(list, "clientWidth", { configurable: true, value: 1024 });
+      Object.defineProperty(list, "scrollWidth", { configurable: true, value: 1380 });
+      Object.defineProperty(list, "scrollLeft", { configurable: true, value: left, writable: true });
+      fireEvent.scroll(list);
+    };
+    scrollTo(0);
+    expect(screen.queryByRole("button", { name: "이전 브랜드 보기" })).toBeNull();
+    const scrollBy = vi.fn();
+    list.scrollBy = scrollBy;
+    fireEvent.click(screen.getByRole("button", { name: "다음 브랜드 보기" }));
+    expect(scrollBy).toHaveBeenCalledWith(expect.objectContaining({ left: 204 }));
+
+    scrollTo(356);
+    expect(screen.getByRole("button", { name: "이전 브랜드 보기" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "다음 브랜드 보기" })).toBeNull();
+  });
+
   it("칩(#27): 전체 + 카테고리 12개, 첫 진입 '전체' 선택, 선택 칩만 border-line-strong·semibold·aria-pressed", () => {
     render(<NotableBrandsSection />);
 
@@ -73,6 +102,17 @@ describe("NotableBrandsSection", () => {
     expect(screen.getByRole("button", { name: "뷰티" })).toHaveAttribute("aria-pressed", "true");
 
     fireEvent.click(screen.getByRole("button", { name: "전체" }));
+    expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(notableBrands.length);
+  });
+
+  it("gf(#29): ?gf=F 면 여성+공용 브랜드만, 잘못된 값이면 전체", () => {
+    query = "gf=F";
+    render(<NotableBrandsSection />);
+    expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(filterBrandsByGender(notableBrands, "F").length);
+    cleanup();
+
+    query = "gf=X";
+    render(<NotableBrandsSection />);
     expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(notableBrands.length);
   });
 });

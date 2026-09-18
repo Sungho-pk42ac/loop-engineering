@@ -1,9 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { brandCategories, filterBrandsByCategory, notableBrands, type BrandCategory } from "@/data/brands";
+import {
+  brandCategories,
+  filterBrandsByCategory,
+  filterBrandsByGender,
+  notableBrands,
+  parseGf,
+  type BrandCategory,
+  type Gf,
+} from "@/data/brands";
 import { Badge } from "../ui/Badge";
+import { ScrollRow } from "../ScrollRow";
 
 // 주목할 만한 브랜드(#26). 원본 실측: 제목 줄(18/500, 좌우 16) 아래 원형 로고 칸(56×96)이 세로 6줄 열 우선으로 가로로 흐르고,
 // 넘치면 섹션 안에서만 가로 스크롤. 칸 = 원 56 + 원 아래에 겹친 혜택 배지 + 2줄 이름(11px). 호버 변화 없음, 새 탭.
@@ -15,10 +25,18 @@ const CHIPS: { label: string; value: BrandCategory | null }[] = [
   ...brandCategories.map((c) => ({ label: c, value: c })),
 ];
 const ICON_CHIP_INDEXES = new Set([2, 3, 4, 5, 10]);
+const BRAND_STEP = 204;
 
+// 성별 토글(#29)로 gf 가 바뀌면 브랜드 목록을 그 성별로 바꾸고, 카테고리 선택은 '전체'로 되돌린다(key).
 export function NotableBrandsSection() {
+  const gf = parseGf(useSearchParams().get("gf"));
+  return <NotableBrands key={gf} gf={gf} />;
+}
+
+/** gf 를 받아 그리는 본문. 페이지 Suspense 폴백(서버 HTML)에서는 gf="A" 로 쓴다 */
+export function NotableBrands({ gf }: { gf: Gf }) {
   const [selected, setSelected] = useState<BrandCategory | null>(null);
-  const brands = filterBrandsByCategory(notableBrands, selected);
+  const brands = filterBrandsByCategory(filterBrandsByGender(notableBrands, gf), selected);
 
   return (
     <section aria-labelledby="notable-brands" className="pb-2">
@@ -44,9 +62,14 @@ export function NotableBrandsSection() {
           );
         })}
       </div>
-      <ul
+      {/* 호버 이전·다음 버튼(#28, ScrollRow 재사용): 원본처럼 한 번에 3열(68 × 3 = 204)씩, 처음·끝·넘침 없음이면 버튼 없음 */}
+      <ScrollRow
         key={selected ?? "전체"}
-        className="scrollbar-none grid grid-flow-col grid-rows-6 justify-start gap-x-3 gap-y-2 overflow-x-auto px-4 py-1 md:snap-x md:snap-mandatory md:scroll-px-4">
+        listClassName="scrollbar-none grid grid-flow-col grid-rows-6 justify-start gap-x-3 gap-y-2 overflow-x-auto px-4 py-1 md:snap-x md:snap-mandatory md:scroll-px-4"
+        prevLabel="이전 브랜드 보기"
+        nextLabel="다음 브랜드 보기"
+        step={() => BRAND_STEP}
+      >
         {brands.map(({ id, name, badge }) => (
           <li key={id} className="w-14 md:snap-start">
             <Link
@@ -68,7 +91,7 @@ export function NotableBrandsSection() {
             </Link>
           </li>
         ))}
-      </ul>
+      </ScrollRow>
     </section>
   );
 }
