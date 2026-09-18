@@ -45,7 +45,7 @@ export function SportsPicks({ gf }: { gf: Gf }) {
         step={columnStep}
       >
         {columns.map((column, c) => (
-          <li key={column[0].id} className="grid w-28 shrink-0 snap-start auto-rows-fr md:w-65">
+          <li key={column[0].id} className="grid w-34 shrink-0 snap-start auto-rows-fr md:w-65">
             {column.map((product, r) => (
               <ExhibitionProductCard key={product.id} product={product} productHref={`/products/${detailIdOf(c * 2 + r)}`} />
             ))}
