@@ -38,4 +38,15 @@ describe("SearchResultTop", () => {
     expect(screen.getByRole("button", { name: "뒤로" })).toHaveClass("md:hidden");
     expect(screen.getByRole("link", { name: "장바구니" })).toHaveClass("md:hidden");
   });
+
+  it("전체 폭(max-w-page·md:px-6 없음), 연관 검색어는 sticky 밖, 탭+서브탭은 sticky 묶음 하나(#159)", () => {
+    const { container } = render(<SearchResultTop keyword="니트" query={query} />);
+
+    expect(container.querySelector(".max-w-page, [class*='md:px-6']")).toBeNull();
+    expect(screen.getByRole("navigation", { name: "연관 검색어" }).closest(".sticky")).toBeNull();
+    const tabsSticky = screen.getByRole("navigation", { name: "검색 결과 탭" }).closest(".sticky");
+    expect(tabsSticky).not.toBeNull();
+    expect(screen.getByRole("navigation", { name: "상품 구분" }).closest(".sticky")).toBe(tabsSticky);
+    expect(tabsSticky).toHaveClass("top-61", "md:top-51");
+  });
 });
