@@ -73,3 +73,9 @@ export const exhibition: Exhibition = {
 export function filterByBrand(products: ExhibitionProduct[], brand: string | null): ExhibitionProduct[] {
   return brand === null ? products : products.filter((p) => p.brand === brand);
 }
+
+
+/** 자리표시자 섹션 카드의 상세 링크용 기존 상품 id(1~6) 순환 — 홈 추천 섹션 공용(#31·#34) */
+export function detailIdOf(index: number): string {
+  return String((index % 6) + 1);
+}
