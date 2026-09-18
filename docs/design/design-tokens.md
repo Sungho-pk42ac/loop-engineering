@@ -75,6 +75,8 @@ KRDS 분류(배경·텍스트·보더·아이콘·상태)에 커머스 전용(�
 | | `ink-inverse` | gray-0 | 검정 배경 위 글자 |
 | | `ink-link` | blue-60 | 텍스트 링크 |
 | | `ink-promo-inverse` | red-50 (다크: red-60) | 반전 배경(검정 헤더) 위 기획전 강조 글자 — 두 모드 모두 4.5:1 |
+| | `ink-inverse-soft` | white 80% (다크: black 80%) | 반전 배경 위 한 단계 흐린 글자·테두리(헤더 스토어 바 로그인 버튼) |
+| | `line-inverse` | white 40% (다크: black 40%) | 반전 배경 위 짧은 구분선(헤더 햄버거와 스토어 탭 사이) |
 | line | `line` / `line-subtle` / `line-strong` | gray-30 / 20 / 100 | 카드 테두리 / 리스트 구분선 / 선택 강조 |
 | icon | `icon` / `icon-muted` / `icon-inverse` | gray-100 / 50 / 0 | |
 | | `icon-like` | red-50 (다크 동일) | 좋아요(하트) 눌린 상태 채움 |
@@ -135,6 +137,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 예외: **성별 토글**(#29)은 원본 실측(12/500·600)대로 `detail` + `font-medium`(선택 `font-semibold`)을 쓴다.
 
 반응형: KRDS 처럼 모바일에서 `heading` → `title-lg`, `display` → `heading` 으로 한 단계 낮춘다. 예: `text-title-lg md:text-heading`.
+
+예외: **헤더 스토어 바**(#134)는 원본 실측대로 탭 `detail`(xl `body-lg`), 아이콘 링크 라벨 `detail`(xl `body`), 로그인 버튼 `caption`(xl `label`), 모두 `font-medium` 을 쓴다.
 
 ---
 
