@@ -15,6 +15,7 @@ const CURSOR_X: Record<Gf, string> = { A: "translate-x-0", M: "translate-x-11", 
 // 선택 배경은 버튼이 아니라 뒤에 깔린 검정 커서가 옆으로 미끄러진다(약 290ms 감속).
 // 4px 배수로 칸 46 → 44·안쪽 여백 3 → 4(알약 140), 커서 높이 38 → 36, 이동 290ms → duration-base.
 // 원본은 누르면 전체 새로고침·스크롤 맨 위지만, 이슈 사양대로 쿼리만 바꾸고 스크롤을 유지한다.
+// 실측(222): 배경 흰색 92% → surface-floating(흰 90%, 다크 검정 90%), 모바일은 하단 탭바(#139 h-14) 위 12px = bottom-17, 768 이상은 원본과 같은 12.
 export function GenderToggle() {
   const router = useRouter();
   const pathname = usePathname();
@@ -28,7 +29,7 @@ export function GenderToggle() {
   }
 
   return (
-    <div role="group" aria-label="성별" className="fixed bottom-3 left-1/2 z-sticky flex h-11 w-35 -translate-x-1/2 rounded-full bg-surface px-1">
+    <div role="group" aria-label="성별" className="fixed bottom-17 left-1/2 z-sticky flex h-11 w-35 -translate-x-1/2 rounded-full bg-surface-floating px-1 md:bottom-3">
       <span
         aria-hidden="true"
         className={`absolute top-1 left-1 h-9 w-11 rounded-full bg-surface-inverse transition-transform duration-base ease-out motion-reduce:transition-none ${CURSOR_X[gf]}`}
@@ -41,7 +42,7 @@ export function GenderToggle() {
             type="button"
             aria-pressed={active}
             onClick={() => select(value)}
-            className={`relative w-11 rounded-full text-detail ${active ? "font-semibold text-ink-inverse" : "font-medium text-ink"}`}
+            className={`relative w-11 rounded-full text-detail transition-colors motion-reduce:transition-none ${active ? "font-semibold text-ink-inverse" : "font-medium text-ink"}`}
           >
             {label}
           </button>

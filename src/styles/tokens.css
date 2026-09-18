@@ -49,6 +49,8 @@
   --ms-alpha-white-20: rgb(255 255 255 / 0.2);
   --ms-alpha-white-60: rgb(255 255 255 / 0.6);
   --ms-alpha-white-80: rgb(255 255 255 / 0.8);
+  --ms-alpha-white-90: rgb(255 255 255 / 0.9);
+  --ms-alpha-black-90: rgb(0 0 0 / 0.9);
 
   /* 타이포 */
   --ms-font-sans: Pretendard, "Pretendard Variable", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
@@ -85,6 +87,7 @@
   --color-surface-inverse: var(--ms-gray-100);
   --color-surface-overlay: var(--ms-alpha-black-60);
   --color-scrim: var(--ms-gray-100);
+  --color-surface-floating: var(--ms-alpha-white-90);
 
   /* 글자(ink) — 대비 4.5:1 이상: primary/secondary, 3:1 이상: tertiary */
   --color-ink: var(--ms-gray-100);
@@ -208,6 +211,7 @@
     --color-surface-muted: var(--ms-gray-80);
     --color-surface-sunken: var(--ms-gray-70);
     --color-surface-inverse: var(--ms-gray-0);
+    --color-surface-floating: var(--ms-alpha-black-90);
     --color-ink: var(--ms-gray-0);
     --color-ink-secondary: var(--ms-gray-40);
     --color-ink-tertiary: var(--ms-gray-50);
