@@ -191,6 +191,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 예외: **필터 옵션 체크박스**(#112)는 원본 실측대로 radius 2(`rounded-xs`)를 쓴다(라디오는 원).
 
+예외: **모바일 진입 서비스 시트**(#164)는 원본 실측대로 시트 radius 0(`rounded-xl` 없음), 타일·광고 배너·아랫줄 이미지는 `rounded-sm` 을 쓴다.
+
 ### 5.2 선 두께
 
 1px 만 쓴다. 선택·포커스 강조는 두께가 아니라 색(`line-strong`)으로 표현한다(무신사 방식).

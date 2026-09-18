@@ -1,3 +1,4 @@
+import { ServiceSheet } from "@/components/ServiceSheet";
 import { BannerCarousel } from "@/components/BannerCarousel";
 import { LiveSchedule } from "@/components/LiveSchedule";
 import { QuickMenuServices } from "@/components/QuickMenuServices";
@@ -44,6 +45,8 @@ export default function ProductsPage() {
       </section>
       {/* 원본: 라이브 편성표는 페이지 마지막 섹션(푸터 바로 위) */}
       <LiveSchedule />
+      {/* 모바일 진입 시 서비스 바로가기 시트(#164) */}
+      <ServiceSheet />
     </>
   );
 }
