@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 import { popularKeywords, risingKeywords, searchPlaceholders, type RankChange } from "@/data/search";
+import { addRecentSearch, clearRecentSearches, parseRecent, readRecentRaw, removeRecentSearch, subscribeRecent } from "@/lib/recentSearches";
 import { searchResultHref } from "@/lib/search";
 import { Icon, ICON_PATHS } from "./Icon";
 
@@ -45,9 +46,18 @@ export function SearchLayer({ keyword }: { keyword?: string }) {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
+  const recent = parseRecent(
+    useSyncExternalStore(
+      subscribeRecent,
+      readRecentRaw,
+      () => "[]",
+    ),
+  );
+
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const value = inputRef.current?.value.trim() ?? "";
+    addRecentSearch(value);
     setOpen(false);
     router.push(value ? searchResultHref(value) : "/products");
   }
@@ -105,6 +115,45 @@ export function SearchLayer({ keyword }: { keyword?: string }) {
                   <Icon d={ICON_PATHS.close} />
                 </button>
               </form>
+
+              {/* 최근 검색어(#270): 이력이 없으면 블록 자체를 렌더하지 않는다. 칩 줄은 회색 띠 위 가로 스크롤. */}
+              {recent.length > 0 && (
+                <section aria-labelledby="recent-searches" className="-mx-4 md:-mx-6">
+                  <div className="flex h-9 items-center justify-between px-4 pt-3">
+                    <h2 id="recent-searches" className="text-body font-medium text-ink">
+                      최근 검색어
+                    </h2>
+                    <button type="button" onClick={clearRecentSearches} className="text-label text-ink-muted underline">
+                      모두삭제
+                    </button>
+                  </div>
+                  <ul className="scrollbar-none flex h-12 overflow-x-auto bg-surface-subtle pt-1 pr-3 pb-2 pl-4">
+                    {recent.map(({ keyword: word }) => (
+                      <li key={word} className="mt-1 mr-1 flex h-8 shrink-0 items-center rounded-sm border border-line bg-surface pr-1 dark:bg-surface-muted">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOpen(false);
+                            router.push(searchResultHref(word));
+                          }}
+                          className="h-full px-2 text-label whitespace-nowrap text-ink"
+                        >
+                          {word}
+                        </button>
+                        {/* 아이콘은 원본대로 12, -m-2 p-2 로 누르는 영역만 28 로 키운다(WCAG 2.5.8 최소 24) */}
+                        <button
+                          type="button"
+                          aria-label={`${word} 삭제`}
+                          onClick={() => removeRecentSearch(word)}
+                          className="-m-2 flex shrink-0 items-center justify-center p-2 text-icon-muted"
+                        >
+                          <Icon d={ICON_PATHS.close} size={12} />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
 
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                 <section aria-labelledby="popular-keywords">
