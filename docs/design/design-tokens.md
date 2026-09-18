@@ -189,6 +189,8 @@ Tailwind 유틸리티: `bg-surface-subtle`, `text-ink-secondary`, `border-line`,
 
 예외: **검색 결과 필터 레이어**(#110)는 원본 실측대로 모달·바텀시트 radius 8(`rounded-lg`·`rounded-t-lg`), 하단 44px 버튼 radius 4(`rounded-sm`)를 쓴다.
 
+예외: **필터 옵션 체크박스**(#112)는 원본 실측대로 radius 2(`rounded-xs`)를 쓴다(라디오는 원).
+
 ### 5.2 선 두께
 
 1px 만 쓴다. 선택·포커스 강조는 두께가 아니라 색(`line-strong`)으로 표현한다(무신사 방식).

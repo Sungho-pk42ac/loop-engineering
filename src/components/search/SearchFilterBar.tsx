@@ -3,13 +3,13 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { filterDropdowns, quickFilters, searchGoodsItems } from "@/data/search";
+import { AppliedFilters, countFilters } from "./AppliedFilters";
 import { filterSearchGoods, FILTER_KEYS } from "@/lib/searchGoods";
 import { Icon } from "../Icon";
 import { SearchFilterLayer } from "./SearchFilterLayer";
 
 const CHEVRON = "M6 9l6 6 6-6";
 const SLIDERS = "M4 6h16M4 12h16M4 18h16M9 4v4M15 10v4M7 16v4";
-const CLOSE = "M6 6l12 12M18 6L6 18";
 const QUICK_ICON: Record<string, string> = {
   할인: "M6 18L18 6M7.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM16.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z",
   별점: "M12 4l2.4 5 5.6.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.6-.8z",
@@ -28,8 +28,7 @@ export function SearchFilterBar() {
   const [layerTab, setLayerTab] = useState<number | null>(null);
 
   const gf = searchParams.get("gf") ?? "A";
-  const activeQuick = quickFilters.filter((f) => searchParams.get(f.key) === f.value);
-  const filterCount = activeQuick.length + (gf === "M" || gf === "F" ? 1 : 0);
+  const filterCount = countFilters(searchParams);
   const resultCount = filterSearchGoods(searchGoodsItems, searchParams).length;
 
   function apply(change: (params: URLSearchParams) => void) {
@@ -69,7 +68,7 @@ export function SearchFilterBar() {
         })}
       </div>
 
-      <div className="scrollbar-none flex items-center gap-1 overflow-x-auto bg-surface-subtle px-4 py-2">
+      <div role="group" aria-label="상세 필터" className="scrollbar-none flex items-center gap-1 overflow-x-auto bg-surface-subtle px-4 py-2">
         <button
           type="button"
           aria-label="상세필터"
@@ -111,44 +110,15 @@ export function SearchFilterBar() {
         })}
       </div>
 
-      {filterCount > 0 && (
-        <div className="scrollbar-none flex items-center gap-3 overflow-x-auto bg-surface-subtle px-4 pb-3">
-          {activeQuick.map(({ label, key }) => (
-            <button
-              key={label}
-              type="button"
-              onClick={() => apply((params) => params.delete(key))}
-              className="flex shrink-0 items-center gap-1 text-label font-regular text-ink-muted"
-            >
-              {label}
-              <span aria-label={`${label} 필터 제거`} className="text-icon-muted">
-                <Icon d={CLOSE} size={12} />
-              </span>
-            </button>
-          ))}
-          {(gf === "M" || gf === "F") && (
-            <button
-              type="button"
-              onClick={() => apply((params) => params.set("gf", "A"))}
-              className="flex shrink-0 items-center gap-1 text-label font-regular text-ink-muted"
-            >
-              {gf === "M" ? "남성" : "여성"}
-              <span aria-label="성별 필터 제거" className="text-icon-muted">
-                <Icon d={CLOSE} size={12} />
-              </span>
-            </button>
-          )}
-          <button type="button" onClick={reset} className="ml-auto shrink-0 text-label font-regular text-ink-muted underline">
-            초기화
-          </button>
-        </div>
-      )}
+      <AppliedFilters params={searchParams} onRemove={apply} onReset={reset} className="bg-surface-subtle px-4 pb-3" />
 
       {layerTab !== null && (
         <SearchFilterLayer
           tab={layerTab}
           onTab={setLayerTab}
           resultCount={resultCount}
+          params={searchParams}
+          onChange={apply}
           onClose={() => setLayerTab(null)}
           onReset={reset}
         />
