@@ -19,6 +19,8 @@ describe("BeautyPicks", () => {
     const heading = screen.getByRole("heading", { level: 2 });
     expect(heading).toHaveTextContent(beautyPicks.titleLine);
     expect(heading).toHaveTextContent(beautyPicks.keyword);
+    // 머리도 본문 그리드와 같은 컨테이너·화면 여백을 쓴다(md 이상 좌우 정렬)
+    expect(heading.parentElement).toHaveClass("mx-auto", "max-w-page", "px-4", "md:px-6");
     const more = screen.getByRole("link", { name: beautyPicks.moreLabel });
     expect(more).toHaveAttribute("href", "/products?gf=F&sort=popular");
     expect(more).toHaveAttribute("target", "_blank");

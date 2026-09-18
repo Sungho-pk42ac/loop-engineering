@@ -9,15 +9,18 @@ export function SectionHeader({
   keyword,
   moreLabel,
   moreHref,
+  layout = "px-4",
 }: {
   id: string;
   titleLine: string;
   keyword: string;
   moreLabel: string;
   moreHref: string;
+  /** 본문과 같은 컨테이너·화면 여백. 전체 폭 캐러셀 섹션(#31)은 기본값 px-4 */
+  layout?: string;
 }) {
   return (
-    <div className="flex items-end justify-between gap-4 px-4 pt-3 pb-2">
+    <div className={`flex items-end justify-between gap-4 pt-3 pb-2 ${layout}`}>
       <h2 id={id} className="text-title-sm font-medium text-ink">
         <span className="block">{titleLine}</span>
         <span className="block">{keyword}</span>

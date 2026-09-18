@@ -23,6 +23,7 @@ export function BeautyPicks({ gf }: { gf: Gf }) {
         keyword={beautyPicks.keyword}
         moreLabel={beautyPicks.moreLabel}
         moreHref={`/products?gf=${gf}&sort=popular`}
+        layout="mx-auto max-w-page px-4 md:px-6"
       />
 
       <ul className="scrollbar-none mx-auto grid max-w-page grid-flow-col grid-rows-2 overflow-x-auto px-4 md:grid-flow-row md:grid-cols-5 md:px-6">
