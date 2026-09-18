@@ -61,9 +61,13 @@ export function CategoryMenu({ categories }: { categories: MenuCategory[] }) {
             );
           })}
         </nav>
-        <div role="group" aria-label="성별" className="hidden h-10 items-center px-2 md:flex">
+        {/* 실측(247): 줄 아래 칸 전폭 1px 구분선, 선택은 굵은 검정(밑줄 없음)·비선택은 얇은 회색 */}
+        <div role="group" aria-label="성별" className="hidden h-10 items-center border-b border-line px-2 md:flex">
           {GENDERS.map((gender) => (
-            <span key={gender} className={`px-2 text-label font-semibold text-ink ${gender === "전체" ? "underline" : ""}`}>
+            <span
+              key={gender}
+              className={`px-2 text-label ${gender === "전체" ? "font-semibold text-ink" : "font-regular text-ink-muted"}`}
+            >
               {gender}
             </span>
           ))}
