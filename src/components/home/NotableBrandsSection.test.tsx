@@ -52,6 +52,16 @@ describe("NotableBrandsSection", () => {
       });
   });
 
+  it("간격·여백·이름 폭 원본 실측(#211): 목록 gap-y-1, 섹션 pb-3, 이름 w-13", () => {
+    render(<NotableBrandsSection />);
+
+    const list = screen.getByRole("list");
+    expect(list).toHaveClass("gap-y-1");
+    expect(list).not.toHaveClass("gap-y-2");
+    expect(screen.getByRole("region", { name: "주목할 만한 브랜드" })).toHaveClass("pb-3");
+    list.querySelectorAll(".line-clamp-2").forEach((name) => expect(name).toHaveClass("w-13"));
+  });
+
   it("호버 이전·다음 버튼(#28): 넘치지 않으면 없음, 처음엔 '다음'만·누르면 3열(204)씩, 끝엔 '이전'만", () => {
     render(<NotableBrandsSection />);
     const list = screen.getByRole("list");
